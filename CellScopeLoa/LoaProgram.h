@@ -7,12 +7,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Sample.h"
 
 @interface LoaProgram : NSObject
 
-@property (weak, nonatomic) NSString* guided;
-@property (nonatomic) NSInteger fovnumber;
+@property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
 
--(LoaProgram*)initWithMode:(NSString*)guided;
+@property (strong, nonatomic) NSString* currentSampleSerial;
+
+@property (strong, nonatomic) NSString* guided;
+@property (nonatomic) NSInteger fovnumber;
+@property (nonatomic) NSInteger totalfields;
+
+@property (nonatomic) NSInteger samplenumber;
+
+- (LoaProgram*)initWithMode:(NSString*)guided;
+- (NSString*)fovString;
+
+- (void)createNewSample;
+- (void)movieCapturedWithURL:(NSURL*)assetURL;
+- (NSString*)currentStatus;
 
 @end

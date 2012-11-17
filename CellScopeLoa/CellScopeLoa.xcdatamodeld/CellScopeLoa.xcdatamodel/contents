@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12A269" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Sample" representedClassName="Sample" syncable="YES">
+        <attribute name="serialnumber" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SampleMovie" inverseName="sample" inverseEntity="SampleMovie" syncable="YES"/>
+    </entity>
+    <entity name="SampleMovie" representedClassName="SampleMovie" syncable="YES">
+        <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="sample" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Sample" inverseName="movies" inverseEntity="Sample" syncable="YES"/>
+    </entity>
     <entity name="Settings" representedClassName="Settings" syncable="YES">
         <attribute name="guided" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="user" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="settings" inverseEntity="User" syncable="YES"/>
@@ -13,7 +21,9 @@
         <relationship name="settings" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Settings" inverseName="user" inverseEntity="Settings" syncable="YES"/>
     </entity>
     <elements>
-        <element name="User" positionX="-7740" positionY="-117" width="128" height="133"/>
         <element name="Settings" positionX="-7535" positionY="-117" width="128" height="73"/>
+        <element name="User" positionX="-7740" positionY="-117" width="128" height="133"/>
+        <element name="Sample" positionX="-7785" positionY="99" width="128" height="73"/>
+        <element name="SampleMovie" positionX="-7589" positionY="171" width="128" height="73"/>
     </elements>
 </model>

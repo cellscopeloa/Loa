@@ -7,7 +7,9 @@
 //
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <CoreMedia/CoreMedia.h>
+#import "ProcessingViewController.h"
 #import "CaptureViewController.h"
+#import "SampleMovie.h"
 
 @interface CaptureViewController ()
 
@@ -15,12 +17,16 @@
 
 @implementation CaptureViewController
 
+@synthesize program;
+@synthesize managedObjectContext;
+
 @synthesize session;
 @synthesize device;
 @synthesize input;
 @synthesize output;
 @synthesize videoHDOutput;
 @synthesize videoPreviewOutput;
+@synthesize fieldcounter;
 
 @synthesize camera;
 
@@ -58,6 +64,8 @@
     progressBar.alpha = 0.0;
     progressBar.progress = 0.0;
     instructions.text = [instructionText objectAtIndex:instructIdx];
+    // fieldcounter.text = [program fovString];
+    fieldcounter.text = @"0/3";
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -73,6 +81,19 @@
     } completion:^(BOOL finished) {
         // pass
     }];
+    
+    // Execute the next program step, or any setup we need
+    if(program.currentSampleSerial == Nil) {
+        [program createNewSample];
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"Analyze"]) {
+        ProcessingViewController* processingViewController = [segue destinationViewController];
+        processingViewController.program = program;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -108,13 +129,20 @@
     didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
       fromConnections:(NSArray *)connections
                 error:(NSError *)error
-{	
+{
+    // Store the video in the asset library
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL])
     {
         [library writeVideoAtPathToSavedPhotosAlbum:outputFileURL
                                     completionBlock:^(NSURL *assetURL, NSError *error)
          {
+             // Store the video in the program database
+             [program movieCapturedWithURL:assetURL];
+             
+             fieldcounter.text = [program fovString];
+
+             // Stop the busy animations
              progressBar.alpha = 0.0;
              [busyIndicator stopAnimating];
              busyIndicator.alpha = 0.0;
@@ -123,8 +151,19 @@
              } completion:^(BOOL finished) {
                  // pass
              }];
+             
+             // Is it time to move on?
+             [self checkStatus];
          }];
 	}
+}
+
+- (void)checkStatus
+{
+    NSString* status = [program currentStatus];
+    if([status isEqualToString:@"Done"]) {
+        [self performSegueWithIdentifier:@"Analyze" sender:self];
+    }
 }
 
 @end

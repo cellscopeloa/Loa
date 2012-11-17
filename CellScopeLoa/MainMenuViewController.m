@@ -8,6 +8,9 @@
 
 #import "MainMenuViewController.h"
 #import "AddUserViewController.h"
+#import "LoaProgram.h"
+#import "CaptureViewController.h"
+#import "InstructionViewController.h"
 
 @interface MainMenuViewController ()
 
@@ -51,6 +54,20 @@
     if([segue.identifier isEqualToString:@"Users"]) {
         AddUserViewController *addUserViewController = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
         addUserViewController.managedObjectContext = self.managedObjectContext;
+    }
+    // Test with instructions
+    else if([segue.identifier isEqualToString:@"Test"]) {
+        LoaProgram* program = [[LoaProgram alloc] init];
+        program.managedObjectContext = managedObjectContext;
+        InstructionViewController *instructionViewController = [segue destinationViewController];
+    }
+    // Test without instructions
+    else if([segue.identifier isEqualToString:@"QuickTest"]) {
+        LoaProgram* program = [[LoaProgram alloc] init];
+        program.managedObjectContext = managedObjectContext;
+        CaptureViewController *captureViewController = [segue destinationViewController];
+        captureViewController.program = program;
+        captureViewController.managedObjectContext = managedObjectContext;
     }
 }
 
@@ -125,16 +142,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath == 0) {
-        [self performSegueWithIdentifier:@"Test" sender:self];
+    if (indexPath.row == 0) {
+        if(YES) {
+            [self performSegueWithIdentifier:@"QuickTest" sender:self];
+        }
+        else {
+            [self performSegueWithIdentifier:@"Test" sender:self];
+        }
     }
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
 }
 
 @end

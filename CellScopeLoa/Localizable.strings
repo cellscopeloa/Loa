@@ -18,3 +18,4 @@
 "USERNAME" = "username";
 "PASSWORD" = "password";
 "IDENTIFICATION" = "Tell me a little about yourself...";
+"PROCESSING" = "Please wait a few moments while the movies are analyzed.";

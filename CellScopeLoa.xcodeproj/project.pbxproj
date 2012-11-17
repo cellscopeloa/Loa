@@ -15,6 +15,9 @@
 		9BC26E0C164F02FB00D7C164 /* UsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E0B164F02FB00D7C164 /* UsersViewController.m */; };
 		9BC26E18164F05AB00D7C164 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E17164F05AB00D7C164 /* User.m */; };
 		9BC26E1B164F05AC00D7C164 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E1A164F05AC00D7C164 /* Settings.m */; };
+		9BCBF3331657113100C5AD1D /* Sample.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF3321657113100C5AD1D /* Sample.m */; };
+		9BCBF3361657113200C5AD1D /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF3351657113200C5AD1D /* SampleMovie.m */; };
+		9BCBF33E16573F1500C5AD1D /* ProcessingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF33D16573F1500C5AD1D /* ProcessingViewController.m */; };
 		9BD015F31646E95800A7C37B /* focus_step_a_7.png in Resources */ = {isa = PBXBuildFile; fileRef = 9BD015EE1646E95800A7C37B /* focus_step_a_7.png */; };
 		9BD015F41646E95800A7C37B /* position_step_a_6 in Resources */ = {isa = PBXBuildFile; fileRef = 9BD015EF1646E95800A7C37B /* position_step_a_6 */; };
 		9BD015F51646E95800A7C37B /* sample_step_a_3 in Resources */ = {isa = PBXBuildFile; fileRef = 9BD015F01646E95800A7C37B /* sample_step_a_3 */; };
@@ -109,6 +112,13 @@
 		9BC26E17164F05AB00D7C164 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		9BC26E19164F05AC00D7C164 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
 		9BC26E1A164F05AC00D7C164 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
+		9BCBF3311657113100C5AD1D /* Sample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sample.h; sourceTree = "<group>"; };
+		9BCBF3321657113100C5AD1D /* Sample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sample.m; sourceTree = "<group>"; };
+		9BCBF3341657113200C5AD1D /* SampleMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleMovie.h; sourceTree = "<group>"; };
+		9BCBF3351657113200C5AD1D /* SampleMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleMovie.m; sourceTree = "<group>"; };
+		9BCBF33716572B6100C5AD1D /* libdispatch.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdispatch.dylib; path = usr/lib/system/libdispatch.dylib; sourceTree = SDKROOT; };
+		9BCBF33C16573F1500C5AD1D /* ProcessingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessingViewController.h; sourceTree = "<group>"; };
+		9BCBF33D16573F1500C5AD1D /* ProcessingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessingViewController.m; sourceTree = "<group>"; };
 		9BD015EE1646E95800A7C37B /* focus_step_a_7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = focus_step_a_7.png; sourceTree = "<group>"; };
 		9BD015EF1646E95800A7C37B /* position_step_a_6 */ = {isa = PBXFileReference; lastKnownFileType = file; path = position_step_a_6; sourceTree = "<group>"; };
 		9BD015F01646E95800A7C37B /* sample_step_a_3 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sample_step_a_3; sourceTree = "<group>"; };
@@ -224,6 +234,10 @@
 				9BC26E17164F05AB00D7C164 /* User.m */,
 				9BC26E19164F05AC00D7C164 /* Settings.h */,
 				9BC26E1A164F05AC00D7C164 /* Settings.m */,
+				9BCBF3311657113100C5AD1D /* Sample.h */,
+				9BCBF3321657113100C5AD1D /* Sample.m */,
+				9BCBF3341657113200C5AD1D /* SampleMovie.h */,
+				9BCBF3351657113200C5AD1D /* SampleMovie.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -231,6 +245,7 @@
 		9BD8A33B163DA7BD009038BB = {
 			isa = PBXGroup;
 			children = (
+				9BCBF33716572B6100C5AD1D /* libdispatch.dylib */,
 				9BC26DF2164ED8AA00D7C164 /* CoreData.framework */,
 				9BD8A350163DA7BD009038BB /* CellScopeLoa */,
 				9BD8A377163DA7BE009038BB /* CellScopeLoaTests */,
@@ -284,6 +299,8 @@
 				9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */,
 				9BD0161C16472FE500A7C37B /* MovieProgressDelegate.h */,
 				9BC26DEF164ED6C200D7C164 /* MainMenuViewController.h */,
+				9BCBF33C16573F1500C5AD1D /* ProcessingViewController.h */,
+				9BCBF33D16573F1500C5AD1D /* ProcessingViewController.m */,
 				9BC26DF0164ED6C200D7C164 /* MainMenuViewController.m */,
 				9BC26E01164EEEE800D7C164 /* AddUserViewController.h */,
 				9BC26E02164EEEE900D7C164 /* AddUserViewController.m */,
@@ -571,6 +588,9 @@
 				9BC26E0C164F02FB00D7C164 /* UsersViewController.m in Sources */,
 				9BC26E18164F05AB00D7C164 /* User.m in Sources */,
 				9BC26E1B164F05AC00D7C164 /* Settings.m in Sources */,
+				9BCBF3331657113100C5AD1D /* Sample.m in Sources */,
+				9BCBF3361657113200C5AD1D /* SampleMovie.m in Sources */,
+				9BCBF33E16573F1500C5AD1D /* ProcessingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,6 +706,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CellScopeLoa/CellScopeLoa-Prefix.pch";
 				INFOPLIST_FILE = "CellScopeLoa/CellScopeLoa-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/system\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -697,6 +721,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CellScopeLoa/CellScopeLoa-Prefix.pch";
 				INFOPLIST_FILE = "CellScopeLoa/CellScopeLoa-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/system\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

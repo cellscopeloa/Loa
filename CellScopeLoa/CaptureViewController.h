@@ -7,11 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <dispatch/dispatch.h>
 #import <AVFoundation/AVFoundation.h>
 #import "Camera.h"
 #import "MovieProgressDelegate.h"
+#import "LoaProgram.h"
 
 @interface CaptureViewController : UIViewController <AVCaptureFileOutputRecordingDelegate,MovieProgressDelegate>
+
+@property (strong, nonatomic) LoaProgram* program;
+@property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *busyIndicator;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
@@ -29,7 +34,9 @@
 @property (nonatomic, strong) AVCaptureMovieFileOutput *output;
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoPreviewOutput;
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoHDOutput;
+@property (weak, nonatomic) IBOutlet UILabel *fieldcounter;
 
 - (IBAction)onCapture:(id)sender;
+- (void)checkStatus;
 
 @end
