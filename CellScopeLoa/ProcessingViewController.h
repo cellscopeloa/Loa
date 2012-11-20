@@ -14,4 +14,5 @@
 @property (weak, nonatomic) IBOutlet UITextView *instructions;
 @property (strong, nonatomic) LoaProgram* program;
 
+- (IBAction)onPressed:(id)sender;
 @end

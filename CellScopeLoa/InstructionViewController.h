@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LoaProgram.h"
 
 @interface InstructionViewController : UIViewController
 
@@ -21,6 +22,8 @@
 @property (weak, nonatomic) NSString *currentInstruct;
 
 @property (nonatomic) NSInteger instructIdx;
+
+@property (strong, nonatomic) LoaProgram* program;
 
 - (IBAction)didTap:(id)sender;
 

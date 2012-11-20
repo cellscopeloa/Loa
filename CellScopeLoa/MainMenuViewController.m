@@ -11,6 +11,7 @@
 #import "LoaProgram.h"
 #import "CaptureViewController.h"
 #import "InstructionViewController.h"
+#import "ReviewVideoViewController.h"
 
 @interface MainMenuViewController ()
 
@@ -55,11 +56,18 @@
         AddUserViewController *addUserViewController = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
         addUserViewController.managedObjectContext = self.managedObjectContext;
     }
+    else if([segue.identifier isEqualToString:@"Video"]) {
+        LoaProgram* program = [[LoaProgram alloc] init];
+        program.managedObjectContext = managedObjectContext;
+        ReviewVideoViewController *reviewVideoViewController = [segue destinationViewController];
+        reviewVideoViewController.program = program;
+    }
     // Test with instructions
     else if([segue.identifier isEqualToString:@"Test"]) {
         LoaProgram* program = [[LoaProgram alloc] init];
         program.managedObjectContext = managedObjectContext;
         InstructionViewController *instructionViewController = [segue destinationViewController];
+        instructionViewController.program = program;
     }
     // Test without instructions
     else if([segue.identifier isEqualToString:@"QuickTest"]) {
@@ -149,6 +157,12 @@
         else {
             [self performSegueWithIdentifier:@"Test" sender:self];
         }
+    }
+    else if(indexPath.row == 1) {
+        [self performSegueWithIdentifier:@"Video" sender:self];
+    }
+    else if(indexPath.row == 2) {
+        [self performSegueWithIdentifier:@"Users" sender:self];
     }
 }
 

@@ -27,5 +27,6 @@
 - (void)createNewSample;
 - (void)movieCapturedWithURL:(NSURL*)assetURL;
 - (NSString*)currentStatus;
+- (NSArray*)currentMovies;
 
 @end

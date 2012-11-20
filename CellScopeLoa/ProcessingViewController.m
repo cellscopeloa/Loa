@@ -9,6 +9,7 @@
 #import "ProcessingViewController.h"
 #import "Sample.h"
 #import "SampleMovie.h"
+#import "ReviewViewController.h"
 
 @interface ProcessingViewController ()
 
@@ -34,6 +35,14 @@
     instructions.text = NSLocalizedString(@"PROCESSING",nil);
 	// Do any additional setup after loading the view
     [self processImages];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"Analyze"]) {
+        ReviewViewController* reviewViewController = segue.destinationViewController;
+        reviewViewController.program = program;
+    }
 }
 
 - (void)processImages
@@ -68,4 +77,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)onPressed:(id)sender {
+    [self performSegueWithIdentifier:@"Analyze" sender:self];
+}
 @end

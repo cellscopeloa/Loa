@@ -93,6 +93,7 @@
 
 - (NSString*)currentStatus
 {
+    /*
     NSLog(@"Field of view: %d", self.fovnumber);
     if(self.fovnumber == 3) {
         return @"Done";
@@ -100,6 +101,32 @@
     else {
         return @"";
     }
+     */
+    return @"Done";
+}
+
+- (NSArray*)currentMovies
+{
+    NSMutableArray* urls = [[NSMutableArray alloc] init];
+    // Add the sample movie to the current sample in the database
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample" inManagedObjectContext: managedObjectContext];
+    [request setEntity:entity];
+
+    // Pull out the sample with this serial number
+    NSPredicate *searchFilter = [NSPredicate predicateWithFormat:@"serialnumber LIKE %@", currentSampleSerial];
+    [request setPredicate:searchFilter];
+
+    NSError* error;
+    NSArray *results = [managedObjectContext executeFetchRequest:request error:&error];
+    Sample* sample = [results objectAtIndex:0];
+    
+    NSMutableSet* movies = [sample mutableSetValueForKey:@"movies"];
+    NSEnumerator* movieiter = [movies objectEnumerator];
+    for( SampleMovie* movie in movieiter) {
+        [urls insertObject:movie atIndex:0];
+    }
+    return urls;
 }
 
 @end
