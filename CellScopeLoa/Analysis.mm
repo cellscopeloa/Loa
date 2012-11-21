@@ -28,7 +28,7 @@ int numContoursLast=1;
     AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     generator.appliesPreferredTrackTransform=TRUE;
     //reverse for non-converted video (270,480)
-    CGSize maxSize = CGSizeMake(480, 270);
+    CGSize maxSize = CGSizeMake(270, 480);
     generator.maximumSize = maxSize;
     generator.requestedTimeToleranceBefore=kCMTimeZero;
     generator.requestedTimeToleranceAfter=kCMTimeZero;
@@ -70,7 +70,7 @@ int numContoursLast=1;
             movieFrameMat= [test CVMat];
             cv::cvtColor(movieFrameMat, movieFrameMat, CV_RGB2GRAY);
             //comment if not using converted vids!!
-            cv::transpose(movieFrameMat, movieFrameMat);
+            //cv::transpose(movieFrameMat, movieFrameMat);
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
             if (i==1){
                 movieFrameMatOld=movieFrameMat;
@@ -95,13 +95,13 @@ int numContoursLast=1;
             movieFrameMat= [test CVMat];
             cv::cvtColor(movieFrameMat, movieFrameMat, CV_RGB2GRAY);
             //comment if not using converted vids!!
-            cv::transpose(movieFrameMat, movieFrameMat);
+            //cv::transpose(movieFrameMat, movieFrameMat);
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
             UIImage * test2= [self generateImage:(i-aveFrames+1)];
             movieFrameMatFirst= [test2 CVMat];
             cv::cvtColor(movieFrameMatFirst, movieFrameMatFirst, CV_RGB2GRAY);
             //comment if not using converted vids!!
-            cv::transpose(movieFrameMatFirst, movieFrameMatFirst);
+            //cv::transpose(movieFrameMatFirst, movieFrameMatFirst);
             movieFrameMatFirst.convertTo(movieFrameMatFirst, CV_16UC1);
             movieFrameMatCum=movieFrameMatCum-movieFrameMatFirst + movieFrameMat;
             movieFrameMat.release();
