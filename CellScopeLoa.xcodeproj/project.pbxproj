@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		821348AC165B1B130066780E /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 821348AB165B1B130066780E /* MobileCoreServices.framework */; };
+		821348AF165B38FB0066780E /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 821348AE165B38FB0066780E /* opencv2.framework */; };
+		821348B2165B396B0066780E /* Analysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B1165B396B0066780E /* Analysis.mm */; };
+		821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */; };
+		821348B8165B50990066780E /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 821348B7165B50980066780E /* ResultsViewController.m */; };
+		8298EC14165C543000A464DA /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 8298EC13165C543000A464DA /* SampleMovie.m */; };
+		8298EC17165C543100A464DA /* WormCoordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8298EC16165C543100A464DA /* WormCoordinate.m */; };
 		9BC26DEA164ED4FB00D7C164 /* LoaProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */; };
 		9BC26DF1164ED6C200D7C164 /* MainMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26DF0164ED6C200D7C164 /* MainMenuViewController.m */; };
 		9BC26DF3164ED8AA00D7C164 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BC26DF2164ED8AA00D7C164 /* CoreData.framework */; };
@@ -16,7 +23,6 @@
 		9BC26E18164F05AB00D7C164 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E17164F05AB00D7C164 /* User.m */; };
 		9BC26E1B164F05AC00D7C164 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E1A164F05AC00D7C164 /* Settings.m */; };
 		9BCBF3331657113100C5AD1D /* Sample.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF3321657113100C5AD1D /* Sample.m */; };
-		9BCBF3361657113200C5AD1D /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF3351657113200C5AD1D /* SampleMovie.m */; };
 		9BCBF33E16573F1500C5AD1D /* ProcessingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF33D16573F1500C5AD1D /* ProcessingViewController.m */; };
 		9BCBF3471659B7FB00C5AD1D /* ReviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF3461659B7FA00C5AD1D /* ReviewViewController.m */; };
 		9BCBF3491659BAFC00C5AD1D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BCBF3481659BAFC00C5AD1D /* MediaPlayer.framework */; };
@@ -102,6 +108,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		821348AB165B1B130066780E /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		821348AE165B38FB0066780E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = "cell-scope-loa/opencv2.framework"; sourceTree = "<group>"; };
+		821348B0165B396B0066780E /* Analysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analysis.h; sourceTree = "<group>"; };
+		821348B1165B396B0066780E /* Analysis.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Analysis.mm; sourceTree = "<group>"; };
+		821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIImage+OpenCV.mm"; sourceTree = "<group>"; };
+		821348B4165B3ABE0066780E /* UIImage+OpenCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+OpenCV.h"; sourceTree = "<group>"; };
+		821348B6165B50980066780E /* ResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
+		821348B7165B50980066780E /* ResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
+		8298EC12165C543000A464DA /* SampleMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleMovie.h; sourceTree = "<group>"; };
+		8298EC13165C543000A464DA /* SampleMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleMovie.m; sourceTree = "<group>"; };
+		8298EC15165C543100A464DA /* WormCoordinate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WormCoordinate.h; sourceTree = "<group>"; };
+		8298EC16165C543100A464DA /* WormCoordinate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WormCoordinate.m; sourceTree = "<group>"; };
 		9BC26DE8164ED4FB00D7C164 /* LoaProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoaProgram.h; sourceTree = "<group>"; };
 		9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoaProgram.m; sourceTree = "<group>"; };
 		9BC26DEF164ED6C200D7C164 /* MainMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuViewController.h; sourceTree = "<group>"; };
@@ -118,8 +136,6 @@
 		9BC26E1A164F05AC00D7C164 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
 		9BCBF3311657113100C5AD1D /* Sample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sample.h; sourceTree = "<group>"; };
 		9BCBF3321657113100C5AD1D /* Sample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sample.m; sourceTree = "<group>"; };
-		9BCBF3341657113200C5AD1D /* SampleMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleMovie.h; sourceTree = "<group>"; };
-		9BCBF3351657113200C5AD1D /* SampleMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleMovie.m; sourceTree = "<group>"; };
 		9BCBF33716572B6100C5AD1D /* libdispatch.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdispatch.dylib; path = usr/lib/system/libdispatch.dylib; sourceTree = SDKROOT; };
 		9BCBF33C16573F1500C5AD1D /* ProcessingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessingViewController.h; sourceTree = "<group>"; };
 		9BCBF33D16573F1500C5AD1D /* ProcessingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessingViewController.m; sourceTree = "<group>"; };
@@ -222,6 +238,7 @@
 				9BD8A34B163DA7BD009038BB /* UIKit.framework in Frameworks */,
 				9BD8A34D163DA7BD009038BB /* Foundation.framework in Frameworks */,
 				9BD8A34F163DA7BD009038BB /* CoreGraphics.framework in Frameworks */,
+				821348AF165B38FB0066780E /* opencv2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,8 +265,10 @@
 				9BC26E1A164F05AC00D7C164 /* Settings.m */,
 				9BCBF3311657113100C5AD1D /* Sample.h */,
 				9BCBF3321657113100C5AD1D /* Sample.m */,
-				9BCBF3341657113200C5AD1D /* SampleMovie.h */,
-				9BCBF3351657113200C5AD1D /* SampleMovie.m */,
+				8298EC12165C543000A464DA /* SampleMovie.h */,
+				8298EC13165C543000A464DA /* SampleMovie.m */,
+				8298EC15165C543100A464DA /* WormCoordinate.h */,
+				8298EC16165C543100A464DA /* WormCoordinate.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -257,6 +276,7 @@
 		9BD8A33B163DA7BD009038BB = {
 			isa = PBXGroup;
 			children = (
+				821348AE165B38FB0066780E /* opencv2.framework */,
 				9BCBF33716572B6100C5AD1D /* libdispatch.dylib */,
 				9BD8A350163DA7BD009038BB /* CellScopeLoa */,
 				9BD8A377163DA7BE009038BB /* CellScopeLoaTests */,
@@ -324,6 +344,12 @@
 				9BCBF3461659B7FA00C5AD1D /* ReviewViewController.m */,
 				9BCBF34A165B0A5200C5AD1D /* ReviewVideoViewController.h */,
 				9BCBF34B165B0A5300C5AD1D /* ReviewVideoViewController.m */,
+				821348B0165B396B0066780E /* Analysis.h */,
+				821348B1165B396B0066780E /* Analysis.mm */,
+				821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */,
+				821348B4165B3ABE0066780E /* UIImage+OpenCV.h */,
+				821348B6165B50980066780E /* ResultsViewController.h */,
+				821348B7165B50980066780E /* ResultsViewController.m */,
 				9BD8A351163DA7BD009038BB /* Supporting Files */,
 			);
 			path = CellScopeLoa;
@@ -607,10 +633,14 @@
 				9BC26E18164F05AB00D7C164 /* User.m in Sources */,
 				9BC26E1B164F05AC00D7C164 /* Settings.m in Sources */,
 				9BCBF3331657113100C5AD1D /* Sample.m in Sources */,
-				9BCBF3361657113200C5AD1D /* SampleMovie.m in Sources */,
 				9BCBF33E16573F1500C5AD1D /* ProcessingViewController.m in Sources */,
 				9BCBF3471659B7FB00C5AD1D /* ReviewViewController.m in Sources */,
 				9BCBF34C165B0A5300C5AD1D /* ReviewVideoViewController.m in Sources */,
+				821348B2165B396B0066780E /* Analysis.mm in Sources */,
+				821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */,
+				821348B8165B50990066780E /* ResultsViewController.m in Sources */,
+				8298EC14165C543000A464DA /* SampleMovie.m in Sources */,
+				8298EC17165C543100A464DA /* WormCoordinate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,6 +753,10 @@
 		9BD8A383163DA7BE009038BB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/cell-scope-loa\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CellScopeLoa/CellScopeLoa-Prefix.pch";
 				INFOPLIST_FILE = "CellScopeLoa/CellScopeLoa-Info.plist";
@@ -738,6 +772,10 @@
 		9BD8A384163DA7BE009038BB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/cell-scope-loa\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CellScopeLoa/CellScopeLoa-Prefix.pch";
 				INFOPLIST_FILE = "CellScopeLoa/CellScopeLoa-Info.plist";

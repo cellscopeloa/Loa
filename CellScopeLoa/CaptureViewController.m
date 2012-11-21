@@ -161,6 +161,7 @@
 - (void)checkStatus
 {
     NSString* status = [program currentStatus];
+    NSLog(@"Current status: ");
     if([status isEqualToString:@"Done"]) {
         [self performSegueWithIdentifier:@"Analyze" sender:self];
     }

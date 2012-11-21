@@ -1,20 +1,19 @@
 //
-//  SampleMovie.m
+//  WormCoordinate.m
 //  CellScopeLoa
 //
 //  Created by Mike D'Ambrosio on 11/20/12.
 //  Copyright (c) 2012 Matthew Bakalar. All rights reserved.
 //
 
+#import "WormCoordinate.h"
 #import "SampleMovie.h"
-#import "Sample.h"
 
 
-@implementation SampleMovie
+@implementation WormCoordinate
 
-@dynamic path;
-@dynamic numworms;
-@dynamic sample;
-@dynamic wormCoordinates;
+@dynamic x;
+@dynamic y;
+@dynamic movie;
 
 @end

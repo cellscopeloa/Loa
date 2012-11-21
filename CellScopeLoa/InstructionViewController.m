@@ -7,6 +7,7 @@
 //
 
 #import "InstructionViewController.h"
+#import "CaptureViewController.h"
 
 @interface InstructionViewController ()
 
@@ -20,6 +21,7 @@
 @synthesize instructSet;
 @synthesize currentInstruct;
 @synthesize instructIdx;
+@synthesize program;
 
 -(void)setupInstructionSet
 {
@@ -73,8 +75,10 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if(segue.identifier == @"captureImage") {
-        
+    NSLog(@"%@",program.fovnumber);
+    if([segue.identifier isEqualToString:@"captureImage"]) {
+        CaptureViewController *captureViewController = [segue destinationViewController];
+        captureViewController.program = program;
     }
 }
 
@@ -95,6 +99,7 @@
     
     instructImage.image = [images objectAtIndex:instructIdx];
     instructLabel.text = [labels objectAtIndex:instructIdx];
+
 }
 
 - (void)didReceiveMemoryWarning
