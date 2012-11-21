@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Matthew Bakalar. All rights reserved.
 //
 
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "ReviewVideoViewController.h"
 
 @interface ReviewVideoViewController () {
@@ -41,6 +42,7 @@
         UIImagePickerController* imagePickerController = [[UIImagePickerController alloc] init];
         imagePickerController.delegate = self;
         imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePickerController.mediaTypes = [[NSArray alloc] initWithObjects:(NSString *)kUTTypeMovie, nil];
         //This method inherit from UIView,show imagePicker with animation
         [self presentModalViewController:imagePickerController animated:YES];
         firstRun = NO;
