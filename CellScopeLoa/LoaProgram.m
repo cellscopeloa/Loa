@@ -8,6 +8,7 @@
 
 #import "LoaProgram.h"
 #import "Sample.h"
+#import "WormCoordinate.h"
 #import "SampleMovie.h"
 
 @implementation LoaProgram
@@ -93,7 +94,6 @@
 
 - (NSString*)currentStatus
 {
-    /*
     NSLog(@"Field of view: %d", self.fovnumber);
     if(self.fovnumber == 3) {
         return @"Done";
@@ -101,8 +101,6 @@
     else {
         return @"";
     }
-     */
-    return @"Done";
 }
 
 - (NSArray*)currentMovies
@@ -127,6 +125,28 @@
         [urls insertObject:movie atIndex:0];
     }
     return urls;
+}
+
+- (void)wormCoordinatesAdd:(NSArray*)coordinatesFromMike
+{
+    WormCoordinate *coordinate = [NSEntityDescription
+                          insertNewObjectForEntityForName:@"WormCoordinate"
+                          inManagedObjectContext:managedObjectContext];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample" inManagedObjectContext: managedObjectContext];
+    [request setEntity:entity];
+    
+    // Pull out the sample with this serial number
+    NSPredicate *searchFilter = [NSPredicate predicateWithFormat:@"serialnumber LIKE %@", currentSampleSerial];
+    [request setPredicate:searchFilter];
+    
+    NSError* error;
+    NSArray *results = [managedObjectContext executeFetchRequest:request error:&error];
+    Sample* sample = [results objectAtIndex:0];
+
+    [[sample mutableSetValueForKey:@"wormCoordinates"] addObject:coordinate];
+
 }
 
 @end

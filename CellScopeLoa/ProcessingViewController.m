@@ -10,6 +10,7 @@
 #import "Sample.h"
 #import "SampleMovie.h"
 #import "ReviewViewController.h"
+dispatch_queue_t backgroundQueue;
 
 @interface ProcessingViewController ()
 
@@ -19,6 +20,7 @@
 
 @synthesize instructions;
 @synthesize program;
+@synthesize loaLoaCounter;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,6 +35,8 @@
 {
     [super viewDidLoad];
     instructions.text = NSLocalizedString(@"PROCESSING",nil);
+    backgroundQueue = dispatch_queue_create("edu.berkeley.cellscope.analysisqueue", NULL);
+
 	// Do any additional setup after loading the view
     [self processImages];
 }
@@ -47,6 +51,7 @@
 
 - (void)processImages
 {
+    
     NSManagedObjectContext* managedObjectContext = program.managedObjectContext;
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample" inManagedObjectContext: managedObjectContext];
@@ -65,9 +70,16 @@
         NSMutableSet* movies = [sample mutableSetValueForKey:@"movies"];
         NSEnumerator* movieenum = [movies objectEnumerator];
         NSLog(@"Movies: ");
+        //loaLoaCounter=[[Analysis alloc] init];
         for( SampleMovie* movie in movieenum) {
             NSLog(@"%@",movie.path);
+            //ansysis here
         }
+        
+        //dispatch_async(backgroundQueue, ^(void) {
+            //[loaLoaCounter analyzeImagesNoURL];
+        //});
+
     }
 }
 
