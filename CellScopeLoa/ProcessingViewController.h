@@ -10,12 +10,15 @@
 #import "LoaProgram.h"
 #import "Analysis.h"
 
-@interface ProcessingViewController : UIViewController
-
+@interface ProcessingViewController : UIViewController{
+    NSMutableArray *array;
+}
 @property (weak, nonatomic) IBOutlet UITextView *instructions;
 @property (strong, nonatomic) LoaProgram* program;
 @property UIImage* resultsImage;
+@property int urlNum;
 @property Analysis *loaLoaCounter;
+@property (weak, nonatomic) IBOutlet UIImageView *backImage;
 
 - (IBAction)onPressed:(id)sender;
 @end

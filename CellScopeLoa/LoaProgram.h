@@ -15,6 +15,7 @@
 
 @property (strong, nonatomic) NSString* currentSampleSerial;
 
+
 @property (strong, nonatomic) NSString* guided;
 @property (nonatomic) NSInteger fovnumber;
 @property (nonatomic) NSInteger totalfields;
@@ -28,5 +29,7 @@
 - (void)movieCapturedWithURL:(NSURL*)assetURL;
 - (NSString*)currentStatus;
 - (NSArray*)currentMovies;
+- (void)wormCoordinatesAdd:(NSMutableArray*)coordinatesFromMike;
+
 
 @end
