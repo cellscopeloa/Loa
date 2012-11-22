@@ -167,7 +167,7 @@ int movieNum=0;
         NSLog(@"%f",maxVal);
         NSLog(@"%i",maxIdx[0]);
         NSLog(@"%i",maxIdx[1]);
-        if (maxVal>6500){
+        if (maxVal>650){
             NSNumber *x = [NSNumber numberWithInt:maxIdx[1]];
             [coordsArray addObject:x];
             NSNumber *y = [NSNumber numberWithInt:maxIdx[0]];
@@ -179,7 +179,7 @@ int movieNum=0;
             int rowRangeLow=0;
             int rowRangeHigh=0;
             if (col<25){
-                colRangeLow=1;
+                colRangeLow=0;
             }
             else {
                 colRangeLow=col-25;
@@ -192,7 +192,7 @@ int movieNum=0;
             }
             
             if (row<25){
-                rowRangeLow=1;
+                rowRangeLow=0;
             }
             else {
                 rowRangeLow=row-25;
@@ -206,6 +206,15 @@ int movieNum=0;
             movieFrameMatDiff(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(0);
             foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
             NSLog(@"%s","found some worms!");
+            
+            /*cv::Mat movieFrameMatDiff8;
+            movieFrameMatDiff.convertTo(movieFrameMatDiff8, CV_8UC1);
+            UIImage * outUIImage = [[UIImage alloc] initWithCVMat:movieFrameMatDiff8];
+            UIImageWriteToSavedPhotosAlbum(outUIImage,
+                                           self, // send the message to 'self' when calling the callback
+                                           @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                                           NULL); // you generally won't need a contextInfo here*/
+        
         }
         else {
             break;
