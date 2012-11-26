@@ -23,6 +23,7 @@ dispatch_queue_t backgroundQueue;
 @synthesize program;
 @synthesize loaLoaCounter;
 @synthesize spinner;
+@synthesize resultsImage;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -90,7 +91,10 @@ dispatch_queue_t backgroundQueue;
     if([segue.identifier isEqualToString:@"Review"]) {
         [spinner stopAnimating];
         ResultsViewController* rvc = (ResultsViewController*)[segue destinationViewController];
-        rvc.backImage=self.resultsImage;
+        rvc.backImage=resultsImage;
+        resultsImage=nil;
+        loaLoaCounter=nil;
+
     }
 
 }
@@ -117,7 +121,10 @@ dispatch_queue_t backgroundQueue;
 -(void)eventHandler: (NSNotification *) notification
 {
     NSLog(@"notification from analysis");
-    self.resultsImage=[loaLoaCounter getOutImage];
+    resultsImage=[loaLoaCounter getOutImage];
+    loaLoaCounter.outImage=nil;
+    //resultsImage=nil;
+    //loaLoaCounter=nil;
     //[self dismissModalViewControllerAnimated:YES];
     [self performSegueWithIdentifier:@"Review" sender:self];
 }

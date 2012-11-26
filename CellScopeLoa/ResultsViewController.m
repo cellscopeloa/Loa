@@ -28,8 +28,11 @@
 {
     [super viewDidLoad];
     [imageView setImage:self.backImage];
-
 	// Do any additional setup after loading the view.
+}
+-(void) viewDidUnload {
+    self.backImage=nil;
+    [imageView setImage:nil];
 }
 
 - (void)didReceiveMemoryWarning

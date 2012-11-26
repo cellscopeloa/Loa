@@ -10,6 +10,8 @@
 #import "Sample.h"
 #import "SampleMovie.h"
 #import "ReviewViewController.h"
+#import "MainMenuViewController.h"
+#import "Analysis.h"
 dispatch_queue_t backgroundQueue;
 
 @interface ProcessingViewController ()
@@ -17,10 +19,14 @@ dispatch_queue_t backgroundQueue;
 @end
 
 @implementation ProcessingViewController
-
+int movieCount;
+int done=0;
+@synthesize urlNum;
 @synthesize instructions;
 @synthesize program;
 @synthesize loaLoaCounter;
+@synthesize backImage;
+@synthesize resultsImage;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -36,7 +42,6 @@ dispatch_queue_t backgroundQueue;
     [super viewDidLoad];
     instructions.text = NSLocalizedString(@"PROCESSING",nil);
     backgroundQueue = dispatch_queue_create("edu.berkeley.cellscope.analysisqueue", NULL);
-
 	// Do any additional setup after loading the view
     [self processImages];
 }
@@ -46,6 +51,10 @@ dispatch_queue_t backgroundQueue;
     if([segue.identifier isEqualToString:@"Analyze"]) {
         ReviewViewController* reviewViewController = segue.destinationViewController;
         reviewViewController.program = program;
+    }
+    if([segue.identifier isEqualToString:@"Review"]) {
+        MainMenuViewController *menuViewController = [segue destinationViewController];
+        menuViewController.managedObjectContext=program.managedObjectContext;
     }
 }
 
@@ -70,19 +79,64 @@ dispatch_queue_t backgroundQueue;
         NSMutableSet* movies = [sample mutableSetValueForKey:@"movies"];
         NSEnumerator* movieenum = [movies objectEnumerator];
         NSLog(@"Movies: ");
-        //loaLoaCounter=[[Analysis alloc] init];
+        urlNum=0;
+        movieCount=0;
+        //Analysis *loaLoaCounter;
+
+        loaLoaCounter=[[Analysis alloc] init];
+        array = [[NSMutableArray alloc] init];
         for( SampleMovie* movie in movieenum) {
             NSLog(@"%@",movie.path);
-            //ansysis here
+            NSURL *url = [NSURL URLWithString:movie.path];
+            //[loaLoaCounter addURL:url];
+            [array addObject: url];
+            movieCount++;
         }
         
-        //dispatch_async(backgroundQueue, ^(void) {
-            //[loaLoaCounter analyzeImagesNoURL];
-        //});
-
+        dispatch_async(backgroundQueue, ^(void) {
+            @autoreleasepool {
+            [loaLoaCounter analyzeImagesNew:array[urlNum]];
+            }
+        });
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self
+         selector:@selector(eventHandler:)
+         name:@"eventType"
+         object:nil ];
     }
 }
 
+-(void)eventHandler: (NSNotification *) notification
+{
+    NSLog(@"notification from analysis");
+
+    self.resultsImage=[loaLoaCounter getOutImage];
+
+    NSMutableArray * coords=[loaLoaCounter getCoords];
+    [coords addObject:array[urlNum]];
+    urlNum++;
+
+    [program wormCoordinatesAdd:coords];
+    if (movieCount>urlNum){
+        //Analysis *loaLoaCounter;
+        loaLoaCounter=[[Analysis alloc] init];
+        dispatch_async(backgroundQueue, ^(void) {
+        NSLog(@"%i",urlNum);
+            @autoreleasepool {
+                [loaLoaCounter analyzeImagesNew:array[urlNum]];
+            }
+        });
+    }
+    else {
+        [[NSNotificationCenter defaultCenter]
+         removeObserver:self];
+        done=1;
+    }
+    [backImage performSelectorOnMainThread:@selector(setImage:) withObject: resultsImage waitUntilDone:YES];
+
+}
+
+ 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -90,6 +144,7 @@ dispatch_queue_t backgroundQueue;
 }
 
 - (IBAction)onPressed:(id)sender {
-    [self performSegueWithIdentifier:@"Analyze" sender:self];
+    if (done==1)
+    [self performSegueWithIdentifier:@"Review" sender:self];
 }
 @end

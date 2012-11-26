@@ -8,18 +8,28 @@
 
 #import <Foundation/Foundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <AVFoundation/AVFoundation.h>
 
 
 
 @interface Analysis : NSObject
-{    
+{
+    NSMutableArray *array;
+
 }
 -(int)getNumContours;
 -(UIImage *)generateImage:(int) frame;
 -(UIImage *) getOutImage;
 -(void)analyzeImagesNew:(NSURL*) movieURL;
+-(void)addURL:(NSURL*) movieURL;
+-(void)startAnalysis;
+-(NSMutableArray *) getCoords;
+
 @property NSURL * movieURL;
 @property UIImage * outImage;
+@property AVURLAsset *asset;
+@property AVAssetImageGenerator *generator;
+@property NSMutableArray *coordsArray;
 
 
 @end

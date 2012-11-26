@@ -127,26 +127,34 @@
     return urls;
 }
 
-- (void)wormCoordinatesAdd:(NSArray*)coordinatesFromMike
+- (void)wormCoordinatesAdd:(NSMutableArray *)coordinatesFromMike
 {
     WormCoordinate *coordinate = [NSEntityDescription
                           insertNewObjectForEntityForName:@"WormCoordinate"
                           inManagedObjectContext:managedObjectContext];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample" inManagedObjectContext: managedObjectContext];
-    [request setEntity:entity];
-    
-    // Pull out the sample with this serial number
-    NSPredicate *searchFilter = [NSPredicate predicateWithFormat:@"serialnumber LIKE %@", currentSampleSerial];
-    [request setPredicate:searchFilter];
-    
-    NSError* error;
-    NSArray *results = [managedObjectContext executeFetchRequest:request error:&error];
-    Sample* sample = [results objectAtIndex:0];
-
-    [[sample mutableSetValueForKey:@"wormCoordinates"] addObject:coordinate];
-
+    int coordsLength=[coordinatesFromMike count];
+    NSURL * moviePathURL=coordinatesFromMike[coordsLength-1];
+    NSString *moviePath=moviePathURL.absoluteString;
+    NSLog(@"Adding coords for movie: ");
+    NSLog(@"%@",moviePath);
+    NSFetchRequest *request2 = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity2 = [NSEntityDescription entityForName:@"SampleMovie" inManagedObjectContext: managedObjectContext];
+    [request2 setEntity:entity2];
+    // Pull out the movie with this path
+    NSPredicate *searchFilter2 = [NSPredicate predicateWithFormat:@"path LIKE %@", moviePath];
+    [request2 setPredicate:searchFilter2];
+    NSError* error2;
+    NSArray *results2 = [managedObjectContext executeFetchRequest:request2 error:&error2];
+    SampleMovie* sampleMovie = [results2 objectAtIndex:0];
+    int i=0;
+    while (i<coordsLength-1){
+        //array holds alternating x and y coordinates, last entry is moviepath
+        coordinate.x=coordinatesFromMike[i];
+        i++;
+        coordinate.y=coordinatesFromMike[i];
+        i++;
+        [[sampleMovie mutableSetValueForKey:@"wormCoordinates"] addObject:coordinate];
+    }
 }
 
 @end
