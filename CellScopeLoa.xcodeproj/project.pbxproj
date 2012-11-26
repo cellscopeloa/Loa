@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		821348AC165B1B130066780E /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 821348AB165B1B130066780E /* MobileCoreServices.framework */; };
-		821348AF165B38FB0066780E /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 821348AE165B38FB0066780E /* opencv2.framework */; };
 		821348B2165B396B0066780E /* Analysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B1165B396B0066780E /* Analysis.mm */; };
 		821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */; };
 		821348B8165B50990066780E /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 821348B7165B50980066780E /* ResultsViewController.m */; };
@@ -95,6 +93,7 @@
 		9BD8A3E2163DB6D3009038BB /* patient_step_a_1 in Resources */ = {isa = PBXBuildFile; fileRef = 9BD8A3E0163DB6D3009038BB /* patient_step_a_1 */; };
 		9BD8A3E3163DB6D3009038BB /* patient_step_b_2 in Resources */ = {isa = PBXBuildFile; fileRef = 9BD8A3E1163DB6D3009038BB /* patient_step_b_2 */; };
 		9BD8A3E5163DBAAF009038BB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9BD8A3E4163DBAAF009038BB /* Localizable.strings */; };
+		9BE7E12A165C5FEF00E6C6E9 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE7E129165C5FEF00E6C6E9 /* opencv2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,8 +107,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		821348AB165B1B130066780E /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		821348AE165B38FB0066780E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = "cell-scope-loa/opencv2.framework"; sourceTree = "<group>"; };
 		821348B0165B396B0066780E /* Analysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analysis.h; sourceTree = "<group>"; };
 		821348B1165B396B0066780E /* Analysis.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Analysis.mm; sourceTree = "<group>"; };
 		821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIImage+OpenCV.mm"; sourceTree = "<group>"; };
@@ -222,6 +219,7 @@
 		9BD8A3E0163DB6D3009038BB /* patient_step_a_1 */ = {isa = PBXFileReference; lastKnownFileType = file; path = patient_step_a_1; sourceTree = "<group>"; };
 		9BD8A3E1163DB6D3009038BB /* patient_step_b_2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = patient_step_b_2; sourceTree = "<group>"; };
 		9BD8A3E4163DBAAF009038BB /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		9BE7E129165C5FEF00E6C6E9 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../opencv2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +227,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BE7E12A165C5FEF00E6C6E9 /* opencv2.framework in Frameworks */,
 				9BCBF34E165B1AC600C5AD1D /* MobileCoreServices.framework in Frameworks */,
 				9BCBF3491659BAFC00C5AD1D /* MediaPlayer.framework in Frameworks */,
 				9BC26DF3164ED8AA00D7C164 /* CoreData.framework in Frameworks */,
@@ -238,7 +237,6 @@
 				9BD8A34B163DA7BD009038BB /* UIKit.framework in Frameworks */,
 				9BD8A34D163DA7BD009038BB /* Foundation.framework in Frameworks */,
 				9BD8A34F163DA7BD009038BB /* CoreGraphics.framework in Frameworks */,
-				821348AF165B38FB0066780E /* opencv2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +274,7 @@
 		9BD8A33B163DA7BD009038BB = {
 			isa = PBXGroup;
 			children = (
-				821348AE165B38FB0066780E /* opencv2.framework */,
+				9BE7E129165C5FEF00E6C6E9 /* opencv2.framework */,
 				9BCBF33716572B6100C5AD1D /* libdispatch.dylib */,
 				9BD8A350163DA7BD009038BB /* CellScopeLoa */,
 				9BD8A377163DA7BE009038BB /* CellScopeLoaTests */,
@@ -756,6 +754,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/cell-scope-loa\"",
+					"\"$(SRCROOT)/..\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CellScopeLoa/CellScopeLoa-Prefix.pch";
@@ -775,6 +774,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/cell-scope-loa\"",
+					"\"$(SRCROOT)/..\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CellScopeLoa/CellScopeLoa-Prefix.pch";

@@ -123,11 +123,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/ReviewVideoViewController.m"
-         timestampString = "375068762.156622"
+         timestampString = "375152647.984584"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "62"
-         endingLineNumber = "62"
+         startingLineNumber = "58"
+         endingLineNumber = "58"
          landmarkName = "-viewDidAppear:"
          landmarkType = "5">
       </FileBreakpoint>
