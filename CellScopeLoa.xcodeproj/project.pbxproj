@@ -12,6 +12,7 @@
 		821348B2165B396B0066780E /* Analysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B1165B396B0066780E /* Analysis.mm */; };
 		821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */; };
 		821348B8165B50990066780E /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 821348B7165B50980066780E /* ResultsViewController.m */; };
+		8234683C1666F63E00FC40F0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8234683B1666F63D00FC40F0 /* QuartzCore.framework */; };
 		8298EC14165C543000A464DA /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 8298EC13165C543000A464DA /* SampleMovie.m */; };
 		8298EC17165C543100A464DA /* WormCoordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8298EC16165C543100A464DA /* WormCoordinate.m */; };
 		9BC26DEA164ED4FB00D7C164 /* LoaProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */; };
@@ -115,6 +116,7 @@
 		821348B4165B3ABE0066780E /* UIImage+OpenCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+OpenCV.h"; sourceTree = "<group>"; };
 		821348B6165B50980066780E /* ResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
 		821348B7165B50980066780E /* ResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
+		8234683B1666F63D00FC40F0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8298EC12165C543000A464DA /* SampleMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleMovie.h; sourceTree = "<group>"; };
 		8298EC13165C543000A464DA /* SampleMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleMovie.m; sourceTree = "<group>"; };
 		8298EC15165C543100A464DA /* WormCoordinate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WormCoordinate.h; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8234683C1666F63E00FC40F0 /* QuartzCore.framework in Frameworks */,
 				821348AC165B1B130066780E /* MobileCoreServices.framework in Frameworks */,
 				9BCBF3491659BAFC00C5AD1D /* MediaPlayer.framework in Frameworks */,
 				9BC26DF3164ED8AA00D7C164 /* CoreData.framework in Frameworks */,
@@ -274,6 +277,7 @@
 		9BD8A33B163DA7BD009038BB = {
 			isa = PBXGroup;
 			children = (
+				8234683B1666F63D00FC40F0 /* QuartzCore.framework */,
 				821348AE165B38FB0066780E /* opencv2.framework */,
 				821348AB165B1B130066780E /* MobileCoreServices.framework */,
 				9BCBF3481659BAFC00C5AD1D /* MediaPlayer.framework */,

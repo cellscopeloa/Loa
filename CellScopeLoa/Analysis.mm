@@ -32,6 +32,8 @@ int movieNum=0;
 -(UIImage *)generateImage:(int) frame
 {
     UIImage * retImg;
+    NSLog(@"%i",frame+15);
+
     CMTime thumbTime = CMTimeMake(frame+15,30);
     //NSLog(@"%lld", thumbTime.value);
     NSError *err = NULL;
@@ -63,6 +65,78 @@ int movieNum=0;
     generator.requestedTimeToleranceAfter=kCMTimeZero;
     
 }
+
+-(void) analyzeImagesNewNew: (NSURL *) movieURL{
+    self.movieURL=movieURL;
+    [self setupGenerator];
+    cv::Mat movieFrameMat;
+    cv::Mat movieFrameMatOld;
+    cv::Mat movieFrameMatDiff;
+    cv::Mat motionHist(480,270, CV_32F, cv::Scalar::all(0));
+    cv::Mat mask;
+    cv::Mat orientation;
+    double timestamp=1;
+    double duration=30;
+    double delta1=1;
+    double delta2=2;
+    //generate mhi
+    int i=1;
+    while (i<120){
+        int k=1;
+        while (k<=25){
+            NSLog(@"%i",i);
+            if (i==105){
+                NSLog(@"%i",i);
+                i++;
+            }
+
+            UIImage * test= [self generateImage:(i-1)];
+            movieFrameMat= [test CVMat];
+            test=nil;
+            //cv::cvtColor(movieFrameMat, movieFrameMat, CV_RGB2GRAY);
+            cv::Mat greenCh;
+            cv::Mat redCh;
+            cv::Mat blueCh;
+            cv::vector<cv::Mat> planes;
+            cv::split(movieFrameMat, planes);
+            redCh=planes[0];
+            greenCh=planes[1];
+            redCh=planes[2];
+            movieFrameMat=greenCh;
+            //comment if not using converted vids!!
+            //cv::transpose(movieFrameMat, movieFrameMat);
+            movieFrameMat.convertTo(movieFrameMat, CV_8UC1);
+            if (k==1){
+                movieFrameMatOld=movieFrameMat.clone();
+            }
+            else {
+                cv::absdiff(movieFrameMat,movieFrameMatOld,movieFrameMatDiff);
+                movieFrameMatOld=movieFrameMat.clone();
+                cv::updateMotionHistory(movieFrameMatDiff, motionHist, timestamp, duration);
+            }
+            k++;
+            i++;
+        }
+        
+        cv::calcMotionGradient(motionHist, mask, orientation, delta1, delta2, 3);
+        cv::Mat mask8;
+        mask.convertTo(mask8, CV_8UC1);
+        UIImage * outUIImage = [[UIImage alloc] initWithCVMat:mask8];
+        UIImageWriteToSavedPhotosAlbum(outUIImage,
+        self, // send the message to 'self' when calling the callback
+        @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+        NULL); // you generally won't need a contextInfo here*/
+
+
+    }
+    //NSLog(@"%s","finished!");
+    //self.outImage=outUIImage;
+    //[[NSNotificationCenter defaultCenter]
+    // postNotificationName:@"eventType"
+    // object:nil ];
+
+}
+
 -(void) analyzeImagesNew: (NSURL *) movieURL{
     self.movieURL=movieURL;
     [self setupGenerator];
@@ -70,7 +144,8 @@ int movieNum=0;
     int sz[3] = {480,270,3};
     cv::Mat outImage(3,sz, CV_16UC(1), cv::Scalar::all(0));
     cv::Mat kernel = cv::Mat::ones(3, 3, CV_32F);
-    cv::Mat kernel2 = cv::Mat::ones(50, 50, CV_32F);
+    cv::Mat kernel2 = cv::Mat::ones(12, 12, CV_32F);
+    cv::Mat kernel3 = cv::Mat::ones(50,50,CV_32F);
     cv::Mat movieFrameMatOld;
     cv::Mat movieFrameMatCum;
     cv::Mat movieFrameMatFirst;
@@ -85,7 +160,7 @@ int movieNum=0;
     int frame=1;
     int skip=2;
     int aveFrames=30/skip;
-    while (i<120/skip){
+    while (i<100/skip){
         while (i<=aveFrames){
             UIImage * test= [self generateImage:(frame-1)];
             movieFrameMat= [test CVMat];
@@ -94,6 +169,8 @@ int movieNum=0;
             //comment if not using converted vids!!
             //cv::transpose(movieFrameMat, movieFrameMat);
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
+            cv::filter2D(movieFrameMat, movieFrameMat,-1,kernel,cv::Point(-1,-1));
+
             if (i==1){
                 movieFrameMatOld=movieFrameMat;
                 movieFrameMat.release();
@@ -113,30 +190,36 @@ int movieNum=0;
         }
         if (i==(aveFrames+1)){
             cv::divide(movieFrameMatCum, aveFrames, movieFrameMatNorm);
-            filter2D(movieFrameMatNorm, movieFrameMatNorm, -1 , kernel, cv::Point( -1, -1 ), 0, cv::BORDER_DEFAULT );
+            //filter2D(movieFrameMatNorm, movieFrameMatNorm, -1 , kernel, cv::Point( -1, -1 ), 0, cv::BORDER_DEFAULT );
         }
         if (i>aveFrames+1) {
             UIImage * test= [self generateImage:(frame-1)];
             movieFrameMat= [test CVMat];
             test=nil;
             cv::cvtColor(movieFrameMat, movieFrameMat, CV_RGB2GRAY);
+
             //comment if not using converted vids!!
             //cv::transpose(movieFrameMat, movieFrameMat);
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
+            cv::filter2D(movieFrameMat, movieFrameMat,-1,kernel,cv::Point(-1,-1));
+
             UIImage * test2= [self generateImage:(frame-aveFrames+1)];
             movieFrameMatFirst= [test2 CVMat];
             test2=nil;
             cv::cvtColor(movieFrameMatFirst, movieFrameMatFirst, CV_RGB2GRAY);
+
             //comment if not using converted vids!!
             //cv::transpose(movieFrameMatFirst, movieFrameMatFirst);
             movieFrameMatFirst.convertTo(movieFrameMatFirst, CV_16UC1);
+            cv::filter2D(movieFrameMatFirst, movieFrameMatFirst,-1,kernel,cv::Point(-1,-1));
+
             movieFrameMatCum=movieFrameMatCum-movieFrameMatFirst + movieFrameMat;
             movieFrameMat.release();
             movieFrameMat=cv::Mat();
             movieFrameMatFirst.release();
             movieFrameMatFirst=cv::Mat();
             cv::divide(movieFrameMatCum, aveFrames, movieFrameMatNorm);
-            cv::filter2D(movieFrameMatNorm, movieFrameMatNorm,-1,kernel,cv::Point(-1,-1));
+            //cv::filter2D(movieFrameMatNorm, movieFrameMatNorm,-1,kernel,cv::Point(-1,-1));
             cv::absdiff(movieFrameMatNormOld, movieFrameMatNorm, movieFrameMatDiffTmp);
             movieFrameMatNormOld.release();
             movieFrameMatNormOld=cv::Mat();
@@ -153,25 +236,36 @@ int movieNum=0;
         movieFrameMatNorm.release();
         movieFrameMatNorm=cv::Mat();
         NSLog(@"%i",i);
-
+        frame=frame+skip;
         i=i+1;
     }
+    cv::Mat movieFrameMatBack;
+    
+    //cv::Mat_<double>gk(49,49);
+    //gk=cv::getGaussianKernel(2500,10,CV_32F);
+    //cv::filter2D(movieFrameMatDiff, movieFrameMatBack,-1,gk,cv::Point(-1,-1));
+    cv::Size ksize(49,49);
+    //cv::GaussianBlur(movieFrameMatDiff,movieFrameMatBack, ksize, .5, 0, cv::BORDER_DEFAULT);
+
+    //movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBack;
+    
     movieFrameMatDiffOrig=movieFrameMatDiff.clone();
+    cv::Scalar imageAve=cv::mean(movieFrameMatDiffOrig);
+    NSLog(@"%f",imageAve.val[0]);
+
     bool findinWorms=TRUE;
     while (findinWorms==TRUE){
         cv::Mat findinWormsConv;
-        cv::filter2D(movieFrameMatDiff, findinWormsConv,-1,kernel,cv::Point(-1,-1));
+        cv::filter2D(movieFrameMatDiff, findinWormsConv,-1,kernel2,cv::Point(-1,-1));
         double maxVal;
         int maxIdx[2] = {255, 255};
         minMaxIdx(findinWormsConv, 0, &maxVal, 0, maxIdx);
         NSLog(@"%f",maxVal);
         NSLog(@"%i",maxIdx[0]);
         NSLog(@"%i",maxIdx[1]);
-        if (maxVal>650){
-            NSNumber *x = [NSNumber numberWithInt:maxIdx[1]];
-            [coordsArray addObject:x];
-            NSNumber *y = [NSNumber numberWithInt:maxIdx[0]];
-            [coordsArray addObject:y];
+        //if (maxVal>5000){
+        if (maxVal>(imageAve.val[0]*266)){
+
             int col=floor(maxIdx[1]);
             int row=maxIdx[0];
             int colRangeLow=0;
@@ -203,17 +297,94 @@ int movieNum=0;
             else {
                 rowRangeHigh=row+25;
             }
-            movieFrameMatDiff(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(0);
-            foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
-            NSLog(@"%s","found some worms!");
             
-            /*cv::Mat movieFrameMatDiff8;
-            movieFrameMatDiff.convertTo(movieFrameMatDiff8, CV_8UC1);
-            UIImage * outUIImage = [[UIImage alloc] initWithCVMat:movieFrameMatDiff8];
-            UIImageWriteToSavedPhotosAlbum(outUIImage,
+            col=floor(maxIdx[1]);
+            row=maxIdx[0];
+            int colRangeLowS=0;
+            int colRangeHighS=0;
+            int rowRangeLowS=0;
+            int rowRangeHighS=0;
+            if (col<10){
+                colRangeLowS=0;
+            }
+            else {
+                colRangeLowS=col-10;
+            }
+            if (col>(movieFrameMatDiff.cols-10)){
+                colRangeHighS=movieFrameMatDiff.cols;
+            }
+            else {
+                colRangeHighS=col+10;
+            }
+            
+            if (row<10){
+                rowRangeLowS=0;
+            }
+            else {
+                rowRangeLowS=row-10;
+            }
+            if (row>(movieFrameMatDiff.rows-10)){
+                rowRangeHighS=movieFrameMatDiff.rows;
+            }
+            else {
+                rowRangeHighS=row+10;
+            }
+
+            cv::Mat selRegion;
+            selRegion=movieFrameMatDiffOrig(cv::Range(rowRangeLowS,rowRangeHighS),cv::Range(colRangeLowS,colRangeHighS));
+            cv::Mat wholeRegion;
+            cv::Mat noSel=movieFrameMatDiffOrig.clone();
+            //noSel(cv::Range(rowRangeLowS,rowRangeHighS),cv::Range(colRangeLowS,colRangeHighS))=cv::Scalar::all(0);
+            wholeRegion=noSel(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
+            
+            
+
+            cv::Scalar selAve=cv::mean(selRegion);
+            cv::Scalar wholeAve=cv::mean(wholeRegion);
+            //double selVal=selAve.val[0];
+            //double wholeVal=wholeAve.val[0];
+            movieFrameMatDiff(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(0);
+
+            NSLog(@"%f",selAve.val[0]/wholeAve.val[0]);
+
+            if (selAve.val[0]>wholeAve.val[0]*1.2){
+                
+                
+                /*cv::Mat selRegion8;
+                selRegion.convertTo(selRegion8, CV_8UC1);
+                UIImage * outUIImage = [[UIImage alloc] initWithCVMat:selRegion8];
+                UIImageWriteToSavedPhotosAlbum(outUIImage,
+                                               self, // send the message to 'self' when calling the callback
+                                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                                               NULL); // you generally won't need a contextInfo here
+                
+                cv::Mat wholeRegion8;
+                wholeRegion.convertTo(wholeRegion8, CV_8UC1);
+                UIImage * outUIImage2 = [[UIImage alloc] initWithCVMat:wholeRegion8];
+                //UIImageWriteToSavedPhotosAlbum(outUIImage2,
+                //                               self, // send the message to 'self' when calling the callback
+                //                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                //                               NULL); // you generally won't need a contextInfo here*/
+
+                
+                
+                
+                foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
+                NSLog(@"%s","found some worms!");
+
+                NSNumber *x = [NSNumber numberWithInt:maxIdx[1]];
+                [coordsArray addObject:x];
+                NSNumber *y = [NSNumber numberWithInt:maxIdx[0]];
+                [coordsArray addObject:y];
+
+                /*cv::Mat movieFrameMatDiff8;
+                 movieFrameMatDiff.convertTo(movieFrameMatDiff8, CV_8UC1);
+                 UIImage * outUIImage = [[UIImage alloc] initWithCVMat:movieFrameMatDiff8];
+                 UIImageWriteToSavedPhotosAlbum(outUIImage,
                                            self, // send the message to 'self' when calling the callback
                                            @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
                                            NULL); // you generally won't need a contextInfo here*/
+            }
         
         }
         else {
@@ -243,9 +414,7 @@ int movieNum=0;
     foundWorms=cv::Mat();
     movieFrameMatDiffOrig.release();
     movieFrameMatDiffOrig=cv::Mat();
-    movieFrameMatDiffOrig8.release();
-    movieFrameMatDiffOrig8=cv::Mat();
-    UIImage * outUIImage;
+        UIImage * outUIImage;
     outUIImage = [[UIImage alloc] initWithCVMat:outImageRGB];
     outImageRGB.release();
     outImageRGB=cv::Mat();
@@ -253,6 +422,18 @@ int movieNum=0;
                                    self, // send the message to 'self' when calling the callback
                                    @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
                                    NULL); // you generally won't need a contextInfo here*/
+    
+    
+    /*UIImage * diffUIImage;
+    diffUIImage = [[UIImage alloc] initWithCVMat:movieFrameMatDiffOrig8];
+    UIImageWriteToSavedPhotosAlbum(diffUIImage,
+                                   self, // send the message to 'self' when calling the callback
+                                   @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                                   NULL); // you generally won't need a contextInfo here*/
+
+    
+    movieFrameMatDiffOrig8.release();
+    movieFrameMatDiffOrig8=cv::Mat();
     NSLog(@"%s","finished!");
     self.outImage=outUIImage;
     [[NSNotificationCenter defaultCenter]
@@ -265,8 +446,12 @@ int movieNum=0;
 }
 - (void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo {
     if (error) {
+        NSLog(@"error saving image");
+
         // Do anything needed to handle the error or display it to the user
     } else {
+        NSLog(@"image saved in photo album");
+
         // .... do anything you want here to handle
         // .... when the image has been saved in the photo album
     }
