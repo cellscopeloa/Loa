@@ -17,4 +17,6 @@
 
 @property (strong, nonatomic) MPMoviePlayerController* player;
 
+- (void)movieFinishedCallback;
+
 @end

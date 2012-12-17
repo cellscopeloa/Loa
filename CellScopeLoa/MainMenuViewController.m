@@ -70,7 +70,7 @@
         instructionViewController.program = program;
     }
     // Test without instructions
-    else if([segue.identifier isEqualToString:@"QuickTest"]) {
+    else if([segue.identifier isEqualToString:@"TestNoInstruct"]) {
         LoaProgram* program = [[LoaProgram alloc] init];
         program.managedObjectContext = managedObjectContext;
         CaptureViewController *captureViewController = [segue destinationViewController];
@@ -146,6 +146,16 @@
 }
 */
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
+}
+
+-(NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortraitUpsideDown;
+}
+
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -159,10 +169,7 @@
         }
     }
     else if(indexPath.row == 1) {
-        [self performSegueWithIdentifier:@"Video" sender:self];
-    }
-    else if(indexPath.row == 2) {
-        [self performSegueWithIdentifier:@"Users" sender:self];
+        [self performSegueWithIdentifier:@"TestNoInstruct" sender:self];
     }
 }
 

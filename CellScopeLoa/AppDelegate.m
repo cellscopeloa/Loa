@@ -68,6 +68,10 @@
     mainMenu.managedObjectContext = self.managedObjectContext;
     return YES;
 }
+
+- (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window{
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
+}
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {

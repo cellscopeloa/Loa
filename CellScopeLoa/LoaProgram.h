@@ -29,7 +29,7 @@
 - (void)movieCapturedWithURL:(NSURL*)assetURL;
 - (NSString*)currentStatus;
 - (NSArray*)currentMovies;
-- (void)wormCoordinatesAdd:(NSMutableArray*)coordinatesFromMike;
+- (void)addMovieFeatures:(NSMutableArray*)coordinatesFromMike;
 
 
 @end

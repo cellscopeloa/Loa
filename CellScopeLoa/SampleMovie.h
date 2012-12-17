@@ -2,28 +2,28 @@
 //  SampleMovie.h
 //  CellScopeLoa
 //
-//  Created by Mike D'Ambrosio on 11/20/12.
+//  Created by Matthew Bakalar on 12/14/12.
 //  Copyright (c) 2012 Matthew Bakalar. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Sample;
+@class ImageFeature, Sample;
 
 @interface SampleMovie : NSManagedObject
 
-@property (nonatomic, retain) NSString * path;
 @property (nonatomic, retain) NSNumber * numworms;
+@property (nonatomic, retain) NSString * path;
 @property (nonatomic, retain) Sample *sample;
-@property (nonatomic, retain) NSSet *wormCoordinates;
+@property (nonatomic, retain) NSSet *features;
 @end
 
 @interface SampleMovie (CoreDataGeneratedAccessors)
 
-- (void)addWormCoordinatesObject:(NSManagedObject *)value;
-- (void)removeWormCoordinatesObject:(NSManagedObject *)value;
-- (void)addWormCoordinates:(NSSet *)values;
-- (void)removeWormCoordinates:(NSSet *)values;
+- (void)addFeaturesObject:(ImageFeature *)value;
+- (void)removeFeaturesObject:(ImageFeature *)value;
+- (void)addFeatures:(NSSet *)values;
+- (void)removeFeatures:(NSSet *)values;
 
 @end

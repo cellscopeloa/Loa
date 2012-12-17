@@ -14,6 +14,7 @@
 "POSITIONSTEPA" = "Position capillary beneath lamp";
 "FOCUSSTEPA"    = "Prepare to focus the microscope";
 "POSITIONANDFOCUS" = "Focus the microscope, then tap camera button to capture video";
+"REPOSITIONANDFOCUS" = "Reposition the capillary, focus the microscope, then tap camera button to capture video";
 
 "USERNAME" = "username";
 "PASSWORD" = "password";

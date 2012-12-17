@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="11E53" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12A269" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ImageFeature" representedClassName="ImageFeature" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="xcoord" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="ycoord" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="samplemovie" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SampleMovie" inverseName="features" inverseEntity="SampleMovie" syncable="YES"/>
+    </entity>
     <entity name="Sample" representedClassName="Sample" syncable="YES">
         <attribute name="serialnumber" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SampleMovie" inverseName="sample" inverseEntity="SampleMovie" syncable="YES"/>
@@ -7,8 +13,8 @@
     <entity name="SampleMovie" representedClassName="SampleMovie" syncable="YES">
         <attribute name="numworms" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="features" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ImageFeature" inverseName="samplemovie" inverseEntity="ImageFeature" syncable="YES"/>
         <relationship name="sample" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Sample" inverseName="movies" inverseEntity="Sample" syncable="YES"/>
-        <relationship name="wormCoordinates" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WormCoordinate" inverseName="movie" inverseEntity="WormCoordinate" syncable="YES"/>
     </entity>
     <entity name="Settings" representedClassName="Settings" syncable="YES">
         <attribute name="guided" optional="YES" attributeType="String" syncable="YES"/>
@@ -22,16 +28,11 @@
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="settings" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Settings" inverseName="user" inverseEntity="Settings" syncable="YES"/>
     </entity>
-    <entity name="WormCoordinate" representedClassName="WormCoordinate" syncable="YES">
-        <attribute name="x" optional="YES" attributeType="Integer 32" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="y" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="movie" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SampleMovie" inverseName="wormCoordinates" inverseEntity="SampleMovie" syncable="YES"/>
-    </entity>
     <elements>
         <element name="Sample" positionX="-7785" positionY="99" width="128" height="73"/>
-        <element name="SampleMovie" positionX="-7589" positionY="171" width="128" height="105"/>
+        <element name="SampleMovie" positionX="-7589" positionY="171" width="128" height="103"/>
         <element name="Settings" positionX="-7535" positionY="-117" width="128" height="73"/>
         <element name="User" positionX="-7740" positionY="-117" width="128" height="133"/>
-        <element name="WormCoordinate" positionX="-7409" positionY="186" width="128" height="90"/>
+        <element name="ImageFeature" positionX="-7373" positionY="171" width="128" height="103"/>
     </elements>
 </model>

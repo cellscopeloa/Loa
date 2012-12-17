@@ -39,17 +39,46 @@
     NSLog(@"URL: %@", firstmovie.path);
     NSLog(@"ToURL: %@", url.absoluteString);
     player = [[MPMoviePlayerController alloc] initWithContentURL: url];
-    [player prepareToPlay];
-    [player.view setFrame: mainView.bounds];  // player's frame must match parent's
-    [mainView addSubview: player.view];
+    [player setControlStyle:MPMovieControlStyleNone];
     
-    [player play];
+    /*
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(movieFinishedCallback:)
+     name:MPMoviePlayerPlaybackDidFinishNotification
+     object:player];
+     */
+    [player setScalingMode:MPMovieScalingModeAspectFill];
+    [player setFullscreen:FALSE];
+    
+    //---play partial screen---
+    player.view.frame = CGRectMake(0, 44, 320, 367);
+    [self.view addSubview:player.view];
+    player.shouldAutoplay = NO;
+    player.controlStyle = MPMovieControlStyleEmbedded;
+    [player prepareToPlay];
+    // [player play];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
+}
+
+-(NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortraitUpsideDown;
+}
+
+- (void)movieFinishedCallback
+{
+    // Pass
 }
 
 @end

@@ -8,8 +8,8 @@
 
 #import "LoaProgram.h"
 #import "Sample.h"
-#import "WormCoordinate.h"
 #import "SampleMovie.h"
+#import "ImageFeature.h"
 
 @implementation LoaProgram
 
@@ -18,12 +18,13 @@
 @synthesize managedObjectContext;
 @synthesize totalfields;
 @synthesize fovnumber;
+@synthesize samplenumber;
 
 - (LoaProgram*)initWithMode:(NSString *)guidedMode
 {
     self = [super init];
     self.guided = guidedMode;
-    self.samplenumber = 10;
+    samplenumber = 10;
     totalfields = 3;
     fovnumber = 0;
     currentSampleSerial = Nil;
@@ -84,7 +85,7 @@
             NSLog(@"%@",movie.path);
         }
     }
-    self.fovnumber = self.fovnumber + 1;
+    fovnumber = fovnumber + 1;
 }
 
 - (NSString*)fovString
@@ -94,8 +95,8 @@
 
 - (NSString*)currentStatus
 {
-    NSLog(@"Field of view: %d", self.fovnumber);
-    if(self.fovnumber == 3) {
+    NSLog(@"Field of view: %d", fovnumber);
+    if(fovnumber == 3) {
         return @"Done";
     }
     else {
@@ -127,16 +128,11 @@
     return urls;
 }
 
-- (void)wormCoordinatesAdd:(NSMutableArray *)coordinatesFromMike
+- (void)addMovieFeatures:(NSMutableArray *)coordinates
 {
-    WormCoordinate *coordinate = [NSEntityDescription
-                          insertNewObjectForEntityForName:@"WormCoordinate"
-                          inManagedObjectContext:managedObjectContext];
-    int coordsLength=[coordinatesFromMike count];
-    NSURL * moviePathURL=coordinatesFromMike[coordsLength-1];
-    NSString *moviePath=moviePathURL.absoluteString;
-    NSLog(@"Adding coords for movie: ");
-    NSLog(@"%@",moviePath);
+    int coordsLength = [coordinates count];
+    NSURL * moviePathURL = coordinates[coordsLength-1];
+    NSString *moviePath = moviePathURL.absoluteString;
     NSFetchRequest *request2 = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity2 = [NSEntityDescription entityForName:@"SampleMovie" inManagedObjectContext: managedObjectContext];
     [request2 setEntity:entity2];
@@ -147,13 +143,19 @@
     NSArray *results2 = [managedObjectContext executeFetchRequest:request2 error:&error2];
     SampleMovie* sampleMovie = [results2 objectAtIndex:0];
     int i=0;
-    while (i<coordsLength-1){
+    while (i < coordsLength-1) {
+        NSLog(@"Add coordinate %d: ", i);
+        // Create a new image feature to add to the database
+        ImageFeature *feature = [NSEntityDescription
+                                 insertNewObjectForEntityForName:@"ImageFeature"
+                                 inManagedObjectContext:managedObjectContext];
+        feature.samplemovie = sampleMovie;
         //array holds alternating x and y coordinates, last entry is moviepath
-        coordinate.x=coordinatesFromMike[i];
+        feature.xcoord = coordinates[i];
         i++;
-        coordinate.y=coordinatesFromMike[i];
+        feature.ycoord = coordinates[i];
         i++;
-        [[sampleMovie mutableSetValueForKey:@"wormCoordinates"] addObject:coordinate];
+        [[sampleMovie mutableSetValueForKey:@"features"] addObject:feature];
     }
 }
 

@@ -19,6 +19,8 @@
 @property int urlNum;
 @property Analysis *loaLoaCounter;
 @property (weak, nonatomic) IBOutlet UIImageView *backImage;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
+@property (weak, nonatomic) IBOutlet UIImageView *resultsImageView;
 
 - (IBAction)onPressed:(id)sender;
 @end

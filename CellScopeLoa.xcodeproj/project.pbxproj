@@ -10,8 +10,12 @@
 		821348B2165B396B0066780E /* Analysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B1165B396B0066780E /* Analysis.mm */; };
 		821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */; };
 		821348B8165B50990066780E /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 821348B7165B50980066780E /* ResultsViewController.m */; };
-		8298EC14165C543000A464DA /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 8298EC13165C543000A464DA /* SampleMovie.m */; };
-		8298EC17165C543100A464DA /* WormCoordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8298EC16165C543100A464DA /* WormCoordinate.m */; };
+		9B307587167EFC7B007DD13F /* bloodiconsmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B307585167EFC7B007DD13F /* bloodiconsmall.png */; };
+		9B307589167EFC8C007DD13F /* bloodiconsmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B307588167EFC8C007DD13F /* bloodiconsmall.png */; };
+		9B30758D167FB67E007DD13F /* bloodiconlarge copy.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B30758C167FB67E007DD13F /* bloodiconlarge copy.png */; };
+		9B30758F167FB699007DD13F /* bloodiconlarge copy.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B30758E167FB699007DD13F /* bloodiconlarge copy.png */; };
+		9B331F32167B9EC000BE05E3 /* ImageFeature.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B331F31167B9EC000BE05E3 /* ImageFeature.m */; };
+		9B331F35167B9EC200BE05E3 /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B331F34167B9EC200BE05E3 /* SampleMovie.m */; };
 		9BC26DEA164ED4FB00D7C164 /* LoaProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */; };
 		9BC26DF1164ED6C200D7C164 /* MainMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26DF0164ED6C200D7C164 /* MainMenuViewController.m */; };
 		9BC26DF3164ED8AA00D7C164 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BC26DF2164ED8AA00D7C164 /* CoreData.framework */; };
@@ -94,6 +98,7 @@
 		9BD8A3E3163DB6D3009038BB /* patient_step_b_2 in Resources */ = {isa = PBXBuildFile; fileRef = 9BD8A3E1163DB6D3009038BB /* patient_step_b_2 */; };
 		9BD8A3E5163DBAAF009038BB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9BD8A3E4163DBAAF009038BB /* Localizable.strings */; };
 		9BE7E12A165C5FEF00E6C6E9 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE7E129165C5FEF00E6C6E9 /* opencv2.framework */; };
+		9BFFEF85167EF50B00A1AE78 /* UITabBarController+InterfaceLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFFEF84167EF50B00A1AE78 /* UITabBarController+InterfaceLock.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,10 +118,14 @@
 		821348B4165B3ABE0066780E /* UIImage+OpenCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+OpenCV.h"; sourceTree = "<group>"; };
 		821348B6165B50980066780E /* ResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
 		821348B7165B50980066780E /* ResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
-		8298EC12165C543000A464DA /* SampleMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleMovie.h; sourceTree = "<group>"; };
-		8298EC13165C543000A464DA /* SampleMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleMovie.m; sourceTree = "<group>"; };
-		8298EC15165C543100A464DA /* WormCoordinate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WormCoordinate.h; sourceTree = "<group>"; };
-		8298EC16165C543100A464DA /* WormCoordinate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WormCoordinate.m; sourceTree = "<group>"; };
+		9B307585167EFC7B007DD13F /* bloodiconsmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bloodiconsmall.png; path = Images/bloodiconsmall.png; sourceTree = "<group>"; };
+		9B307588167EFC8C007DD13F /* bloodiconsmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bloodiconsmall.png; sourceTree = "<group>"; };
+		9B30758C167FB67E007DD13F /* bloodiconlarge copy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bloodiconlarge copy.png"; path = "Images/bloodiconlarge copy.png"; sourceTree = "<group>"; };
+		9B30758E167FB699007DD13F /* bloodiconlarge copy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bloodiconlarge copy.png"; sourceTree = "<group>"; };
+		9B331F30167B9EC000BE05E3 /* ImageFeature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFeature.h; sourceTree = "<group>"; };
+		9B331F31167B9EC000BE05E3 /* ImageFeature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFeature.m; sourceTree = "<group>"; };
+		9B331F33167B9EC100BE05E3 /* SampleMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleMovie.h; sourceTree = "<group>"; };
+		9B331F34167B9EC200BE05E3 /* SampleMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleMovie.m; sourceTree = "<group>"; };
 		9BC26DE8164ED4FB00D7C164 /* LoaProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoaProgram.h; sourceTree = "<group>"; };
 		9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoaProgram.m; sourceTree = "<group>"; };
 		9BC26DEF164ED6C200D7C164 /* MainMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuViewController.h; sourceTree = "<group>"; };
@@ -220,6 +229,8 @@
 		9BD8A3E1163DB6D3009038BB /* patient_step_b_2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = patient_step_b_2; sourceTree = "<group>"; };
 		9BD8A3E4163DBAAF009038BB /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		9BE7E129165C5FEF00E6C6E9 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../opencv2.framework; sourceTree = "<group>"; };
+		9BFFEF83167EF50B00A1AE78 /* UITabBarController+InterfaceLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBarController+InterfaceLock.h"; sourceTree = "<group>"; };
+		9BFFEF84167EF50B00A1AE78 /* UITabBarController+InterfaceLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarController+InterfaceLock.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -263,10 +274,10 @@
 				9BC26E1A164F05AC00D7C164 /* Settings.m */,
 				9BCBF3311657113100C5AD1D /* Sample.h */,
 				9BCBF3321657113100C5AD1D /* Sample.m */,
-				8298EC12165C543000A464DA /* SampleMovie.h */,
-				8298EC13165C543000A464DA /* SampleMovie.m */,
-				8298EC15165C543100A464DA /* WormCoordinate.h */,
-				8298EC16165C543100A464DA /* WormCoordinate.m */,
+				9B331F30167B9EC000BE05E3 /* ImageFeature.h */,
+				9B331F31167B9EC000BE05E3 /* ImageFeature.m */,
+				9B331F33167B9EC100BE05E3 /* SampleMovie.h */,
+				9B331F34167B9EC200BE05E3 /* SampleMovie.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -274,6 +285,8 @@
 		9BD8A33B163DA7BD009038BB = {
 			isa = PBXGroup;
 			children = (
+				9B30758E167FB699007DD13F /* bloodiconlarge copy.png */,
+				9B307588167EFC8C007DD13F /* bloodiconsmall.png */,
 				9BE7E129165C5FEF00E6C6E9 /* opencv2.framework */,
 				9BCBF33716572B6100C5AD1D /* libdispatch.dylib */,
 				9BD8A350163DA7BD009038BB /* CellScopeLoa */,
@@ -346,6 +359,8 @@
 				821348B1165B396B0066780E /* Analysis.mm */,
 				821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */,
 				821348B4165B3ABE0066780E /* UIImage+OpenCV.h */,
+				9BFFEF83167EF50B00A1AE78 /* UITabBarController+InterfaceLock.h */,
+				9BFFEF84167EF50B00A1AE78 /* UITabBarController+InterfaceLock.m */,
 				821348B6165B50980066780E /* ResultsViewController.h */,
 				821348B7165B50980066780E /* ResultsViewController.m */,
 				9BD8A351163DA7BD009038BB /* Supporting Files */,
@@ -390,6 +405,8 @@
 		9BD8A394163DA934009038BB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				9B30758C167FB67E007DD13F /* bloodiconlarge copy.png */,
+				9B307585167EFC7B007DD13F /* bloodiconsmall.png */,
 				9BD0161D164759A200A7C37B /* retrycurl.png */,
 				9BD015FF1646F45700A7C37B /* camera_button.png */,
 				9BD8A3DF163DB6D3009038BB /* instructions */,
@@ -583,6 +600,10 @@
 				9BD015F71646E95800A7C37B /* sample_step_c_5 in Resources */,
 				9BD016001646F45800A7C37B /* camera_button.png in Resources */,
 				9BD0161E164759A300A7C37B /* retrycurl.png in Resources */,
+				9B307587167EFC7B007DD13F /* bloodiconsmall.png in Resources */,
+				9B307589167EFC8C007DD13F /* bloodiconsmall.png in Resources */,
+				9B30758D167FB67E007DD13F /* bloodiconlarge copy.png in Resources */,
+				9B30758F167FB699007DD13F /* bloodiconlarge copy.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,8 +658,9 @@
 				821348B2165B396B0066780E /* Analysis.mm in Sources */,
 				821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */,
 				821348B8165B50990066780E /* ResultsViewController.m in Sources */,
-				8298EC14165C543000A464DA /* SampleMovie.m in Sources */,
-				8298EC17165C543100A464DA /* WormCoordinate.m in Sources */,
+				9B331F32167B9EC000BE05E3 /* ImageFeature.m in Sources */,
+				9B331F35167B9EC200BE05E3 /* SampleMovie.m in Sources */,
+				9BFFEF85167EF50B00A1AE78 /* UITabBarController+InterfaceLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

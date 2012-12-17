@@ -30,6 +30,6 @@
 @property AVURLAsset *asset;
 @property AVAssetImageGenerator *generator;
 @property NSMutableArray *coordsArray;
-
+@property NSNumber *progress;
 
 @end

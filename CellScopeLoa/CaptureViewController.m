@@ -40,7 +40,10 @@
 -(void)setupInstructionSet
 {
     instructionText = [NSArray arrayWithObjects:
-                            NSLocalizedString(@"POSITIONANDFOCUS",nil), nil];
+                            NSLocalizedString(@"POSITIONANDFOCUS",nil),
+                            NSLocalizedString(@"REPOSITIONANDFOCUS",nil),
+                            NSLocalizedString(@"REPOSITIONANDFOCUS",nil),
+                            NSLocalizedString(@"REPOSITIONANDFOCUS",nil), nil];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -104,6 +107,7 @@
 
 - (IBAction)onCapture:(id)sender
 {
+    
     [camera captureWithDuration:5.0 recordingDelegate:self progressDelegate:self];
     progressBar.alpha = 1.0;
     [UIView animateWithDuration:1.0 animations:^{
@@ -153,6 +157,8 @@
              }];
              
              // Is it time to move on?
+             instructIdx++;
+             instructions.text = [instructionText objectAtIndex:instructIdx];
              [self checkStatus];
          }];
 	}
@@ -165,6 +171,16 @@
     if([status isEqualToString:@"Done"]) {
         [self performSegueWithIdentifier:@"Analyze" sender:self];
     }
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
+}
+
+-(NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortraitUpsideDown;
 }
 
 @end
