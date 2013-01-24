@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <dispatch/dispatch.h>
 #import <AVFoundation/AVFoundation.h>
-#import "Camera.h"
+#import "RTPCamera.h"
 #import "MovieProgressDelegate.h"
 #import "LoaProgram.h"
 
@@ -25,7 +25,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *instructions;
 @property (strong, nonatomic) IBOutlet UIView *pLayer;
 
-@property (nonatomic, strong) Camera *camera;
+@property (nonatomic, strong) RTPCamera *camera;
 @property (nonatomic) NSInteger isRecording;
 
 @property (nonatomic, strong) AVCaptureSession *session;
