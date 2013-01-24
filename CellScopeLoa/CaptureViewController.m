@@ -43,6 +43,8 @@
                             NSLocalizedString(@"POSITIONANDFOCUS",nil),
                             NSLocalizedString(@"REPOSITIONANDFOCUS",nil),
                             NSLocalizedString(@"REPOSITIONANDFOCUS",nil),
+                            NSLocalizedString(@"REPOSITIONANDFOCUS",nil),
+                            NSLocalizedString(@"REPOSITIONANDFOCUS",nil),
                             NSLocalizedString(@"REPOSITIONANDFOCUS",nil), nil];
 }
 
@@ -68,7 +70,7 @@
     progressBar.progress = 0.0;
     instructions.text = [instructionText objectAtIndex:instructIdx];
     // fieldcounter.text = [program fovString];
-    fieldcounter.text = @"0/3";
+    fieldcounter.text = @"1";
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -158,8 +160,8 @@
              
              // Is it time to move on?
              instructIdx++;
-             instructions.text = [instructionText objectAtIndex:instructIdx];
              [self checkStatus];
+             instructions.text = [instructionText objectAtIndex:instructIdx];
          }];
 	}
 }

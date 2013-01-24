@@ -23,8 +23,11 @@
     self.session.sessionPreset = AVCaptureSessionPresetHigh;
     
     self.device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    [self.device lockForConfiguration:nil];
-    [self.device setFocusMode:AVCaptureFocusModeAutoFocus];
+    if ([self.device isFocusModeSupported:AVCaptureFocusModeAutoFocus] ) {
+        [self.device lockForConfiguration:nil];
+        [self.device setFocusMode:AVCaptureFocusModeAutoFocus];
+        [self.device unlockForConfiguration];
+    }
     self.input = [AVCaptureDeviceInput deviceInputWithDevice:self.device error:nil];
     
     // Setup output
