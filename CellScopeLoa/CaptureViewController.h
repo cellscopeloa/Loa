@@ -28,6 +28,8 @@
 @property (nonatomic, strong) RTPCamera *camera;
 @property (nonatomic) NSInteger isRecording;
 
+@property (nonatomic, strong) NSMutableArray* frameRecord;
+
 @property (nonatomic, strong) AVCaptureSession *session;
 @property (nonatomic, strong) AVCaptureDevice *device;
 @property (nonatomic, strong) AVCaptureDeviceInput *input;

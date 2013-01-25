@@ -291,7 +291,6 @@
 		9BD8A33B163DA7BD009038BB = {
 			isa = PBXGroup;
 			children = (
-				9B72B50116B1C1C8008237B3 /* CoreVideo.framework */,
 				9B30758E167FB699007DD13F /* bloodiconlarge copy.png */,
 				9B307588167EFC8C007DD13F /* bloodiconsmall.png */,
 				9BE7E129165C5FEF00E6C6E9 /* opencv2.framework */,
@@ -315,6 +314,7 @@
 		9BD8A349163DA7BD009038BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9B72B50116B1C1C8008237B3 /* CoreVideo.framework */,
 				9BCBF34D165B1AC600C5AD1D /* MobileCoreServices.framework */,
 				9BCBF3481659BAFC00C5AD1D /* MediaPlayer.framework */,
 				9BC26DF2164ED8AA00D7C164 /* CoreData.framework */,

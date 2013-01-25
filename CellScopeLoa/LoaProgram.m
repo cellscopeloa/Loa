@@ -19,6 +19,7 @@
 @synthesize totalfields;
 @synthesize fovnumber;
 @synthesize samplenumber;
+@synthesize frameRecord;
 
 - (LoaProgram*)initWithMode:(NSString *)guidedMode
 {

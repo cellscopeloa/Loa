@@ -21,6 +21,7 @@
 @property (nonatomic) NSInteger totalfields;
 
 @property (nonatomic) NSInteger samplenumber;
+@property (strong, nonatomic) NSMutableArray* frameRecord;
 
 - (LoaProgram*)initWithMode:(NSString*)guided;
 - (NSString*)fovString;

@@ -70,7 +70,10 @@ int done=0;
 
 - (void)processImages
 {
-    
+    // Grab the frame record from the Loa program
+    NSMutableArray* frameRecord = program.frameRecord;
+    NSMutableArray* urls = [[NSMutableArray alloc] init];
+    // Get movie URL's from the managed object context
     NSManagedObjectContext* managedObjectContext = program.managedObjectContext;
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample" inManagedObjectContext: managedObjectContext];
@@ -84,31 +87,33 @@ int done=0;
         NSLog(@"Couldn't fetch the sample!");
         NSLog(@"Serial: %@", serial);
     }
-    else {
-        Sample* sample = [results objectAtIndex:0];
-        NSMutableSet* movies = [sample mutableSetValueForKey:@"movies"];
-        numberMovies = [movies count];
-        NSEnumerator* movieenum = [movies objectEnumerator];
-        NSLog(@"Movies: ");
-        urlNum = 0;
-        movieCount = 0;
-        //Analysis *loaLoaCounter;
+    
+    urlNum = 0;
+    movieCount = 0;
+    Sample* sample = [results objectAtIndex:0];
+    NSMutableSet* movies = [sample mutableSetValueForKey:@"movies"];
+    numberMovies = [movies count];
+    NSEnumerator* movieenum = [movies objectEnumerator];
+    NSLog(@"Movies: ");
+    for(SampleMovie* movie in movieenum) {
+        NSLog(@"%@",movie.path);
+        NSURL *url = [NSURL URLWithString:movie.path];
+        [urls addObject: url];
+        movieCount++;
+    }
 
-        loaLoaCounter = [[Analysis alloc] init];
-        array = [[NSMutableArray alloc] init];
-        for(SampleMovie* movie in movieenum) {
-            NSLog(@"%@",movie.path);
-            NSURL *url = [NSURL URLWithString:movie.path];
-            [array addObject: url];
-            movieCount++;
+    loaLoaCounter = [[Analysis alloc] init];
+    for (id movie in frameRecord) {
+        NSMutableArray* framelist = (NSMutableArray*)movie;
+    }
+        
+    dispatch_async(backgroundQueue, ^(void) {
+        @autoreleasepool {
+            
+            [loaLoaCounter analyzeImagesNew:array[urlNum]];
         }
-        
-        dispatch_async(backgroundQueue, ^(void) {
-            @autoreleasepool {
-                [loaLoaCounter analyzeImagesNew:array[urlNum]];
-            }
-        });
-        
+    });
+    
         // Register for progress notifications from processing code
         NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
         [[NSNotificationCenter defaultCenter] addObserverForName:@"analysisProgress" object:nil

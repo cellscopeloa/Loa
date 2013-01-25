@@ -37,6 +37,8 @@
 @synthesize instructionText;
 @synthesize instructIdx;
 
+@synthesize frameRecord;
+
 -(void)setupInstructionSet
 {
     instructionText = [NSArray arrayWithObjects:
@@ -71,12 +73,15 @@
     instructions.text = [instructionText objectAtIndex:instructIdx];
     // fieldcounter.text = [program fovString];
     fieldcounter.text = @"1";
+    
+    // Create a structure to hold frames for processing
+    frameRecord = [[NSMutableArray alloc] init];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     // Setup the capture session
-    self.camera = [[Camera alloc] init];
+    self.camera = [[RTPCamera alloc] init];
     [self.camera setPreviewLayer:self.pLayer.layer];
     // Set the camera image alpha to zero while we load
     [self.camera start];
@@ -97,6 +102,7 @@
 {
     if([segue.identifier isEqualToString:@"Analyze"]) {
         ProcessingViewController* processingViewController = [segue destinationViewController];
+        program.frameRecord = frameRecord;
         processingViewController.program = program;
     }
 }
@@ -109,8 +115,9 @@
 
 - (IBAction)onCapture:(id)sender
 {
-    
-    [camera captureWithDuration:5.0 recordingDelegate:self progressDelegate:self];
+    NSMutableArray* frames = [[NSMutableArray alloc] init];
+    [frameRecord addObject:frames];
+    [camera captureWithDuration:5.0 frameList:frames recordingDelegate:self progressDelegate:self];
     progressBar.alpha = 1.0;
     [UIView animateWithDuration:1.0 animations:^{
         instructions.alpha = 0.0;
