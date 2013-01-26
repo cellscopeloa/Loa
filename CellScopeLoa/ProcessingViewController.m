@@ -24,6 +24,7 @@ int movieCount;
 int numberMovies;
 int done=0;
 
+//@synthesize array;
 @synthesize urlNum;
 @synthesize instructions;
 @synthesize program;
@@ -32,6 +33,7 @@ int done=0;
 @synthesize resultsImage;
 @synthesize progressBar;
 @synthesize resultsImageView;
+@synthesize frameRecord;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -71,8 +73,8 @@ int done=0;
 - (void)processImages
 {
     // Grab the frame record from the Loa program
-    NSMutableArray* frameRecord = program.frameRecord;
-    NSMutableArray* urls = [[NSMutableArray alloc] init];
+    frameRecord = program.frameRecord;
+    //NSMutableArray* array = [[NSMutableArray alloc] init];
     // Get movie URL's from the managed object context
     NSManagedObjectContext* managedObjectContext = program.managedObjectContext;
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -93,87 +95,114 @@ int done=0;
     Sample* sample = [results objectAtIndex:0];
     NSMutableSet* movies = [sample mutableSetValueForKey:@"movies"];
     numberMovies = [movies count];
+    NSLog(@"number of movies:%i",numberMovies);
+    array = [[NSMutableArray alloc] init];
+    
     NSEnumerator* movieenum = [movies objectEnumerator];
     NSLog(@"Movies: ");
     for(SampleMovie* movie in movieenum) {
-        NSLog(@"%@",movie.path);
         NSURL *url = [NSURL URLWithString:movie.path];
-        [urls addObject: url];
+        NSLog(@"movie path:%@",url);
+        
+        [array addObject: url];
         movieCount++;
     }
-
-    loaLoaCounter = [[Analysis alloc] init];
-    for (id movie in frameRecord) {
-        NSMutableArray* framelist = (NSMutableArray*)movie;
-    }
-        
-    dispatch_async(backgroundQueue, ^(void) {
-        @autoreleasepool {
-            
-            [loaLoaCounter analyzeImagesNew:array[urlNum]];
-        }
-    });
+    //NSLog(@"url (very first): %@", [array objectAtIndex:0]);
     
-        // Register for progress notifications from processing code
-        NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
-        [[NSNotificationCenter defaultCenter] addObserverForName:@"analysisProgress" object:nil
-                                                           queue:mainQueue usingBlock:^(NSNotification *note)
-        {
-            NSDictionary* userInfo = note.userInfo;
-            NSNumber* progress = [userInfo objectForKey:@"progress"];
-            NSLog(@"Proc progress: %f", progress.doubleValue);
-            NSLog(@"Movie number: %d", urlNum);
-            float adjustedprogress = urlNum*(1/(float)numberMovies) + progress.doubleValue*(1/(float)numberMovies);
-            progress = [[NSNumber alloc] initWithDouble:adjustedprogress];
-            [progressBar setProgress:progress.doubleValue];
-            resultsImageView.image = resultsImage;
-        }];
-        
-        [[NSNotificationCenter defaultCenter]
-         addObserver:self
-         selector:@selector(eventHandler:)
-         name:@"eventType"
-         object:nil ];
-    }
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(eventHandler:)
+     name:@"eventType"
+     object:nil ];
+    
+    /*for (id movie in frameRecord) {
+     NSMutableArray* framelist = (NSMutableArray*)movie;
+     }
+     
+     dispatch_async(backgroundQueue, ^(void) {
+     @autoreleasepool {
+     
+     [loaLoaCounter analyzeImagesNew:array[urlNum]];
+     }
+     });*/
+    
+    // Register for progress notifications from processing code
+    NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"analysisProgress" object:nil
+                                                       queue:mainQueue usingBlock:^(NSNotification *note)
+     {
+         NSDictionary* userInfo = note.userInfo;
+         NSNumber* progress = [userInfo objectForKey:@"progress"];
+         NSLog(@"Proc progress: %f", progress.doubleValue);
+         NSLog(@"Movie number: %d", urlNum);
+         float adjustedprogress = urlNum*(1/(float)numberMovies) + progress.doubleValue*(1/(float)numberMovies);
+         progress = [[NSNumber alloc] initWithDouble:adjustedprogress];
+         [progressBar setProgress:progress.doubleValue];
+         resultsImageView.image = resultsImage;
+     }];
+    NSLog(@"initializing analysis object");
+    loaLoaCounter = [[Analysis alloc] init];
+    
+    
 }
+//}
 
 - (void)eventHandler: (NSNotification *)notification
 {
     NSLog(@"notification from analysis");
-
-    resultsImage = [loaLoaCounter getOutImage];
-    NSMutableArray* coords = [loaLoaCounter getCoords];
-    [coords addObject:array[urlNum]];
-    urlNum++;
-
-    [program addMovieFeatures:coords];
-    if (movieCount > urlNum){
-        //Analysis *loaLoaCounter;
-        NSLog(@"Create new loa counter");
-        loaLoaCounter=[[Analysis alloc] init];
-        dispatch_async(backgroundQueue, ^(void) {
-        NSLog(@"moving on to the next URL: %i", urlNum);
-            @autoreleasepool {
-                [loaLoaCounter analyzeImagesNew:array[urlNum]];
-            }
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                NSLog(@"urlnum: %d", urlNum);
-                NSLog(@"progress at the end: %f", progressBar.progress);
-                if(urlNum == numberMovies) {
-                    [self performSegueWithIdentifier:@"Results" sender:self];
-                }
-            });
-        });
+    
+    //if( ![notification.name isEqualToString:@"initialized"] ){
+    if (urlNum>0) {
+        
+        resultsImage = [loaLoaCounter getOutImage];
+        NSMutableArray* coords = [loaLoaCounter getCoords];
+        NSLog(@"url: %@", array[urlNum-1]);
+        
+        [coords addObject:array[urlNum-1]];
+        //urlNum++;
+        
+        [program addMovieFeatures:coords];
+        if (urlNum == movieCount){
+            //Analysis *loaLoaCounter;
+            //NSLog(@"Create new loa counter");
+            //loaLoaCounter=[[Analysis alloc] init];
+            //dispatch_async(backgroundQueue, ^(void) {
+            //    NSLog(@"moving on to the next URL: %i", urlNum-1);
+            //    @autoreleasepool {
+            //        [loaLoaCounter analyzeImagesNew:array[urlNum-1]];
+            //    }
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter]
+                     removeObserver:self];
+                    done=1;
+                     progressBar.progress = 1.0;
+                    NSLog(@"urlnum: %d", urlNum-1);
+                    NSLog(@"progress at the end: %f", progressBar.progress);
+                        [self performSegueWithIdentifier:@"Results" sender:self];
+                });
+        //    });
+        }
+        else {
+            //[[NSNotificationCenter defaultCenter]
+             //removeObserver:self];
+           // done=1;
+           // progressBar.progress = 1.0;
+        }
     }
-    else {
-        [[NSNotificationCenter defaultCenter]
-         removeObserver:self];
-        done=1;
-        progressBar.progress = 1.0;
+    if (done!=1){
+        int urlNumAsync=urlNum;
+    dispatch_async(backgroundQueue, ^(void) {
+        @autoreleasepool {
+            
+            [loaLoaCounter analyzeImagesFast:array[urlNumAsync]:frameRecord[urlNumAsync]];
+        }
+    });
+    urlNum++;
     }
 }
+//}
 
- 
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

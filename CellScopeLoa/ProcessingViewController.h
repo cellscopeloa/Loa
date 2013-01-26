@@ -17,10 +17,12 @@
 @property (strong, nonatomic) LoaProgram* program;
 @property UIImage* resultsImage;
 @property int urlNum;
+//@property NSMutableArray * array;
 @property Analysis *loaLoaCounter;
 @property (weak, nonatomic) IBOutlet UIImageView *backImage;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
 @property (weak, nonatomic) IBOutlet UIImageView *resultsImageView;
+@property NSMutableArray* frameRecord;
 
 - (IBAction)onPressed:(id)sender;
 @end

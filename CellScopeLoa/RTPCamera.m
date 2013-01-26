@@ -32,7 +32,7 @@
     
     // Setup the AV foundation capture session
     self.session = [[AVCaptureSession alloc] init];
-    self.session.sessionPreset = AVCaptureSessionPresetLow;
+    self.session.sessionPreset = AVCaptureSessionPresetMedium;
     
     self.device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if ([self.device isFocusModeSupported:AVCaptureFocusModeAutoFocus] ) {
@@ -70,7 +70,7 @@
     
     // Add session input and output
     [self.session addInput:self.input];
-    
+        
     // Setup live processing output
     AVCaptureVideoDataOutput *dataOutput = [AVCaptureVideoDataOutput new];
     dataOutput.videoSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA] forKey:(NSString *)kCVPixelBufferPixelFormatTypeKey];
@@ -78,6 +78,16 @@
     
     if ( [self.session canAddOutput:dataOutput] )
         [self.session addOutput:dataOutput];
+    
+    AVCaptureConnection *captureConnection = [dataOutput connectionWithMediaType:AVMediaTypeVideo];
+	CMTimeShow(captureConnection.videoMinFrameDuration);
+	CMTimeShow(captureConnection.videoMaxFrameDuration);
+	if (captureConnection.supportsVideoMinFrameDuration)
+		captureConnection.videoMinFrameDuration = CMTimeMake(1, 30);
+	if (captureConnection.supportsVideoMaxFrameDuration)
+		captureConnection.videoMaxFrameDuration = CMTimeMake(1, 30);
+    CMTimeShow(captureConnection.videoMinFrameDuration);
+    CMTimeShow(captureConnection.videoMaxFrameDuration);
     
     // Setup frame buffer
     queue = dispatch_queue_create("VideoQueue", DISPATCH_QUEUE_SERIAL);

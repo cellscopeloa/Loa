@@ -26,7 +26,7 @@
     self = [super init];
     self.guided = guidedMode;
     samplenumber = 10;
-    totalfields = 5;
+    totalfields = 2;
     fovnumber = 0;
     currentSampleSerial = Nil;
     return self;
@@ -97,7 +97,7 @@
 - (NSString*)currentStatus
 {
     NSLog(@"Field of view: %d", fovnumber);
-    if(fovnumber == 5) {
+    if(fovnumber == 2) {
         NSLog(@"Printing done");
         return @"Done";
     }

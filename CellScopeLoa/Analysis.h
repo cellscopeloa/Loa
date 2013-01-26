@@ -21,6 +21,8 @@
 -(UIImage *)generateImage:(int) frame;
 -(UIImage *) getOutImage;
 -(void)analyzeImagesNew:(NSURL*) movieURL;
+-(void)analyzeImagesFast:(NSURL*) movieURL:(NSMutableArray*) movies;
+
 -(void)addURL:(NSURL*) movieURL;
 -(void)startAnalysis;
 -(NSMutableArray *) getCoords;
