@@ -12,8 +12,9 @@
 #import "RTPCamera.h"
 #import "MovieProgressDelegate.h"
 #import "LoaProgram.h"
+#import "MotionAnalysis.h"
 
-@interface CaptureViewController : UIViewController <AVCaptureFileOutputRecordingDelegate,MovieProgressDelegate>
+@interface CaptureViewController : UIViewController <AVCaptureFileOutputRecordingDelegate,MovieProgressDelegate,FrameProcessingDelegate>
 
 @property (strong, nonatomic) LoaProgram* program;
 @property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;

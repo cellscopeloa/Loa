@@ -143,10 +143,10 @@
             </objects>
             <point key="canvasLocation" x="2011" y="-807"/>
         </scene>
-        <!--Processing View Controller-->
+        <!--Processing View ControllerMB-->
         <scene sceneID="eMU-Gs-8gW">
             <objects>
-                <viewController id="TkM-XS-NLw" customClass="ProcessingViewController" sceneMemberID="viewController">
+                <viewController id="TkM-XS-NLw" customClass="ProcessingViewControllerMB" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sOs-m0-ehH">
                         <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -173,14 +173,14 @@
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="8bT-Sm-1aF" firstAttribute="centerX" secondItem="oEH-WV-lJZ" secondAttribute="centerX" type="default" id="2Nz-Z0-5Xz"/>
+                            <constraint firstItem="fZC-ZE-8ld" firstAttribute="centerX" secondItem="8bT-Sm-1aF" secondAttribute="centerX" type="default" id="2hI-XF-Ido"/>
                             <constraint firstItem="oEH-WV-lJZ" firstAttribute="leading" secondItem="sOs-m0-ehH" secondAttribute="leading" type="default" id="3pe-KZ-M9T"/>
                             <constraint firstItem="8bT-Sm-1aF" firstAttribute="top" secondItem="oEH-WV-lJZ" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="5jo-sR-DWc"/>
                             <constraint firstItem="oEH-WV-lJZ" firstAttribute="top" secondItem="sOs-m0-ehH" secondAttribute="top" type="default" id="FwY-jb-c0M"/>
+                            <constraint firstItem="8bT-Sm-1aF" firstAttribute="centerX" secondItem="oEH-WV-lJZ" secondAttribute="centerX" type="default" id="S6h-yH-H6K"/>
                             <constraint firstItem="oEH-WV-lJZ" firstAttribute="trailing" secondItem="sOs-m0-ehH" secondAttribute="trailing" type="default" id="mA9-lo-c6r"/>
                             <constraint firstItem="fZC-ZE-8ld" firstAttribute="top" secondItem="8bT-Sm-1aF" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="nDh-ue-WKE"/>
                             <constraint firstAttribute="bottom" secondItem="fZC-ZE-8ld" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="pZO-dc-Eb2"/>
-                            <constraint firstItem="8bT-Sm-1aF" firstAttribute="centerX" secondItem="fZC-ZE-8ld" secondAttribute="centerX" type="default" id="umu-ua-PrE"/>
                         </constraints>
                     </view>
                     <connections>

@@ -19,6 +19,8 @@
 		9B331F35167B9EC200BE05E3 /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B331F34167B9EC200BE05E3 /* SampleMovie.m */; };
 		9B72B4FB16B1BCB7008237B3 /* RTPCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B72B4FA16B1BCB7008237B3 /* RTPCamera.m */; };
 		9B72B50216B1C1C8008237B3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B72B50116B1C1C8008237B3 /* CoreVideo.framework */; };
+		9BA7218F16B4BDB700DE13D2 /* ProcessingViewControllerMB.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7218E16B4BDB700DE13D2 /* ProcessingViewControllerMB.m */; };
+		9BA7219316B4C40300DE13D2 /* MotionAnalysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7219216B4C40300DE13D2 /* MotionAnalysis.mm */; };
 		9BC26DEA164ED4FB00D7C164 /* LoaProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */; };
 		9BC26DF1164ED6C200D7C164 /* MainMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26DF0164ED6C200D7C164 /* MainMenuViewController.m */; };
 		9BC26DF3164ED8AA00D7C164 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BC26DF2164ED8AA00D7C164 /* CoreData.framework */; };
@@ -132,6 +134,11 @@
 		9B72B4F916B1BCB7008237B3 /* RTPCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTPCamera.h; sourceTree = "<group>"; };
 		9B72B4FA16B1BCB7008237B3 /* RTPCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTPCamera.m; sourceTree = "<group>"; };
 		9B72B50116B1C1C8008237B3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		9BA7218E16B4BDB700DE13D2 /* ProcessingViewControllerMB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessingViewControllerMB.m; sourceTree = "<group>"; };
+		9BA7219016B4BDBE00DE13D2 /* ProcessingViewControllerMB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessingViewControllerMB.h; sourceTree = "<group>"; };
+		9BA7219116B4C40300DE13D2 /* MotionAnalysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionAnalysis.h; sourceTree = "<group>"; };
+		9BA7219216B4C40300DE13D2 /* MotionAnalysis.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MotionAnalysis.mm; sourceTree = "<group>"; };
+		9BA721A116B5EA9200DE13D2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		9BC26DE8164ED4FB00D7C164 /* LoaProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoaProgram.h; sourceTree = "<group>"; };
 		9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoaProgram.m; sourceTree = "<group>"; };
 		9BC26DEF164ED6C200D7C164 /* MainMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuViewController.h; sourceTree = "<group>"; };
@@ -314,6 +321,7 @@
 		9BD8A349163DA7BD009038BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9BA721A116B5EA9200DE13D2 /* QuartzCore.framework */,
 				9B72B50116B1C1C8008237B3 /* CoreVideo.framework */,
 				9BCBF34D165B1AC600C5AD1D /* MobileCoreServices.framework */,
 				9BCBF3481659BAFC00C5AD1D /* MediaPlayer.framework */,
@@ -352,6 +360,8 @@
 				9BD0161C16472FE500A7C37B /* MovieProgressDelegate.h */,
 				9BCBF33C16573F1500C5AD1D /* ProcessingViewController.h */,
 				9BCBF33D16573F1500C5AD1D /* ProcessingViewController.m */,
+				9BA7219016B4BDBE00DE13D2 /* ProcessingViewControllerMB.h */,
+				9BA7218E16B4BDB700DE13D2 /* ProcessingViewControllerMB.m */,
 				9BC26DEF164ED6C200D7C164 /* MainMenuViewController.h */,
 				9BC26DF0164ED6C200D7C164 /* MainMenuViewController.m */,
 				9BC26E01164EEEE800D7C164 /* AddUserViewController.h */,
@@ -364,6 +374,8 @@
 				9BCBF34B165B0A5300C5AD1D /* ReviewVideoViewController.m */,
 				821348B0165B396B0066780E /* Analysis.h */,
 				821348B1165B396B0066780E /* Analysis.mm */,
+				9BA7219116B4C40300DE13D2 /* MotionAnalysis.h */,
+				9BA7219216B4C40300DE13D2 /* MotionAnalysis.mm */,
 				821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */,
 				821348B4165B3ABE0066780E /* UIImage+OpenCV.h */,
 				9BFFEF83167EF50B00A1AE78 /* UITabBarController+InterfaceLock.h */,
@@ -671,6 +683,8 @@
 				9B331F35167B9EC200BE05E3 /* SampleMovie.m in Sources */,
 				9BFFEF85167EF50B00A1AE78 /* UITabBarController+InterfaceLock.m in Sources */,
 				9B72B4FB16B1BCB7008237B3 /* RTPCamera.m in Sources */,
+				9BA7218F16B4BDB700DE13D2 /* ProcessingViewControllerMB.m in Sources */,
+				9BA7219316B4C40300DE13D2 /* MotionAnalysis.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -796,6 +810,7 @@
 					"$(inherited)",
 					"\"$(SDKROOT)/usr/lib/system\"",
 				);
+				OTHER_CFLAGS = "-mfpu=neon";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -816,6 +831,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SDKROOT)/usr/lib/system\"",
+				);
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"-mfpu=neon",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

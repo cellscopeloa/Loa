@@ -15,13 +15,13 @@
 @interface Analysis : NSObject
 {
     NSMutableArray *array;
-
 }
+
 -(int)getNumContours;
 -(UIImage *)generateImage:(int) frame;
 -(UIImage *) getOutImage;
 -(void)analyzeImagesNew:(NSURL*) movieURL;
--(void)analyzeImagesFast:(NSURL*) movieURL:(NSMutableArray*) movies;
+-(void)analyzeImagesFast:(NSURL*)movieURL withMovies:(NSMutableArray*) movies;
 
 -(void)addURL:(NSURL*) movieURL;
 -(void)startAnalysis;

@@ -17,18 +17,25 @@
 
 @synthesize recordingDelegate;
 @synthesize progressDelegate;
+@synthesize processingDelegate;
 @synthesize progress;
 @synthesize progressTimer;
 @synthesize assetWriter;
 @synthesize assetWriterInput;
 @synthesize pixelBufferAdaptor;
 @synthesize frameList;
+@synthesize width;
+@synthesize height;
+@synthesize numberFrames;
 
 - (RTPCamera*)init
 {
     self = [super init];
     
     writeout = NO;
+    // Estimated movie parameters
+    width = 480;
+    height = 360;
     
     // Setup the AV foundation capture session
     self.session = [[AVCaptureSession alloc] init];
@@ -45,8 +52,8 @@
     // Setup movie output
     NSDictionary *outputSettings =
     [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithInt:640], AVVideoWidthKey,
-        [NSNumber numberWithInt:480], AVVideoHeightKey,
+        [NSNumber numberWithInt:width], AVVideoWidthKey,
+        [NSNumber numberWithInt:height], AVVideoHeightKey,
         AVVideoCodecH264, AVVideoCodecKey,
         nil];
 	self.assetWriterInput = [AVAssetWriterInput
@@ -102,7 +109,7 @@
      so create a suitable asset writer; we'll put our H.264 within the normal
      MPEG4 container */
     
-    outputPath = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"movie.mov"]];
+    outputPath = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"movie.MOV"]];
     // Clear temporary movie location
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[outputPath relativePath]])
@@ -173,11 +180,12 @@
     [progressDelegate progressTaskComplete];
     writeout = NO;
     [assetWriter finishWritingWithCompletionHandler:^(){
-        assetWriter = nil;
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+            [progressTimer invalidate];
+            // Signal the delegate that recording is complete
+            [recordingDelegate captureOutput:nil didFinishRecordingToOutputFileAtURL:outputPath fromConnections:nil error:nil];
+        }];
     }];
-    [progressTimer invalidate];
-    // Signal the delegate that recording is complete
-    [recordingDelegate captureOutput:nil didFinishRecordingToOutputFileAtURL:outputPath fromConnections:nil error:nil];
 }
 
 -(void)progressUpdate:(NSTimer *)timer
@@ -190,34 +198,16 @@
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
-    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-
     // Are we recording frames right now?
     if(writeout && assetWriterInput.readyForMoreMediaData) {
+        CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+        
+        // Send the frame to the processing object
+        [processingDelegate processFrame:self Buffer:imageBuffer];
+        
         // Pass the frame to the asset writer
         [pixelBufferAdaptor appendPixelBuffer:imageBuffer withPresentationTime:videotime];
         videotime.value += 1;
-        
-        // Lock the image buffer
-        CVPixelBufferLockBaseAddress(imageBuffer,0);
-        // Get information about the image*/
-        uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer);
-        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-        size_t width = CVPixelBufferGetWidth(imageBuffer);
-        size_t height = CVPixelBufferGetHeight(imageBuffer);
-        
-        // Create a CGImageRef from the CVImageBufferRef*/
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-        CGImageRef newImage = CGBitmapContextCreateImage(newContext);
-        // Cleanup the CG creators
-        CGContextRelease(newContext);
-        CGColorSpaceRelease(colorSpace);
-        
-        // Unlock the  image buffer
-        CVPixelBufferUnlockBaseAddress(imageBuffer,0);
-        
-        [frameList addObject:(__bridge id)(newImage)];
     }
 }
 

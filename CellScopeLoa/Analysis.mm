@@ -13,10 +13,12 @@
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
 
-@implementation Analysis
-UIImage *outImagebwopen;
-int numContoursLast=1;
-int movieNum=0;
+@implementation Analysis {
+    UIImage *outImagebwopen;
+    int numContoursLast;
+    int movieNum;
+}
+
 @synthesize asset;
 @synthesize generator;
 @synthesize coordsArray;
@@ -25,6 +27,8 @@ int movieNum=0;
 -(id)init
 {
     self=[super init];
+    numContoursLast = 1;
+    movieNum = 0;
     if (self!=nil){
         array = [[NSMutableArray alloc] init];
         coordsArray = [[NSMutableArray alloc] init];
@@ -405,7 +409,7 @@ int movieNum=0;
 }
 
 
--(void) analyzeImagesFast: (NSURL *)movieURL : (NSMutableArray *) movies {
+-(void) analyzeImagesFast:(NSURL *)movieURL withMovies:(NSMutableArray *)movies {
     NSLog(@"starting analysis");
     //coordsArray=nil;
     coordsArray = [[NSMutableArray alloc] init];
@@ -752,9 +756,11 @@ int movieNum=0;
      postNotificationName:@"eventType"
      object:nil ];
 }
+
 - (UIImage *) getOutImage {
     return self.outImage;
 }
+
 - (void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo {
     if (error) {
         NSLog(@"error saving image");
@@ -767,9 +773,11 @@ int movieNum=0;
         // .... when the image has been saved in the photo album
     }
 }
+
 -(NSMutableArray *) getCoords{
     return coordsArray;
 }
+
 - (cv::Mat)cvMatFromUIImage:(UIImage *)image
 {
     CGColorSpaceRef colorSpace = CGImageGetColorSpace(image.CGImage);

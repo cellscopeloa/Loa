@@ -9,6 +9,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import "ProcessingViewController.h"
 #import "CaptureViewController.h"
+#import "MotionAnalysis.h"
 #import "SampleMovie.h"
 
 @interface CaptureViewController ()
@@ -73,9 +74,6 @@
     instructions.text = [instructionText objectAtIndex:instructIdx];
     // fieldcounter.text = [program fovString];
     fieldcounter.text = @"1";
-    
-    // Create a structure to hold frames for processing
-    frameRecord = [[NSMutableArray alloc] init];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -83,8 +81,20 @@
     // Setup the capture session
     self.camera = [[RTPCamera alloc] init];
     [self.camera setPreviewLayer:self.pLayer.layer];
+    // Set the processing delegate
+    self.camera.processingDelegate = self;
     // Set the camera image alpha to zero while we load
     [self.camera start];
+    
+    int nframesmax = 100;
+    int fov = 2;
+    
+    // Create a motion analysis object for image processing
+    MotionAnalysis* analysis = [[MotionAnalysis alloc] initWithWidth:camera.width
+                                                              Height:camera.height
+                                                              Frames:nframesmax
+                                                              Movies:fov];
+    program.analysis = analysis;
     
     [UIView animateWithDuration:0.5 animations:^{
         instructions.alpha = 1.0;
@@ -126,6 +136,12 @@
     }];
 }
 
+// Frame processing delegate
+- (void)processFrame:(RTPCamera*)sender Buffer:(CVBufferRef)buffer
+{
+    [program.analysis writeNextFrame:buffer];
+}
+
 - (void)progressUpdate:(Float32)progress
 {
     progressBar.progress = progress;
@@ -164,6 +180,9 @@
              } completion:^(BOOL finished) {
                  // pass
              }];
+             
+             // Advance the analysis movie counter
+             [program.analysis nextMovie];
              
              // Is it time to move on?
              instructIdx++;

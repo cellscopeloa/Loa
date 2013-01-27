@@ -15,16 +15,16 @@
 #import "Analysis.h"
 dispatch_queue_t backgroundQueue;
 
-@interface ProcessingViewController ()
+@interface ProcessingViewController () {
+    int movieCount;
+    int numberMovies;
+    int done;
+}
 
 @end
 
 @implementation ProcessingViewController
-int movieCount;
-int numberMovies;
-int done=0;
 
-//@synthesize array;
 @synthesize urlNum;
 @synthesize instructions;
 @synthesize program;
@@ -142,10 +142,7 @@ int done=0;
      }];
     NSLog(@"initializing analysis object");
     loaLoaCounter = [[Analysis alloc] init];
-    
-    
 }
-//}
 
 - (void)eventHandler: (NSNotification *)notification
 {
@@ -193,8 +190,7 @@ int done=0;
         int urlNumAsync=urlNum;
     dispatch_async(backgroundQueue, ^(void) {
         @autoreleasepool {
-            
-            [loaLoaCounter analyzeImagesFast:array[urlNumAsync]:frameRecord[urlNumAsync]];
+            [loaLoaCounter analyzeImagesFast:array[urlNumAsync] withMovies:frameRecord[urlNumAsync]];
         }
     });
     urlNum++;

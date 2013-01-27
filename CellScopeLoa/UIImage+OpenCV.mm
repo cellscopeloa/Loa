@@ -14,14 +14,6 @@
 
 #import "UIImage+OpenCV.h"
 
-static void ProviderReleaseDataNOP(void *info, const void *data, size_t size)
-{
-    // Do not release memory
-    return;
-}
-
-
-
 @implementation UIImage (UIImage_OpenCV)
 
 -(cv::Mat)CVMat

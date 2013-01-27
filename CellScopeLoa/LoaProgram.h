@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Sample.h"
+#import "MotionAnalysis.h"
 
 @interface LoaProgram : NSObject
 
@@ -22,6 +23,7 @@
 
 @property (nonatomic) NSInteger samplenumber;
 @property (strong, nonatomic) NSMutableArray* frameRecord;
+@property (strong, nonatomic) MotionAnalysis* analysis;
 
 - (LoaProgram*)initWithMode:(NSString*)guided;
 - (NSString*)fovString;

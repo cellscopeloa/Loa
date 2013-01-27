@@ -14,6 +14,14 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "MovieProgressDelegate.h"
 
+@class RTPCamera;
+
+@protocol FrameProcessingDelegate
+
+- (void)processFrame:(RTPCamera*)sender Buffer:(CVBufferRef)buffer;  // Frame processing delegate
+
+@end //end protocol
+
 @interface RTPCamera : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
 
 @property (nonatomic, strong) AVCaptureSession *session;
@@ -28,11 +36,16 @@
 
 @property (nonatomic, strong) id<AVCaptureFileOutputRecordingDelegate> recordingDelegate;
 @property (nonatomic, strong) id<MovieProgressDelegate> progressDelegate;
+@property (nonatomic, strong) id<FrameProcessingDelegate> processingDelegate;
 
-@property (nonatomic, strong) NSMutableArray* frameList;
+@property (nonatomic, strong) NSMutableArray *frameList;
 
 @property (nonatomic) Float32 progress;
 @property (nonatomic, strong) NSTimer *progressTimer;
+
+@property (nonatomic, assign) NSInteger width;
+@property (nonatomic, assign) NSInteger height;
+@property (nonatomic, assign) NSInteger numberFrames;
 
 - (void)setPreviewLayer:(CALayer*)viewLayer;
 - (void)start;
