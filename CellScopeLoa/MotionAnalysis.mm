@@ -8,6 +8,8 @@
 
 #import "MotionAnalysis.h"
 #import "UIImage+OpenCV.h"
+#import "LoaProgram.h"
+
 
 @implementation MotionAnalysis {
     NSMutableArray* movieLengths;
@@ -21,6 +23,8 @@
 
 @synthesize coordsArray;
 @synthesize outImage;
+@synthesize urls;
+@synthesize coordinatesPerMovie;
 
 -(id)initWithWidth:(NSInteger)width Height:(NSInteger)height Frames:(NSInteger)frames Movies:(NSInteger)movies {
     self = [super init];
@@ -34,6 +38,10 @@
     
     coordsArray = [[NSMutableArray alloc] init];
     movieLengths = [[NSMutableArray alloc] init];
+    urls = [[NSMutableArray alloc] init];
+    coordinatesPerMovie = [[NSMutableArray alloc] init];
+
+
     
     frameBuffers = new std::vector<cv::Mat>(frames*movies);
     
@@ -43,10 +51,6 @@
     }
     
     return self;
-}
-
--(NSMutableArray *) getCoords{
-    return coordsArray;
 }
 
 -(void)writeNextFrame:(CVBufferRef)imageBuffer
@@ -108,11 +112,11 @@
 }
 
 // Advance the write buffer to the next movie
-- (void)nextMovie {
+- (void)nextMovie:(NSURL*) url {
     NSLog(@"%d frames in last movie", frameIdx-1);
     NSNumber* movlen = [NSNumber numberWithInt:(frameIdx-1)];
     [movieLengths addObject:movlen];
-    
+    [urls addObject:url];
     movieIdx++;
     frameIdx = 0;
 }
@@ -122,10 +126,13 @@
         [self processFramesForMovie:i];
     }
     // Notify that processing is complete
-    NSArray* keys = [[NSArray alloc] initWithObjects:@"progress", @"done", nil];
-    NSArray* objects = [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],
-                        [NSNumber numberWithInt:1],
-                        nil];
+    
+    // Put an NSMutableArray* full of coordinates
+    //NSMutableArray* coordinatesPerMovie; // has 5 elements
+    // Fill it!
+    
+    NSArray* keys = [[NSArray alloc] initWithObjects:@"progress", @"done", @"coords",@"urls", nil];
+    NSArray* objects = [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],[NSNumber numberWithInt:1],coordinatesPerMovie,urls,nil];
     NSDictionary* userInfo = [[NSDictionary alloc] initWithObjects:objects forKeys:keys];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"analysisProgress" object:self userInfo:userInfo];
 }
@@ -133,6 +140,8 @@
 - (void)processFramesForMovie:(NSInteger)movidx {
     // Start at the first frame
     frameIdx = 0;
+    coordsArray = [[NSMutableArray alloc] init];
+
     movieIdx = movidx;
     NSNumber *movielength = [movieLengths objectAtIndex:0];
     NSInteger numFrames = [movielength integerValue];
@@ -408,6 +417,10 @@
             movieFrameMatDiff=cv::Mat();
         }
     }
+
+    [coordsArray addObject:urls[movidx]];
+
+    [coordinatesPerMovie addObject:coordsArray];
     // Now we are done finding worms
     NSLog(@"done finding worms");
     

@@ -74,6 +74,14 @@ dispatch_queue_t backgroundQueue;
          NSNumber* progress = [userInfo objectForKey:@"progress"];
          NSNumber* done = [userInfo objectForKey:@"done"];
          if ([done integerValue] == 1) {
+             NSMutableArray *coordinatesPerMovie = [userInfo objectForKey:@"coords"];
+             for(int i=0; i<[coordinatesPerMovie count]; i++) {
+
+                 [program addMovieFeatures:coordinatesPerMovie[i]];
+             }
+
+             
+             // Write coordinates to database
              [self performSegueWithIdentifier:@"Results" sender:self];
          }
          else {

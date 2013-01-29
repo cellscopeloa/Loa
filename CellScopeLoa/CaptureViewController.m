@@ -11,6 +11,7 @@
 #import "CaptureViewController.h"
 #import "MotionAnalysis.h"
 #import "SampleMovie.h"
+#import "LoaProgram.h"
 
 @interface CaptureViewController ()
 
@@ -95,7 +96,6 @@
                                                               Frames:nframesmax
                                                               Movies:fov];
     program.analysis = analysis;
-    
     [UIView animateWithDuration:0.5 animations:^{
         instructions.alpha = 1.0;
     } completion:^(BOOL finished) {
@@ -182,7 +182,7 @@
              }];
              
              // Advance the analysis movie counter
-             [program.analysis nextMovie];
+             [program.analysis nextMovie:assetURL];
              
              // Is it time to move on?
              instructIdx++;
