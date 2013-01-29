@@ -45,6 +45,10 @@
     return self;
 }
 
+-(NSMutableArray *) getCoords{
+    return coordsArray;
+}
+
 -(void)writeNextFrame:(CVBufferRef)imageBuffer
 {    
     // Lock the image buffer
@@ -149,8 +153,8 @@
     
     // Kernels for block averages
     cv::Mat blockAvg3x3 = cv::Mat::ones(4, 4, CV_32F);
-    cv::Mat blockAvg12x12 = cv::Mat::ones(16, 16, CV_32F);
-    cv::Mat blockAvg50x50 = cv::Mat::ones(67,67,CV_32F);
+    cv::Mat blockAvg12x12 = cv::Mat::ones(14, 14, CV_32F);
+    cv::Mat blockAvg50x50 = cv::Mat::ones(58,58,CV_32F);
     
     // Matrix for storing normalized frames
     cv::Mat movieFrameMatNorm(rows, cols, CV_16UC1);
@@ -174,28 +178,24 @@
     
     // Compute difference image from current movie
     
-    while(i < 50/framesToSkip) {
+    //while(i < 50/framesToSkip) {
     //while(i < numFrames/framesToSkip) {
-
+    while(frameIdx+avgFrames <= numFrames) {
 
         [self setProgressWithMovie:movidx Frame:frameIdx];
         while(i <= avgFrames) {
-            NSLog(@"numFrames: %i", numFrames);
-            NSLog(@"i: %i", i);
+            //NSLog(@"numFrames: %i", numFrames);
+            //NSLog(@"i: %i", i);
 
             // Update the progress bar
             [self setProgressWithMovie:movidx Frame:frameIdx];
             
             // Grab the current movie from the frame buffer list
             int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames);
-            NSLog(@"bufferidxinit: %i", bufferIdx);
-
-            
+            //NSLog(@"bufferidxinit: %i", bufferIdx);
             movieFrameMat = frameBuffers->at(bufferIdx);
             
-            
             /******debug*/
-
             /*if (i%10==0){
                 NSLog(@"writing debug image");
                 cv::Mat debugOut(rows, cols, CV_8UC1, cv::Scalar::all(0));
@@ -229,34 +229,18 @@
             i=i+1;
             frameIdx = frameIdx + framesToSkip;
         }
-        NSLog(@"i: %i", i);
+        //NSLog(@"i: %i", i);
 
-        
         if (i == avgFrames+1){
-            NSLog(@"dividing first cum image");
-
+            //NSLog(@"dividing first cum image");
             cv::divide(movieFrameMatCum, avgFrames, movieFrameMatNorm);
             //filter2D(movieFrameMatNorm, movieFrameMatNorm, -1 , kernel, cv::Point( -1, -1 ), 0, cv::BORDER_DEFAULT );
         }
         if (i > avgFrames+1) {
             // Grab the current movie from the frame buffer list
             int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames-framesToSkip);
-            NSLog(@"bufferidxadd: %i", bufferIdx);
-
+            //NSLog(@"bufferidxadd: %i", bufferIdx);
             movieFrameMat = frameBuffers->at(bufferIdx);
-            
-            /******debug*/
-
-            /*if (i%10==0){
-                NSLog(@"writing debug image");
-                cv::Mat debugOut(rows, cols, CV_8UC1, cv::Scalar::all(0));
-                movieFrameMat.convertTo(debugOut, CV_8UC1);
-                UIImage * outUIImage = [[UIImage alloc] initWithCVMat:debugOut];
-                UIImageWriteToSavedPhotosAlbum(outUIImage,
-                                               self, // send the message to 'self' when calling the callback
-                                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                               NULL); // you generally won't need a contextInfo here
-            }*/
             
             // Convert the frame into 16 bit grayscale. Space for optimization
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
@@ -265,25 +249,12 @@
             
             // Grab the first frame from the current ave from the frame buffer list
             bufferIdx = movieIdx*numFramesMax + (frameIdx-avgFrames-framesToSkip-framesToSkip);
-            NSLog(@"bufferidxfirst: %i", bufferIdx);
+            //NSLog(@"bufferidxfirst: %i", bufferIdx);
 
             movieFrameMatFirst = frameBuffers->at(bufferIdx);
             
             // Convert the frame into 16 bit grayscale. Space for optimization
             movieFrameMatFirst.convertTo(movieFrameMatFirst, CV_16UC1);
-            
-            /*NSLog(@"writing debug image");
-            cv::Mat debugOut3(rows, cols, CV_8UC1, cv::Scalar::all(0));
-            movieFrameMat.convertTo(debugOut3, CV_8UC1);
-            UIImage * outUIImage3 = [[UIImage alloc] initWithCVMat:debugOut3];
-            UIImageWriteToSavedPhotosAlbum(outUIImage3,
-                                           self, // send the message to 'self' when calling the callback
-                                           @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                           NULL); // you generally won't need a contextInfo here
-            
-            
-             */
-            
             
             // 3x3 spatial filter to reduce noise and downsample
             cv::filter2D(movieFrameMatFirst, movieFrameMatFirst, -1, blockAvg3x3, cv::Point(-1,-1));
@@ -293,49 +264,9 @@
             movieFrameMat=cv::Mat();
             movieFrameMatFirst.release();
             movieFrameMatFirst=cv::Mat();
-            NSLog(@"dividing cum image and taking diff");
             cv::divide(movieFrameMatCum, avgFrames, movieFrameMatNorm);
             //cv::filter2D(movieFrameMatNorm, movieFrameMatNorm,-1,kernel,cv::Point(-1,-1));
             cv::absdiff(movieFrameMatNormOld, movieFrameMatNorm, movieFrameMatDiffTmp);
-            /******debug*/
-            
-            /*if (i%10==0){
-                NSLog(@"writing debug image");
-                cv::Mat debugOut(rows, cols, CV_8UC1, cv::Scalar::all(0));
-                movieFrameMatNormOld.convertTo(debugOut, CV_8UC1);
-                UIImage * outUIImage = [[UIImage alloc] initWithCVMat:debugOut];
-                UIImageWriteToSavedPhotosAlbum(outUIImage,
-                                               self, // send the message to 'self' when calling the callback
-                                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                               NULL); // you generally won't need a contextInfo here
-            //}
-            /******debug*/
-            
-            /*if (i%10==0){
-                NSLog(@"writing debug image");
-                cv::Mat debugOut2(rows, cols, CV_8UC1, cv::Scalar::all(0));
-                movieFrameMatNorm.convertTo(debugOut2, CV_8UC1);
-                UIImage * outUIImage2 = [[UIImage alloc] initWithCVMat:debugOut2];
-                UIImageWriteToSavedPhotosAlbum(outUIImage2,
-                                               self, // send the message to 'self' when calling the callback
-                                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                               NULL); // you generally won't need a contextInfo here
-            //}*/
-
-            
-            /******debug*/
-            
-            /*if (i%1==0){
-                NSLog(@"writing debug image");
-                cv::Mat debugOut3(rows, cols, CV_8UC1, cv::Scalar::all(0));
-                movieFrameMatDiffTmp.convertTo(debugOut3, CV_8UC1);
-                UIImage * outUIImage3 = [[UIImage alloc] initWithCVMat:debugOut3];
-                UIImageWriteToSavedPhotosAlbum(outUIImage3,
-                                               self, // send the message to 'self' when calling the callback
-                                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                               NULL); // you generally won't need a contextInfo here
-           // }*/
-
             
             movieFrameMatNormOld.release();
             movieFrameMatNormOld=cv::Mat();
@@ -358,13 +289,11 @@
     }
     
     cv::Mat movieFrameMatBack;
-    
     //cv::Mat_<double>gk(49,49);
     //gk=cv::getGaussianKernel(2500,10,CV_32F);
     //cv::filter2D(movieFrameMatDiff, movieFrameMatBack,-1,gk,cv::Point(-1,-1));
-    cv::Size ksize(49,49);
+    //cv::Size ksize(49,49);
     //cv::GaussianBlur(movieFrameMatDiff,movieFrameMatBack, ksize, .5, 0, cv::BORDER_DEFAULT);
-    
     //movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBack;
     
     movieFrameMatDiffOrig = movieFrameMatDiff.clone();
@@ -463,24 +392,6 @@
             NSLog(@"center intensity norm: %f",selAve.val[0]/wholeAve.val[0]);
             
             if (selAve.val[0]>wholeAve.val[0]*1.2){
-                
-                /*cv::Mat selRegion8;
-                 selRegion.convertTo(selRegion8, CV_8UC1);
-                 UIImage * outUIImage = [[UIImage alloc] initWithCVMat:selRegion8];
-                 UIImageWriteToSavedPhotosAlbum(outUIImage,
-                 self, // send the message to 'self' when calling the callback
-                 @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                 NULL); // you generally won't need a contextInfo here
-                 
-                 cv::Mat wholeRegion8;
-                 wholeRegion.convertTo(wholeRegion8, CV_8UC1);
-                 UIImage * outUIImage2 = [[UIImage alloc] initWithCVMat:wholeRegion8];
-                 //UIImageWriteToSavedPhotosAlbum(outUIImage2,
-                 //                               self, // send the message to 'self' when calling the callback
-                 //                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                 //                               NULL); // you generally won't need a contextInfo here*/
-                
-                
                 foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
                 NSLog(@"%s","found some worms!");
                 
@@ -488,15 +399,7 @@
                 [coordsArray addObject:x];
                 NSNumber *y = [NSNumber numberWithInt:maxIdx[0]];
                 [coordsArray addObject:y];
-                
-                /*cv::Mat movieFrameMatDiff8;
-                 movieFrameMatDiff.convertTo(movieFrameMatDiff8, CV_8UC1);
-                 UIImage * outUIImage = [[UIImage alloc] initWithCVMat:movieFrameMatDiff8];
-                 UIImageWriteToSavedPhotosAlbum(outUIImage,
-                 self, // send the message to 'self' when calling the callback
-                 @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                 NULL); // you generally won't need a contextInfo here*/
-            }
+                }
             
         }
         else {
@@ -538,15 +441,6 @@
                                    self, // send the message to 'self' when calling the callback
                                    @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
                                    NULL); // you generally won't need a contextInfo here*/
-    
-    
-    /*UIImage * diffUIImage;
-     diffUIImage = [[UIImage alloc] initWithCVMat:movieFrameMatDiffOrig8];
-     UIImageWriteToSavedPhotosAlbum(diffUIImage,
-     self, // send the message to 'self' when calling the callback
-     @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-     NULL); // you generally won't need a contextInfo here*/
-    
     
     movieFrameMatDiffOrig8.release();
     movieFrameMatDiffOrig8=cv::Mat();
