@@ -162,8 +162,8 @@
     
     // Kernels for block averages
     cv::Mat blockAvg3x3 = cv::Mat::ones(4, 4, CV_32F);
-    cv::Mat blockAvg12x12 = cv::Mat::ones(14, 14, CV_32F);
-    cv::Mat blockAvg50x50 = cv::Mat::ones(58,58,CV_32F);
+    cv::Mat blockAvg12x12 = cv::Mat::ones(16, 16, CV_32F);
+    cv::Mat blockAvg50x50 = cv::Mat::ones(67,67,CV_32F);
     
     // Matrix for storing normalized frames
     cv::Mat movieFrameMatNorm(rows, cols, CV_16UC1);
@@ -319,9 +319,9 @@
         NSLog(@"img max: %f",maxVal);
         NSLog(@"max x: %i",maxIdx[0]);
         NSLog(@"max y: %i",maxIdx[1]);
-        
+        //only advance to the next stage of worm id if the patch max is 266 times higher than the image ave
         if (maxVal > (imageAve.val[0]*266)){
-            
+            //setup our box sizes around the worm
             int col=floor(maxIdx[1]);
             int row=maxIdx[0];
             int colRangeLow=0;
