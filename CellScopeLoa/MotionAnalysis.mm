@@ -150,6 +150,8 @@
     int totalframes = numFrames;
     int rows = 360;
     int cols = 480;
+    int wormSize=66; //must be even
+    int innerBoxSize=26; //must be even
     int sz[3] = {rows,cols,3};
     
     
@@ -328,30 +330,30 @@
             int colRangeHigh=0;
             int rowRangeLow=0;
             int rowRangeHigh=0;
-            if (col<25){
+            if (col<(wormSize/2)){
                 colRangeLow=0;
             }
             else {
-                colRangeLow=col-25;
+                colRangeLow=col-(wormSize/2);
             }
-            if (col>(movieFrameMatDiff.cols-25)){
+            if (col>(movieFrameMatDiff.cols-(wormSize/2))){
                 colRangeHigh=movieFrameMatDiff.cols;
             }
             else {
-                colRangeHigh=col+25;
+                colRangeHigh=col+(wormSize/2);
             }
             
-            if (row<25){
+            if (row<(wormSize/2)){
                 rowRangeLow=0;
             }
             else {
-                rowRangeLow=row-25;
+                rowRangeLow=row-(wormSize/2);
             }
-            if (row>(movieFrameMatDiff.rows-25)){
+            if (row>(movieFrameMatDiff.rows-(wormSize/2))){
                 rowRangeHigh=movieFrameMatDiff.rows;
             }
             else {
-                rowRangeHigh=row+25;
+                rowRangeHigh=row+(wormSize/2);
             }
             
             col=floor(maxIdx[1]);
@@ -360,30 +362,30 @@
             int colRangeHighS=0;
             int rowRangeLowS=0;
             int rowRangeHighS=0;
-            if (col<10){
+            if (col<(innerBoxSize/2)){
                 colRangeLowS=0;
             }
             else {
-                colRangeLowS=col-10;
+                colRangeLowS=col-(innerBoxSize/2);
             }
-            if (col>(movieFrameMatDiff.cols-10)){
+            if (col>(movieFrameMatDiff.cols-(innerBoxSize/2))){
                 colRangeHighS=movieFrameMatDiff.cols;
             }
             else {
-                colRangeHighS=col+10;
+                colRangeHighS=col+(innerBoxSize/2);
             }
             
-            if (row<10){
+            if (row<(innerBoxSize/2)){
                 rowRangeLowS=0;
             }
             else {
-                rowRangeLowS=row-10;
+                rowRangeLowS=row-(innerBoxSize/2);
             }
-            if (row>(movieFrameMatDiff.rows-10)){
+            if (row>(movieFrameMatDiff.rows-(innerBoxSize/2))){
                 rowRangeHighS=movieFrameMatDiff.rows;
             }
             else {
-                rowRangeHighS=row+10;
+                rowRangeHighS=row+(innerBoxSize/2);
             }
             
             cv::Mat selRegion;
