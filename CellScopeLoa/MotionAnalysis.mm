@@ -27,6 +27,7 @@
 @synthesize coordinatesPerMovie;
 
 -(id)initWithWidth:(NSInteger)width Height:(NSInteger)height Frames:(NSInteger)frames Movies:(NSInteger)movies {
+    //test git
     self = [super init];
     
     progress = 0.0;
