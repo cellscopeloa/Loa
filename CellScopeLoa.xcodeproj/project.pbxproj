@@ -11,6 +11,7 @@
 		821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */; };
 		821348B8165B50990066780E /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 821348B7165B50980066780E /* ResultsViewController.m */; };
 		82F4B20716B3024D00B6C322 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82F4B20616B3024D00B6C322 /* opencv2.framework */; };
+		9B03AE1916C36ACB00DD25F3 /* BranchStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B03AE1816C36ACB00DD25F3 /* BranchStoryboard.storyboard */; };
 		9B307587167EFC7B007DD13F /* bloodiconsmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B307585167EFC7B007DD13F /* bloodiconsmall.png */; };
 		9B307589167EFC8C007DD13F /* bloodiconsmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B307588167EFC8C007DD13F /* bloodiconsmall.png */; };
 		9B30758D167FB67E007DD13F /* bloodiconlarge copy.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B30758C167FB67E007DD13F /* bloodiconlarge copy.png */; };
@@ -123,6 +124,7 @@
 		821348B6165B50980066780E /* ResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
 		821348B7165B50980066780E /* ResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
 		82F4B20616B3024D00B6C322 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = "../../cell-scope-loa/opencv2.framework"; sourceTree = "<group>"; };
+		9B03AE1816C36ACB00DD25F3 /* BranchStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BranchStoryboard.storyboard; sourceTree = "<group>"; };
 		9B307585167EFC7B007DD13F /* bloodiconsmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bloodiconsmall.png; path = Images/bloodiconsmall.png; sourceTree = "<group>"; };
 		9B307588167EFC8C007DD13F /* bloodiconsmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bloodiconsmall.png; sourceTree = "<group>"; };
 		9B30758C167FB67E007DD13F /* bloodiconlarge copy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bloodiconlarge copy.png"; path = "Images/bloodiconlarge copy.png"; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 		9B72B4F916B1BCB7008237B3 /* RTPCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTPCamera.h; sourceTree = "<group>"; };
 		9B72B4FA16B1BCB7008237B3 /* RTPCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTPCamera.m; sourceTree = "<group>"; };
 		9B72B50116B1C1C8008237B3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		9B88536616C43AD000A65D86 /* SettingsDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsDelegate.h; sourceTree = "<group>"; };
 		9B8C66B216C2EEF200440742 /* ProcessingDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProcessingDelegate.h; sourceTree = "<group>"; };
 		9BA7218E16B4BDB700DE13D2 /* ProcessingViewControllerMB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessingViewControllerMB.m; sourceTree = "<group>"; };
 		9BA7219016B4BDBE00DE13D2 /* ProcessingViewControllerMB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessingViewControllerMB.h; sourceTree = "<group>"; };
@@ -346,6 +349,7 @@
 				9BD8A394163DA934009038BB /* Images */,
 				9BD8A359163DA7BE009038BB /* AppDelegate.h */,
 				9BD8A35A163DA7BE009038BB /* AppDelegate.m */,
+				9B03AE1816C36ACB00DD25F3 /* BranchStoryboard.storyboard */,
 				9BD8A362163DA7BE009038BB /* MainStoryboard_iPhone.storyboard */,
 				9BD8A365163DA7BE009038BB /* MainStoryboard_iPad.storyboard */,
 				9BD8A368163DA7BE009038BB /* ViewController.h */,
@@ -387,6 +391,7 @@
 				9B72B4F916B1BCB7008237B3 /* RTPCamera.h */,
 				9B72B4FA16B1BCB7008237B3 /* RTPCamera.m */,
 				9BD8A351163DA7BD009038BB /* Supporting Files */,
+				9B88536616C43AD000A65D86 /* SettingsDelegate.h */,
 			);
 			path = CellScopeLoa;
 			sourceTree = "<group>";
@@ -627,6 +632,7 @@
 				9B307589167EFC8C007DD13F /* bloodiconsmall.png in Resources */,
 				9B30758D167FB67E007DD13F /* bloodiconlarge copy.png in Resources */,
 				9B30758F167FB699007DD13F /* bloodiconlarge copy.png in Resources */,
+				9B03AE1916C36ACB00DD25F3 /* BranchStoryboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

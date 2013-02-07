@@ -219,7 +219,8 @@
     
     //movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBack;
     
-    movieFrameMatDiffOrig = movieFrameMatDiff.clone();
+    movieFrameMatDiffOrig = movieFrameMatDiff.clone();    
+    
     cv::Scalar imageAve = cv::mean(movieFrameMatDiffOrig);
     NSLog(@"img avg: %f",imageAve.val[0]);
     

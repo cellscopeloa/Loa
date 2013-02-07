@@ -82,13 +82,14 @@
     // Setup the capture session
     self.camera = [[RTPCamera alloc] init];
     [self.camera setPreviewLayer:self.pLayer.layer];
+    
     // Set the processing delegate
     self.camera.processingDelegate = self;
     // Set the camera image alpha to zero while we load
     [self.camera start];
     
     int nframesmax = 200;
-    int fov = 5;
+    int fov = 3;
     
     // Create a motion analysis object for image processing
     MotionAnalysis* analysis = [[MotionAnalysis alloc] initWithWidth:camera.width
@@ -127,6 +128,12 @@
 {
     NSMutableArray* frames = [[NSMutableArray alloc] init];
     [frameRecord addObject:frames];
+    
+    // Lock the exposure settings on first run
+    if(instructIdx == 0) {
+        [camera lockSettings];
+    }
+    
     [camera captureWithDuration:5.0 frameList:frames recordingDelegate:self progressDelegate:self];
     progressBar.alpha = 1.0;
     [UIView animateWithDuration:1.0 animations:^{

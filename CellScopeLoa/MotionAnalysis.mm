@@ -311,7 +311,13 @@
     //movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBack;
     
     movieFrameMatDiffOrig = movieFrameMatDiff.clone();
-    cv::Scalar imageAve = cv::mean(movieFrameMatDiffOrig);
+    int rowRangeLow = 30;
+    int rowRangeHigh = 330;
+    int colRangeLow = 90;
+    int colRangeHigh = 390;
+    cv::Mat centerRegion = movieFrameMatDiffOrig(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
+
+    cv::Scalar imageAve = cv::mean(centerRegion);
     NSLog(@"img avg: %f",imageAve.val[0]);
     
     bool findinWorms=TRUE;
@@ -325,7 +331,7 @@
         NSLog(@"max x: %i",maxIdx[0]);
         NSLog(@"max y: %i",maxIdx[1]);
         //only advance to the next stage of worm id if the patch max is 266 times higher than the image ave
-        if (maxVal > (imageAve.val[0]*266)){
+        if (maxVal > (imageAve.val[0] * 450)) {
             //setup our box sizes around the worm
             int col=floor(maxIdx[1]);
             int row=maxIdx[0];
@@ -394,9 +400,9 @@
             cv::Mat selRegion;
             selRegion=movieFrameMatDiffOrig(cv::Range(rowRangeLowS,rowRangeHighS),cv::Range(colRangeLowS,colRangeHighS));
             cv::Mat wholeRegion;
-            cv::Mat noSel=movieFrameMatDiffOrig.clone();
+            cv::Mat noSel = movieFrameMatDiffOrig.clone();
             //noSel(cv::Range(rowRangeLowS,rowRangeHighS),cv::Range(colRangeLowS,colRangeHighS))=cv::Scalar::all(0);
-            wholeRegion=noSel(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
+            wholeRegion = noSel(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
             
             cv::Scalar selAve=cv::mean(selRegion);
             cv::Scalar wholeAve=cv::mean(wholeRegion);

@@ -77,6 +77,9 @@
         captureViewController.program = program;
         captureViewController.managedObjectContext = managedObjectContext;
     }
+    else if([segue.identifier isEqualToString:@"Settings"]) {
+        
+    }
 }
 
 #pragma mark - Table view data source

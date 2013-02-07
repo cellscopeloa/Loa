@@ -55,5 +55,6 @@
 -(void)progressUpdate:(NSTimer*)timer;
 -(void)recordingComplete:(NSTimer *)timer;
 -(void)createNewAssetWriterOutput;
+-(void)lockSettings;
 
 @end

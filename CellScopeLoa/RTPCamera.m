@@ -42,22 +42,12 @@
     self.session.sessionPreset = AVCaptureSessionPresetMedium;
     
     self.device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if ([self.device isFocusModeSupported:AVCaptureFocusModeAutoFocus] ) {
+    if ([self.device isFocusModeSupported:AVCaptureFocusModeLocked] ) {
         [self.device lockForConfiguration:nil];
-        [self.device setFocusMode:AVCaptureFocusModeAutoFocus];
+        [self.device setFocusMode:AVCaptureFocusModeLocked];
         [self.device unlockForConfiguration];
     }
-    if ([self.device isExposureModeSupported:AVCaptureExposureModeAutoExpose] ) {
-        [self.device lockForConfiguration:nil];
-        [self.device setFocusMode:AVCaptureExposureModeAutoExpose];
-        [self.device unlockForConfiguration];
-    }
-    if ([self.device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance] ) {
-        [self.device lockForConfiguration:nil];
-        [self.device setFocusMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
-        [self.device unlockForConfiguration];
-    }
-
+    
     self.input = [AVCaptureDeviceInput deviceInputWithDevice:self.device error:nil];
     
     // Setup movie output
@@ -114,6 +104,22 @@
     return self;
 }
 
+- (void)lockSettings
+{
+    // Lock exposure and white balance
+    if ([self.device isExposureModeSupported:AVCaptureExposureModeLocked] ) {
+        [self.device lockForConfiguration:nil];
+        [self.device setExposureMode:AVCaptureExposureModeLocked];
+        [self.device unlockForConfiguration];
+    }
+    
+    if ([self.device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeLocked] ) {
+        [self.device lockForConfiguration:nil];
+        [self.device setWhiteBalanceMode:AVCaptureWhiteBalanceModeLocked];
+        [self.device unlockForConfiguration];
+    }
+}
+
 - (void)createNewAssetWriterOutput
 {
     /* That's going to go somewhere, I imagine you've got the URL for that sorted,
@@ -158,6 +164,14 @@
 
 - (void)start
 {
+    // Lock focus on bottom left corner
+    if ([self.device lockForConfiguration:nil]) {
+        CGPoint point;
+        point.x = 0;
+        point.y = 0;
+        // [self.device setFocusPointOfInterest:point];
+        // [self.device setFocusMode:AVCaptureFocusModeAutoFocus];
+    }
     [self.session startRunning];
 }
 
