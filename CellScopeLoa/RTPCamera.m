@@ -47,6 +47,17 @@
         [self.device setFocusMode:AVCaptureFocusModeAutoFocus];
         [self.device unlockForConfiguration];
     }
+    if ([self.device isExposureModeSupported:AVCaptureExposureModeAutoExpose] ) {
+        [self.device lockForConfiguration:nil];
+        [self.device setFocusMode:AVCaptureExposureModeAutoExpose];
+        [self.device unlockForConfiguration];
+    }
+    if ([self.device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance] ) {
+        [self.device lockForConfiguration:nil];
+        [self.device setFocusMode:AVCaptureWhiteBalanaceModeAutoWhiteBalance];
+        [self.device unlockForConfiguration];
+    }
+
     self.input = [AVCaptureDeviceInput deviceInputWithDevice:self.device error:nil];
     
     // Setup movie output
