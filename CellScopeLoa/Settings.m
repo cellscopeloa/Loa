@@ -2,8 +2,8 @@
 //  Settings.m
 //  CellScopeLoa
 //
-//  Created by Matthew Bakalar on 11/10/12.
-//  Copyright (c) 2012 Matthew Bakalar. All rights reserved.
+//  Created by Matthew Bakalar on 2/7/13.
+//  Copyright (c) 2013 Matthew Bakalar. All rights reserved.
 //
 
 #import "Settings.h"
@@ -13,6 +13,8 @@
 @implementation Settings
 
 @dynamic guided;
+@dynamic sensitivity;
+@dynamic name;
 @dynamic user;
 
 @end
