@@ -194,7 +194,7 @@
     
     //while(i < 50/framesToSkip) {
     //while(i < numFrames/framesToSkip) {
-    while(frameIdx+avgFrames <= numFrames) {
+    while(frameIdx+avgFrames <= (numFrames-20)) {
 
         [self setProgressWithMovie:movidx Frame:frameIdx];
         while(i <= avgFrames) {
@@ -205,7 +205,7 @@
             [self setProgressWithMovie:movidx Frame:frameIdx];
             
             // Grab the current movie from the frame buffer list
-            int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames);
+            int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames+10);
             //NSLog(@"bufferidxinit: %i", bufferIdx);
             movieFrameMat = frameBuffers->at(bufferIdx);
             
@@ -252,7 +252,7 @@
         }
         if (i > avgFrames+1) {
             // Grab the current movie from the frame buffer list
-            int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames-framesToSkip);
+            int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames-framesToSkip+10);
             //NSLog(@"bufferidxadd: %i", bufferIdx);
             movieFrameMat = frameBuffers->at(bufferIdx);
             
@@ -262,7 +262,7 @@
             cv::filter2D(movieFrameMat, movieFrameMat, -1, blockAvg3x3, cv::Point(-1,-1));
             
             // Grab the first frame from the current ave from the frame buffer list
-            bufferIdx = movieIdx*numFramesMax + (frameIdx-avgFrames-framesToSkip-framesToSkip);
+            bufferIdx = movieIdx*numFramesMax + (frameIdx-avgFrames-framesToSkip-framesToSkip+10);
             //NSLog(@"bufferidxfirst: %i", bufferIdx);
 
             movieFrameMatFirst = frameBuffers->at(bufferIdx);
@@ -411,7 +411,7 @@
             
             NSLog(@"center intensity norm: %f",selAve.val[0]/wholeAve.val[0]);
             
-            if (selAve.val[0]>wholeAve.val[0]*1.2){
+            if (selAve.val[0]>wholeAve.val[0]*1.3){
                 foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
                 NSLog(@"%s","found some worms!");
                 
