@@ -13,6 +13,7 @@
 #import "ResultsViewController.h"
 #import "MainMenuViewController.h"
 #import "MotionAnalysis.h"
+
 dispatch_queue_t backgroundQueue;
 
 @interface ProcessingViewControllerMB ()
@@ -53,9 +54,9 @@ dispatch_queue_t backgroundQueue;
     if([segue.identifier isEqualToString:@"Results"]) {
         UITabBarController* tc = [segue destinationViewController];
         ReviewViewController* reviewViewController = (ReviewViewController*)[[tc customizableViewControllers] objectAtIndex:0];
-        ResultsViewController* resultsViewController = (ResultsViewController*)[[tc customizableViewControllers] objectAtIndex:1];
+        // ResultsViewController* resultsViewController = (ResultsViewController*)[[tc customizableViewControllers] objectAtIndex:1];
         reviewViewController.program = program;
-        resultsViewController.program = program;
+        // resultsViewController.program = program;
     }
     if([segue.identifier isEqualToString:@"Review"]) {
         MainMenuViewController *menuViewController = [segue destinationViewController];
@@ -91,11 +92,17 @@ dispatch_queue_t backgroundQueue;
      }];
 
     MotionAnalysis* analysis = program.analysis;
+    analysis.delegate = self;
     dispatch_async(backgroundQueue, ^(void) {
         @autoreleasepool {
             [analysis processAllMovies];
         }
     });
+}
+
+- (void)processedMovieResult:(UIImage*)image
+{
+    resultsImage = image;
 }
 
 - (void)didReceiveMemoryWarning

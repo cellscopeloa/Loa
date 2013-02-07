@@ -10,7 +10,7 @@
 #import "LoaProgram.h"
 #import "MotionAnalysis.h"
 
-@interface ProcessingViewControllerMB : UIViewController
+@interface ProcessingViewControllerMB : UIViewController <ProcessingDelegate>
 
 @property (strong, nonatomic) LoaProgram* program;
 
@@ -20,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
 @property (weak, nonatomic) IBOutlet UIImageView *resultsImageView;
 @property NSMutableArray* frameRecord;
+
+- (void)processedMovieResult:(UIImage*)image;
 
 - (IBAction)onPressed:(id)sender;
 @end

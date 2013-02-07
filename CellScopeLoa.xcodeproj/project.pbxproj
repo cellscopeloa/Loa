@@ -134,6 +134,7 @@
 		9B72B4F916B1BCB7008237B3 /* RTPCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTPCamera.h; sourceTree = "<group>"; };
 		9B72B4FA16B1BCB7008237B3 /* RTPCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTPCamera.m; sourceTree = "<group>"; };
 		9B72B50116B1C1C8008237B3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		9B8C66B216C2EEF200440742 /* ProcessingDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProcessingDelegate.h; sourceTree = "<group>"; };
 		9BA7218E16B4BDB700DE13D2 /* ProcessingViewControllerMB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessingViewControllerMB.m; sourceTree = "<group>"; };
 		9BA7219016B4BDBE00DE13D2 /* ProcessingViewControllerMB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessingViewControllerMB.h; sourceTree = "<group>"; };
 		9BA7219116B4C40300DE13D2 /* MotionAnalysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionAnalysis.h; sourceTree = "<group>"; };
@@ -360,6 +361,7 @@
 				9BD0161C16472FE500A7C37B /* MovieProgressDelegate.h */,
 				9BCBF33C16573F1500C5AD1D /* ProcessingViewController.h */,
 				9BCBF33D16573F1500C5AD1D /* ProcessingViewController.m */,
+				9B8C66B216C2EEF200440742 /* ProcessingDelegate.h */,
 				9BA7219016B4BDBE00DE13D2 /* ProcessingViewControllerMB.h */,
 				9BA7218E16B4BDB700DE13D2 /* ProcessingViewControllerMB.m */,
 				9BC26DEF164ED6C200D7C164 /* MainMenuViewController.h */,

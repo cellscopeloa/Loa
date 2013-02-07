@@ -15,10 +15,13 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) LoaProgram* program;
 
+@property (weak, nonatomic) IBOutlet UILabel *wormsField;
 @property (strong, nonatomic) NSArray *instructionText;
 @property (nonatomic) NSInteger instructIdx;
 @property (weak, nonatomic) IBOutlet UITextView *instructions;
+@property (strong, nonatomic) IBOutlet UIView *background;
 @property (weak, nonatomic) IBOutlet UILabel *countLabel;
+@property (weak, nonatomic) IBOutlet UIView *statusBox;
 
 - (void)showResults;
 -(void)setupInstructionSet;

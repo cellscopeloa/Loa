@@ -25,6 +25,7 @@
 @synthesize outImage;
 @synthesize urls;
 @synthesize coordinatesPerMovie;
+@synthesize delegate;
 
 -(id)initWithWidth:(NSInteger)width Height:(NSInteger)height Frames:(NSInteger)frames Movies:(NSInteger)movies {
     //test git
@@ -128,9 +129,10 @@
     }
     // Notify that processing is complete
     
-    // Put an NSMutableArray* full of coordinates
-    //NSMutableArray* coordinatesPerMovie; // has 5 elements
-    // Fill it!
+    // Release all of the image buffers
+    for(int i=0; i<numMovies*numFramesMax; i++) {
+        frameBuffers->at(i).release();
+    }
     
     NSArray* keys = [[NSArray alloc] initWithObjects:@"progress", @"done", @"coords",@"urls", nil];
     NSArray* objects = [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],[NSNumber numberWithInt:1],coordinatesPerMovie,urls,nil];
@@ -485,6 +487,7 @@
         // Do anything needed to handle the error or display it to the user
     } else {
         NSLog(@"image saved in photo album");
+        [delegate processedMovieResult:image];
         
         // .... do anything you want here to handle
         // .... when the image has been saved in the photo album

@@ -21,7 +21,10 @@
 @synthesize instructIdx;
 @synthesize instructionText;
 @synthesize instructions;
+@synthesize statusBox;
+@synthesize background;
 @synthesize countLabel;
+@synthesize wormsField;
 
 -(void)setupInstructionSet
 {
@@ -74,7 +77,16 @@
     for (SampleMovie* sample in movies) {
         wormcount += [[sample features] count];
     }
-    countLabel.text = [NSString stringWithFormat:@"%d mf/ml", wormcount];
+    int avg_worms = round(wormcount/5.0);
+    int estimated_count = floor((wormcount / 5.0) / (.00073/2.0));
+    if(estimated_count > 30000) {
+        statusBox.backgroundColor = [UIColor redColor];
+    }
+    else {
+        statusBox.backgroundColor = [UIColor greenColor];
+    }
+    countLabel.text = [NSString stringWithFormat:@"%d mf/ml", estimated_count];
+    wormsField.text = [NSString stringWithFormat:@"%d mf/field", avg_worms];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

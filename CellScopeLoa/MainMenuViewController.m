@@ -161,8 +161,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 0) {
-        if(NO) {
-            [self performSegueWithIdentifier:@"QuickTest" sender:self];
+        if(YES) {
+            [self performSegueWithIdentifier:@"TestNoInstruct" sender:self];
         }
         else {
             [self performSegueWithIdentifier:@"Test" sender:self];

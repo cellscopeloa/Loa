@@ -87,8 +87,8 @@
     // Set the camera image alpha to zero while we load
     [self.camera start];
     
-    int nframesmax = 100;
-    int fov = 2;
+    int nframesmax = 200;
+    int fov = 5;
     
     // Create a motion analysis object for image processing
     MotionAnalysis* analysis = [[MotionAnalysis alloc] initWithWidth:camera.width

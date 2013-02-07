@@ -10,4 +10,6 @@
 
 @protocol ProcessingDelegate <NSObject>
 
+- (void)processedMovieResult:(UIImage*)image;
+
 @end
