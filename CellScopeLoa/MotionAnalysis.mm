@@ -18,6 +18,7 @@
     NSInteger frameIdx;
     NSInteger numFramesMax;
     NSInteger numMovies;
+    float sensitivity;
     double progress;
 }
 
@@ -27,8 +28,11 @@
 @synthesize coordinatesPerMovie;
 @synthesize delegate;
 
--(id)initWithWidth:(NSInteger)width Height:(NSInteger)height Frames:(NSInteger)frames Movies:(NSInteger)movies {
-    //test git
+-(id)initWithWidth:(NSInteger)width Height:(NSInteger)height
+            Frames:(NSInteger)frames
+            Movies:(NSInteger)movies
+       Sensitivity: (float) sense {
+
     self = [super init];
     
     progress = 0.0;
@@ -37,6 +41,8 @@
     frameIdx = 0;
     numFramesMax = frames;
     numMovies = movies;
+    sensitivity = sense;
+    NSLog(@"Using sensitivity: %f", sensitivity);
     
     coordsArray = [[NSMutableArray alloc] init];
     movieLengths = [[NSMutableArray alloc] init];
@@ -330,8 +336,18 @@
         NSLog(@"img max: %f",maxVal);
         NSLog(@"max x: %i",maxIdx[0]);
         NSLog(@"max y: %i",maxIdx[1]);
+        
+        // Calculate the sensitivity
+        int low = 250;
+        int high = 650;
+        float sensemul = (sensitivity*-1.0 + 1) / 2.0;
+        int rangemul = round(sensemul * (high-low) + low);
+        NSLog(@"Sensitivy: %f", sensitivity);
+        NSLog(@"sensemul: %f", sensemul);
+        NSLog(@"Using range multiplier %d", rangemul);
+        
         //only advance to the next stage of worm id if the patch max is 266 times higher than the image ave
-        if (maxVal > (imageAve.val[0] * 450)) {
+        if (maxVal > (imageAve.val[0] * rangemul)) {
             //setup our box sizes around the worm
             int col=floor(maxIdx[1]);
             int row=maxIdx[0];

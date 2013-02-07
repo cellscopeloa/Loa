@@ -7,12 +7,18 @@
 //
 
 #import "SettingsViewController.h"
+#import "MainMenuViewController.h"
 
 @interface SettingsViewController ()
 
 @end
 
 @implementation SettingsViewController
+
+@synthesize managedObjectContext;
+@synthesize sensitivityIndicator;
+@synthesize delegate;
+@synthesize sensitivitySlide;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -26,6 +32,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSNumber* sense = [defaults objectForKey:@"sensitivity"];
+    sensitivitySlide.value = (sense.floatValue + 1.0)/2.0;
+    sensitivityIndicator.text = [NSString stringWithFormat:@"%.2f", sense.floatValue];
+    NSLog(@"Loaded sensitivity: %f", sense.floatValue);
+
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -40,31 +53,31 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"MainMenu"]) {
+        
+        NSLog(@"Setting sensitivty in the defaults");
+        
+        MainMenuViewController* menu = [segue destinationViewController];
+        float sense = sensitivitySlide.value * 2.0 - 1.0;
+        [menu updateSensitivity:sense];
+        
+        // Store sensitivity
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:[NSNumber numberWithFloat:sense] forKey:@"sensitivity"];
+        [defaults synchronize];
+        
+        menu.managedObjectContext = managedObjectContext;
+    }
+}
+
 #pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
 
 /*
 // Override to support conditional editing of the table view.
@@ -109,13 +122,27 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if(indexPath.section == 1) {
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        float sense = 0.0;
+        sensitivitySlide.value = (sense + 1.0)/2.0;
+        sensitivityIndicator.text = [NSString stringWithFormat:@"%.2f", sense];
+        
+        // Store sensitivity
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:[NSNumber numberWithFloat:sense] forKey:@"sensitivity"];
+        [defaults synchronize];
+
+    }
     // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
 }
 
+- (IBAction)sensitivityValueChanged:(id)sender {
+    float sense = sensitivitySlide.value * 2.0 - 1.0;
+    if (fabs(sense) < 0.05) {
+        sense = 0.0;
+        sensitivitySlide.value = 0.5;
+    }
+    sensitivityIndicator.text = [NSString stringWithFormat:@"%.2f", sense];
+}
 @end

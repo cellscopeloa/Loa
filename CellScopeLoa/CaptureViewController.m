@@ -92,10 +92,11 @@
     int fov = 3;
     
     // Create a motion analysis object for image processing
-    MotionAnalysis* analysis = [[MotionAnalysis alloc] initWithWidth:camera.width
-                                                              Height:camera.height
-                                                              Frames:nframesmax
-                                                              Movies:fov];
+    MotionAnalysis* analysis = [[MotionAnalysis alloc] initWithWidth: camera.width
+                                                              Height: camera.height
+                                                              Frames: nframesmax
+                                                              Movies: fov
+                                                         Sensitivity: program.sensitivity];
     program.analysis = analysis;
     [UIView animateWithDuration:0.5 animations:^{
         instructions.alpha = 1.0;

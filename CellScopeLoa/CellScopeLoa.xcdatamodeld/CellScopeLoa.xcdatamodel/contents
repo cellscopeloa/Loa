@@ -18,6 +18,8 @@
     </entity>
     <entity name="Settings" representedClassName="Settings" syncable="YES">
         <attribute name="guided" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sensitivity" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <relationship name="user" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="settings" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES">
@@ -29,10 +31,10 @@
         <relationship name="settings" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Settings" inverseName="user" inverseEntity="Settings" syncable="YES"/>
     </entity>
     <elements>
+        <element name="ImageFeature" positionX="-7373" positionY="171" width="128" height="103"/>
         <element name="Sample" positionX="-7785" positionY="99" width="128" height="73"/>
         <element name="SampleMovie" positionX="-7589" positionY="171" width="128" height="103"/>
-        <element name="Settings" positionX="-7535" positionY="-117" width="128" height="73"/>
+        <element name="Settings" positionX="-7535" positionY="-117" width="128" height="103"/>
         <element name="User" positionX="-7740" positionY="-117" width="128" height="133"/>
-        <element name="ImageFeature" positionX="-7373" positionY="171" width="128" height="103"/>
     </elements>
 </model>

@@ -8,10 +8,13 @@
 
 #import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
+#import "SettingsDelegate.h"
 
-@interface MainMenuViewController : UITableViewController
+@interface MainMenuViewController : UITableViewController <SettingsDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+
+@property (nonatomic, assign) float sensitivity;
 
 @end

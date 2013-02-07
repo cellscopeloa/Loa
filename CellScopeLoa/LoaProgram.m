@@ -21,11 +21,13 @@
 @synthesize samplenumber;
 @synthesize frameRecord;
 @synthesize analysis;
+@synthesize sensitivity;
 
-- (LoaProgram*)initWithMode:(NSString *)guidedMode
+- (LoaProgram*)initWithMode:(NSString *)guidedMode Sensitivity:(float)sense
 {
     self = [super init];
     self.guided = guidedMode;
+    self.sensitivity = sense;
     samplenumber = 10;
     totalfields = 3;
     fovnumber = 0;

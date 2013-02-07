@@ -71,11 +71,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/LoaProgram.m"
-         timestampString = "380945220.458745"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "60"
-         endingLineNumber = "60"
+         startingLineNumber = "62"
+         endingLineNumber = "62"
          landmarkName = "-movieCapturedWithURL:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -110,11 +110,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MainMenuViewController.m"
-         timestampString = "375065457.697139"
+         timestampString = "381964233.270504"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "63"
-         endingLineNumber = "63"
+         startingLineNumber = "67"
+         endingLineNumber = "67"
          landmarkName = "-prepareForSegue:sender:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -201,11 +201,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/LoaProgram.m"
-         timestampString = "380945220.458745"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "144"
-         endingLineNumber = "144"
+         startingLineNumber = "146"
+         endingLineNumber = "146"
          landmarkName = "-addMovieFeatures:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -227,11 +227,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/LoaProgram.m"
-         timestampString = "380945220.458745"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "136"
-         endingLineNumber = "136"
+         startingLineNumber = "138"
+         endingLineNumber = "138"
          landmarkName = "-addMovieFeatures:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -240,11 +240,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/LoaProgram.m"
-         timestampString = "380945220.458745"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "151"
-         endingLineNumber = "151"
+         startingLineNumber = "153"
+         endingLineNumber = "153"
          landmarkName = "-addMovieFeatures:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -344,11 +344,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/CaptureViewController.m"
-         timestampString = "381901332.835767"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "176"
-         endingLineNumber = "176"
+         startingLineNumber = "177"
+         endingLineNumber = "177"
          landmarkName = "-captureOutput:didFinishRecordingToOutputFileAtURL:fromConnections:error:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -370,11 +370,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381874424.488283"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "75"
-         endingLineNumber = "75"
+         startingLineNumber = "81"
+         endingLineNumber = "81"
          landmarkName = "-writeNextFrame:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -383,11 +383,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381874424.488283"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "57"
-         endingLineNumber = "57"
+         startingLineNumber = "63"
+         endingLineNumber = "63"
          landmarkName = "@implementation MotionAnalysis"
          landmarkType = "3">
       </FileBreakpoint>
@@ -396,11 +396,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381874424.488283"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "58"
-         endingLineNumber = "58"
+         startingLineNumber = "64"
+         endingLineNumber = "64"
          landmarkName = "-writeNextFrame:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -409,12 +409,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381874424.488283"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "40"
-         endingLineNumber = "40"
-         landmarkName = "-initWithWidth:Height:Frames:Movies:"
+         startingLineNumber = "46"
+         endingLineNumber = "46"
+         landmarkName = "-initWithWidth:Height:Frames:Movies:Sensitivity:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -422,11 +422,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381876906.041286"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "200"
-         endingLineNumber = "200"
+         startingLineNumber = "206"
+         endingLineNumber = "206"
          landmarkName = "-processFramesForMovie:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -435,11 +435,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381876906.041286"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "213"
-         endingLineNumber = "213"
+         startingLineNumber = "219"
+         endingLineNumber = "219"
          landmarkName = "-processFramesForMovie:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -448,11 +448,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381876906.041286"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "244"
-         endingLineNumber = "244"
+         startingLineNumber = "250"
+         endingLineNumber = "250"
          landmarkName = "-processFramesForMovie:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -461,11 +461,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381876906.041286"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "248"
-         endingLineNumber = "248"
+         startingLineNumber = "254"
+         endingLineNumber = "254"
          landmarkName = "-processFramesForMovie:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -474,11 +474,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381876906.041286"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "245"
-         endingLineNumber = "245"
+         startingLineNumber = "251"
+         endingLineNumber = "251"
          landmarkName = "-processFramesForMovie:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -487,11 +487,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381876906.041286"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "130"
-         endingLineNumber = "130"
+         startingLineNumber = "136"
+         endingLineNumber = "136"
          landmarkName = "-processAllMovies"
          landmarkType = "5">
       </FileBreakpoint>
@@ -500,11 +500,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381874424.488283"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "79"
-         endingLineNumber = "79"
+         startingLineNumber = "85"
+         endingLineNumber = "85"
          landmarkName = "-writeNextFrame:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -513,11 +513,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381898877.393396"
+         timestampString = "381964593.728341"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "466"
-         endingLineNumber = "466"
+         startingLineNumber = "482"
+         endingLineNumber = "482"
          landmarkName = "-processFramesForMovie:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -526,11 +526,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381898877.393396"
+         timestampString = "381961426.133125"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "319"
-         endingLineNumber = "319"
+         startingLineNumber = "325"
+         endingLineNumber = "325"
          landmarkName = "-processFramesForMovie:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -539,11 +539,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "CellScopeLoa/MotionAnalysis.mm"
-         timestampString = "381899513.960017"
+         timestampString = "381964593.728341"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "334"
-         endingLineNumber = "334"
+         startingLineNumber = "350"
+         endingLineNumber = "350"
          landmarkName = "-processFramesForMovie:"
          landmarkType = "5">
       </FileBreakpoint>

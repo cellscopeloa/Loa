@@ -20,6 +20,8 @@
 		9B331F35167B9EC200BE05E3 /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B331F34167B9EC200BE05E3 /* SampleMovie.m */; };
 		9B72B4FB16B1BCB7008237B3 /* RTPCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B72B4FA16B1BCB7008237B3 /* RTPCamera.m */; };
 		9B72B50216B1C1C8008237B3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B72B50116B1C1C8008237B3 /* CoreVideo.framework */; };
+		9B88536916C43B4300A65D86 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B88536816C43B4300A65D86 /* SettingsViewController.m */; };
+		9B88536C16C453F500A65D86 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B88536B16C453F500A65D86 /* Settings.m */; };
 		9BA7218F16B4BDB700DE13D2 /* ProcessingViewControllerMB.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7218E16B4BDB700DE13D2 /* ProcessingViewControllerMB.m */; };
 		9BA7219316B4C40300DE13D2 /* MotionAnalysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9BA7219216B4C40300DE13D2 /* MotionAnalysis.mm */; };
 		9BC26DEA164ED4FB00D7C164 /* LoaProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26DE9164ED4FB00D7C164 /* LoaProgram.m */; };
@@ -29,7 +31,6 @@
 		9BC26E03164EEEE900D7C164 /* AddUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E02164EEEE900D7C164 /* AddUserViewController.m */; };
 		9BC26E0C164F02FB00D7C164 /* UsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E0B164F02FB00D7C164 /* UsersViewController.m */; };
 		9BC26E18164F05AB00D7C164 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E17164F05AB00D7C164 /* User.m */; };
-		9BC26E1B164F05AC00D7C164 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E1A164F05AC00D7C164 /* Settings.m */; };
 		9BCBF3331657113100C5AD1D /* Sample.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF3321657113100C5AD1D /* Sample.m */; };
 		9BCBF33E16573F1500C5AD1D /* ProcessingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF33D16573F1500C5AD1D /* ProcessingViewController.m */; };
 		9BCBF3471659B7FB00C5AD1D /* ReviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCBF3461659B7FA00C5AD1D /* ReviewViewController.m */; };
@@ -137,6 +138,10 @@
 		9B72B4FA16B1BCB7008237B3 /* RTPCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTPCamera.m; sourceTree = "<group>"; };
 		9B72B50116B1C1C8008237B3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		9B88536616C43AD000A65D86 /* SettingsDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsDelegate.h; sourceTree = "<group>"; };
+		9B88536716C43B4300A65D86 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		9B88536816C43B4300A65D86 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		9B88536A16C453F500A65D86 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
+		9B88536B16C453F500A65D86 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
 		9B8C66B216C2EEF200440742 /* ProcessingDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProcessingDelegate.h; sourceTree = "<group>"; };
 		9BA7218E16B4BDB700DE13D2 /* ProcessingViewControllerMB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessingViewControllerMB.m; sourceTree = "<group>"; };
 		9BA7219016B4BDBE00DE13D2 /* ProcessingViewControllerMB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessingViewControllerMB.h; sourceTree = "<group>"; };
@@ -155,8 +160,6 @@
 		9BC26E0B164F02FB00D7C164 /* UsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UsersViewController.m; sourceTree = "<group>"; };
 		9BC26E16164F05AB00D7C164 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		9BC26E17164F05AB00D7C164 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
-		9BC26E19164F05AC00D7C164 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
-		9BC26E1A164F05AC00D7C164 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
 		9BCBF3311657113100C5AD1D /* Sample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sample.h; sourceTree = "<group>"; };
 		9BCBF3321657113100C5AD1D /* Sample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sample.m; sourceTree = "<group>"; };
 		9BCBF33716572B6100C5AD1D /* libdispatch.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdispatch.dylib; path = usr/lib/system/libdispatch.dylib; sourceTree = SDKROOT; };
@@ -287,14 +290,14 @@
 				9BC26DF7164ED8ED00D7C164 /* CellScopeLoa.xcdatamodeld */,
 				9BC26E16164F05AB00D7C164 /* User.h */,
 				9BC26E17164F05AB00D7C164 /* User.m */,
-				9BC26E19164F05AC00D7C164 /* Settings.h */,
-				9BC26E1A164F05AC00D7C164 /* Settings.m */,
 				9BCBF3311657113100C5AD1D /* Sample.h */,
 				9BCBF3321657113100C5AD1D /* Sample.m */,
 				9B331F30167B9EC000BE05E3 /* ImageFeature.h */,
 				9B331F31167B9EC000BE05E3 /* ImageFeature.m */,
 				9B331F33167B9EC100BE05E3 /* SampleMovie.h */,
 				9B331F34167B9EC200BE05E3 /* SampleMovie.m */,
+				9B88536A16C453F500A65D86 /* Settings.h */,
+				9B88536B16C453F500A65D86 /* Settings.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -392,6 +395,8 @@
 				9B72B4FA16B1BCB7008237B3 /* RTPCamera.m */,
 				9BD8A351163DA7BD009038BB /* Supporting Files */,
 				9B88536616C43AD000A65D86 /* SettingsDelegate.h */,
+				9B88536716C43B4300A65D86 /* SettingsViewController.h */,
+				9B88536816C43B4300A65D86 /* SettingsViewController.m */,
 			);
 			path = CellScopeLoa;
 			sourceTree = "<group>";
@@ -679,7 +684,6 @@
 				9BC26E03164EEEE900D7C164 /* AddUserViewController.m in Sources */,
 				9BC26E0C164F02FB00D7C164 /* UsersViewController.m in Sources */,
 				9BC26E18164F05AB00D7C164 /* User.m in Sources */,
-				9BC26E1B164F05AC00D7C164 /* Settings.m in Sources */,
 				9BCBF3331657113100C5AD1D /* Sample.m in Sources */,
 				9BCBF33E16573F1500C5AD1D /* ProcessingViewController.m in Sources */,
 				9BCBF3471659B7FB00C5AD1D /* ReviewViewController.m in Sources */,
@@ -693,6 +697,8 @@
 				9B72B4FB16B1BCB7008237B3 /* RTPCamera.m in Sources */,
 				9BA7218F16B4BDB700DE13D2 /* ProcessingViewControllerMB.m in Sources */,
 				9BA7219316B4C40300DE13D2 /* MotionAnalysis.mm in Sources */,
+				9B88536916C43B4300A65D86 /* SettingsViewController.m in Sources */,
+				9B88536C16C453F500A65D86 /* Settings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

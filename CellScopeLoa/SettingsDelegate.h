@@ -10,4 +10,6 @@
 
 @protocol SettingsDelegate <NSObject>
 
+- (void)updateSensitivity:(float) value;
+
 @end

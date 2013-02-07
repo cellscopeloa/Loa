@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SettingsDelegate.h"
+#import "MainMenuViewController.h"
 
 @interface SettingsViewController : UITableViewController
+
+@property (weak, nonatomic) IBOutlet UISlider *sensitivitySlide;
+@property (weak, nonatomic) IBOutlet UILabel *sensitivityIndicator;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+
+@property (weak, nonatomic) id<SettingsDelegate> delegate;
+
+- (IBAction)sensitivityValueChanged:(id)sender;
 
 @end

@@ -12,6 +12,7 @@
 #import "CaptureViewController.h"
 #import "InstructionViewController.h"
 #import "ReviewVideoViewController.h"
+#import "SettingsViewController.h"
 
 @interface MainMenuViewController ()
 
@@ -19,6 +20,7 @@
 
 @implementation MainMenuViewController
 
+@synthesize sensitivity;
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext;
 
@@ -41,7 +43,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    NSLog(@"Hello world");
+    // Set initial sensitivity
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,33 +54,40 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    NSLog(@"Sensititv: now: %f", sensitivity);
     if([segue.identifier isEqualToString:@"Users"]) {
         AddUserViewController *addUserViewController = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
         addUserViewController.managedObjectContext = self.managedObjectContext;
     }
     else if([segue.identifier isEqualToString:@"Video"]) {
-        LoaProgram* program = [[LoaProgram alloc] init];
+        LoaProgram* program = [[LoaProgram alloc] initWithMode:@"Advanced" Sensitivity:sensitivity];
         program.managedObjectContext = managedObjectContext;
+        program.sensitivity = sensitivity;
         ReviewVideoViewController *reviewVideoViewController = [segue destinationViewController];
         reviewVideoViewController.program = program;
     }
     // Test with instructions
     else if([segue.identifier isEqualToString:@"Test"]) {
-        LoaProgram* program = [[LoaProgram alloc] init];
+        LoaProgram* program = [[LoaProgram alloc] initWithMode:@"Advanced" Sensitivity:sensitivity];
         program.managedObjectContext = managedObjectContext;
+        program.sensitivity = sensitivity;
         InstructionViewController *instructionViewController = [segue destinationViewController];
         instructionViewController.program = program;
     }
     // Test without instructions
     else if([segue.identifier isEqualToString:@"TestNoInstruct"]) {
-        LoaProgram* program = [[LoaProgram alloc] init];
+        LoaProgram* program = [[LoaProgram alloc] initWithMode:@"Advanced" Sensitivity:sensitivity];
+        NSLog(@"Sensitivity at: %f", sensitivity);
         program.managedObjectContext = managedObjectContext;
+        program.sensitivity = sensitivity;
         CaptureViewController *captureViewController = [segue destinationViewController];
         captureViewController.program = program;
         captureViewController.managedObjectContext = managedObjectContext;
     }
     else if([segue.identifier isEqualToString:@"Settings"]) {
-        
+        SettingsViewController* settings = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
+        settings.managedObjectContext = managedObjectContext;
+        settings.delegate = self;
     }
 }
 
@@ -172,8 +181,16 @@
         }
     }
     else if(indexPath.row == 1) {
-        [self performSegueWithIdentifier:@"TestNoInstruct" sender:self];
+        [self performSegueWithIdentifier:@"Settings" sender:self];
     }
+}
+
+#pragma mark - Settings delegate
+
+- (void)updateSensitivity:(float)value
+{
+    sensitivity = value;
+    NSLog(@"Set sensitivity to: %f", sensitivity);
 }
 
 @end

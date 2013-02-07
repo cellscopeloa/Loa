@@ -21,11 +21,13 @@
 @property (nonatomic) NSInteger fovnumber;
 @property (nonatomic) NSInteger totalfields;
 
+@property (nonatomic, assign) float sensitivity;
+
 @property (nonatomic) NSInteger samplenumber;
 @property (strong, nonatomic) NSMutableArray* frameRecord;
 @property (strong, nonatomic) MotionAnalysis* analysis;
 
-- (LoaProgram*)initWithMode:(NSString*)guided;
+- (LoaProgram*)initWithMode:(NSString*)guided Sensitivity:(float)sensitivity;
 - (NSString*)fovString;
 
 - (void)createNewSample;
