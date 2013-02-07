@@ -54,7 +54,7 @@
     }
     if ([self.device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance] ) {
         [self.device lockForConfiguration:nil];
-        [self.device setFocusMode:AVCaptureWhiteBalanaceModeAutoWhiteBalance];
+        [self.device setFocusMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
         [self.device unlockForConfiguration];
     }
 
