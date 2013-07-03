@@ -2,8 +2,8 @@
 //  Sample.h
 //  CellScopeLoa
 //
-//  Created by Matthew Bakalar on 11/16/12.
-//  Copyright (c) 2012 Matthew Bakalar. All rights reserved.
+//  Created by Matthew Bakalar on 7/1/13.
+//  Copyright (c) 2013 Matthew Bakalar. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -14,6 +14,10 @@
 @interface Sample : NSManagedObject
 
 @property (nonatomic, retain) NSString * serialnumber;
+@property (nonatomic, retain) NSString * username;
+@property (nonatomic, retain) NSNumber * lattitude;
+@property (nonatomic, retain) NSNumber * longitude;
+@property (nonatomic, retain) NSDate * capturetime;
 @property (nonatomic, retain) NSSet *movies;
 @end
 

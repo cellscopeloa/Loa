@@ -63,9 +63,21 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults objectForKey:@"firstRun"]) {
+        [defaults setObject:[NSDate date] forKey:@"firstRun"];
+        [defaults setObject:[NSNumber numberWithFloat:0.0] forKey:@"sensitivity"];
+    }
+    
     UIViewController *rootViewController = self.window.rootViewController;
     MainMenuViewController *mainMenu = (MainMenuViewController *)rootViewController;
     mainMenu.managedObjectContext = self.managedObjectContext;
+    
+    NSNumber* sense = [defaults objectForKey:@"sensitivity"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSLog(@"Loading sensitivity: %f", sense.floatValue);
+    mainMenu.sensitivity = sense.floatValue;
     return YES;
 }
 

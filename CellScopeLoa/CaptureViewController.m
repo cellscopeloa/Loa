@@ -29,6 +29,7 @@
 @synthesize videoHDOutput;
 @synthesize videoPreviewOutput;
 @synthesize fieldcounter;
+@synthesize captureButton;
 
 @synthesize camera;
 
@@ -92,10 +93,11 @@
     int fov = 3;
     
     // Create a motion analysis object for image processing
-    MotionAnalysis* analysis = [[MotionAnalysis alloc] initWithWidth:camera.width
-                                                              Height:camera.height
-                                                              Frames:nframesmax
-                                                              Movies:fov];
+    MotionAnalysis* analysis = [[MotionAnalysis alloc] initWithWidth: camera.width
+                                                              Height: camera.height
+                                                              Frames: nframesmax
+                                                              Movies: fov
+                                                         Sensitivity: program.sensitivity];
     program.analysis = analysis;
     [UIView animateWithDuration:0.5 animations:^{
         instructions.alpha = 1.0;
@@ -138,6 +140,8 @@
     progressBar.alpha = 1.0;
     [UIView animateWithDuration:1.0 animations:^{
         instructions.alpha = 0.0;
+        captureButton.alpha = 0.2;
+        captureButton.enabled = false;
     } completion:^(BOOL finished) {
         // pass
     }];
@@ -195,6 +199,8 @@
              instructIdx++;
              [self checkStatus];
              instructions.text = [instructionText objectAtIndex:instructIdx];
+             captureButton.alpha = 1.0;
+             captureButton.enabled = true;
          }];
 	}
 }
@@ -204,6 +210,9 @@
     NSString* status = [program currentStatus];
     NSLog(@"Current status: ");
     if([status isEqualToString:@"Done"]) {
+        // Reset the instructions, unlock the camera
+        instructIdx = 0;
+        [camera unlockSettings];
         [self performSegueWithIdentifier:@"Analyze" sender:self];
     }
 }

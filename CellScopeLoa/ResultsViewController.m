@@ -72,21 +72,29 @@
 
 - (void)showResults
 {
+    float numberoffov = 3.0;
     NSArray* movies = [program currentMovies];
     int wormcount = 0;
     for (SampleMovie* sample in movies) {
         wormcount += [[sample features] count];
     }
-    int avg_worms = round(wormcount/5.0);
-    int estimated_count = floor((wormcount / 5.0) / (.00073/2.0));
+    double avg_worms = wormcount/numberoffov;
+    int estimated_count = ((wormcount / numberoffov) / (.00073));
+    
+    NSNumberFormatter *formatter = [NSNumberFormatter new];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle]; // this line is important!
+
+    NSString* astr = [formatter stringFromNumber:[NSNumber numberWithFloat:avg_worms]];
+    NSString* bstr = [formatter stringFromNumber:[NSNumber numberWithFloat:estimated_count]];
+    
     if(estimated_count > 30000) {
         statusBox.backgroundColor = [UIColor redColor];
     }
     else {
         statusBox.backgroundColor = [UIColor greenColor];
     }
-    countLabel.text = [NSString stringWithFormat:@"%d mf/ml", estimated_count];
-    wormsField.text = [NSString stringWithFormat:@"%d mf/field", avg_worms];
+    countLabel.text = [NSString stringWithFormat:@"%@ mf/ml", bstr];
+    wormsField.text = [NSString stringWithFormat:@"%@ mf/field", astr];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

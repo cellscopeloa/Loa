@@ -2,8 +2,8 @@
 //  SampleMovie.m
 //  CellScopeLoa
 //
-//  Created by Matthew Bakalar on 12/14/12.
-//  Copyright (c) 2012 Matthew Bakalar. All rights reserved.
+//  Created by Matthew Bakalar on 7/1/13.
+//  Copyright (c) 2013 Matthew Bakalar. All rights reserved.
 //
 
 #import "SampleMovie.h"
@@ -15,7 +15,8 @@
 
 @dynamic numworms;
 @dynamic path;
-@dynamic sample;
+@dynamic processedimagepath;
 @dynamic features;
+@dynamic sample;
 
 @end

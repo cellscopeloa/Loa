@@ -19,6 +19,9 @@
 @implementation UsersViewController
 
 @synthesize managedObjectContext;
+@synthesize users;
+@synthesize doneButton;
+@synthesize delegate;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -35,16 +38,11 @@
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
- 
-    NSError *error;
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"User"
-                                              inManagedObjectContext:managedObjectContext];
-    [fetchRequest setEntity:entity];
-    NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    for (User *user in fetchedObjects) {
-        NSLog(@"Name: %@", user.username);
-    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -71,8 +69,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Test listing all FailedBankInfos from the store
-    return 0;
+    NSError *error;
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"User"
+                                              inManagedObjectContext:managedObjectContext];
+    [fetchRequest setEntity:entity];
+    NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    self.users = fetchedObjects;
+    return [fetchedObjects count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -80,7 +84,23 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    // Configure the cell...
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
+    
+    // Reload the users table if necessary
+    if(self.users == Nil) {
+        NSError *error;
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"User"
+                                                  inManagedObjectContext:managedObjectContext];
+        [fetchRequest setEntity:entity];
+        NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        self.users = fetchedObjects;
+    }
+    
+    User *oneuser = (User*)[self.users objectAtIndex:indexPath.row];
+    cell.textLabel.text = oneuser.username;
     
     return cell;
 }
@@ -129,6 +149,7 @@
     return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
 }
 
+
 -(NSUInteger)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskPortraitUpsideDown;
@@ -138,13 +159,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    User* user = (User*)[users objectAtIndex:indexPath.row];
+    [delegate didSelectUser: user.username];
+    [self dismissViewControllerAnimated:YES completion:Nil];
+}
+
+- (IBAction)didPress:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:Nil];
 }
 
 @end

@@ -19,7 +19,7 @@
 @property (strong, nonatomic) NSMutableArray * coordinatesPerMovie;
 @property (weak, nonatomic) id<ProcessingDelegate> delegate;
 
-- (id)initWithWidth:(NSInteger)width Height:(NSInteger)height Frames:(NSInteger)frames Movies:(NSInteger)movies;
+- (id)initWithWidth:(NSInteger)width Height:(NSInteger)height Frames:(NSInteger)frames Movies:(NSInteger)movies Sensitivity:(float)sensitivity;
 - (void)writeNextFrame:(CVBufferRef)imageBuffer;
 - (void)nextMovie:(NSURL *) url;
 - (void)processAllMovies;

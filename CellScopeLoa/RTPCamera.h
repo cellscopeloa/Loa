@@ -52,9 +52,10 @@
 - (IBAction)captureWithDuration:(Float32)duration
                     frameList:(NSMutableArray*)list
               recordingDelegate:(id<AVCaptureFileOutputRecordingDelegate>)delegate progressDelegate:(id<MovieProgressDelegate>)progressDelegate;
--(void)progressUpdate:(NSTimer*)timer;
--(void)recordingComplete:(NSTimer *)timer;
--(void)createNewAssetWriterOutput;
--(void)lockSettings;
+- (void)progressUpdate:(NSTimer*)timer;
+- (void)recordingComplete:(NSTimer *)timer;
+- (void)createNewAssetWriterOutput;
+- (void)lockSettings;
+- (void)unlockSettings;
 
 @end

@@ -2,8 +2,8 @@
 //  SampleMovie.h
 //  CellScopeLoa
 //
-//  Created by Matthew Bakalar on 12/14/12.
-//  Copyright (c) 2012 Matthew Bakalar. All rights reserved.
+//  Created by Matthew Bakalar on 7/1/13.
+//  Copyright (c) 2013 Matthew Bakalar. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -15,8 +15,9 @@
 
 @property (nonatomic, retain) NSNumber * numworms;
 @property (nonatomic, retain) NSString * path;
-@property (nonatomic, retain) Sample *sample;
+@property (nonatomic, retain) NSString * processedimagepath;
 @property (nonatomic, retain) NSSet *features;
+@property (nonatomic, retain) Sample *sample;
 @end
 
 @interface SampleMovie (CoreDataGeneratedAccessors)
