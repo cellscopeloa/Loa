@@ -153,8 +153,8 @@
     int totalframes = numFrames;
     int rows = 360;
     int cols = 480;
-    int wormSize=66; //must be even
-    int innerBoxSize=26; //must be even
+    int wormSize=50; //must be even
+    int innerBoxSize=30; //must be even
     int sz[3] = {rows,cols,3};
     
     
@@ -167,8 +167,10 @@
     
     // Kernels for block averages
     cv::Mat blockAvg3x3 = cv::Mat::ones(4, 4, CV_32F);
-    cv::Mat blockAvg12x12 = cv::Mat::ones(16, 16, CV_32F);
-    cv::Mat blockAvg50x50 = cv::Mat::ones(67,67,CV_32F);
+    cv::Mat blockAve7x7(7, 7, CV_32F, cv::Scalar::all(.02));
+
+    cv::Mat blockAvg12x12 = cv::Mat::ones(12, 12, CV_32F);
+    cv::Mat blockAvg50x50 = cv::Mat::ones(50,50,CV_32F);
     
     // Matrix for storing normalized frames
     cv::Mat movieFrameMatNorm(rows, cols, CV_16UC1);
@@ -183,6 +185,10 @@
     cv::Mat movieFrameMatDiff;
     cv::Mat movieFrameMatDiffTmp;
     cv::Mat movieFrameMat;
+    cv::Mat movieFrameMatBW;
+    cv::Mat movieFrameMatBWInv;
+    cv::Mat movieFrameMatBWCopy;
+
     cv::Mat movieFrameMatDiffOrig;
     cv::Mat movieFrameMatNormOld;
     
@@ -222,6 +228,11 @@
             }*/
             
             // Convert the frame into 16 bit grayscale. Space for optimization
+            
+            //@new  
+            if (i==0){
+                double trash= threshold(movieFrameMat, movieFrameMatBW, 50, 255, CV_THRESH_BINARY);
+            }
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
             
             // 3x3 spatial filter to reduce noise and downsample
@@ -302,7 +313,7 @@
         i = i+1;
     }
     
-    cv::Mat movieFrameMatBack;
+    //cv::Mat movieFrameMatBack;
     //cv::Mat_<double>gk(49,49);
     //gk=cv::getGaussianKernel(2500,10,CV_32F);
     //cv::filter2D(movieFrameMatDiff, movieFrameMatBack,-1,gk,cv::Point(-1,-1));
@@ -310,14 +321,111 @@
     //cv::GaussianBlur(movieFrameMatDiff,movieFrameMatBack, ksize, .5, 0, cv::BORDER_DEFAULT);
     //movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBack;
     
-    movieFrameMatDiffOrig = movieFrameMatDiff.clone();
-    int rowRangeLow = 30;
-    int rowRangeHigh = 330;
-    int colRangeLow = 90;
-    int colRangeHigh = 390;
-    cv::Mat centerRegion = movieFrameMatDiffOrig(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
+    //$new
 
-    cv::Scalar imageAve = cv::mean(centerRegion);
+    movieFrameMatBWInv=movieFrameMatBW.clone();
+    movieFrameMatBWCopy=movieFrameMatBW.clone();
+    cv::Scalar imageAve;
+    cv::Scalar stDev;
+    cv::meanStdDev(movieFrameMatDiff, imageAve,stDev, movieFrameMatBW);
+    NSLog(@"img avg: %f",imageAve.val[0]);
+    NSLog(@"img std: %f",stDev.val[0]);
+    imageAve.val[0]=imageAve.val[0];
+    int sizeTweak=0;
+    double tweak=0;
+    double backTweak=0;
+    
+    if (stDev.val[0]<15) {
+        sizeTweak=0;
+        backTweak=0;
+        tweak=-.1;
+
+        
+    }
+    else if (stDev.val[0]<50) {
+        sizeTweak=0;
+        backTweak=0;
+    }
+    else if (stDev.val[0]<70) {
+        backTweak=.125;
+        sizeTweak=0.01;
+        tweak=.03;
+
+    }
+    else {
+        sizeTweak=0.07;
+        backTweak=.35;
+        tweak=0.06;
+
+    }
+    int filling = cv::floodFill(movieFrameMatBW, cv::Point(0,0), (imageAve.val[0]/(1.25+backTweak)), (cv::Rect*)0, 100, 200);
+    movieFrameMatBW.convertTo(movieFrameMatBW, CV_16UC1);
+    cv::convertScaleAbs(movieFrameMatBWInv, movieFrameMatBWInv, -1, 255 );
+    
+    movieFrameMatBWInv.convertTo(movieFrameMatBWInv, CV_16UC1);
+    movieFrameMatBWInv=movieFrameMatBWInv;
+    movieFrameMatBWCopy.convertTo(movieFrameMatBWCopy, CV_16UC1);
+	
+    movieFrameMatBW=movieFrameMatBW-movieFrameMatBWCopy;
+    
+    //cv::convertScaleAbs(movieFrameMatBWInv, movieFrameMatBWInv, -1, 255 );
+    
+    movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBWInv;
+    //cv::Mat movieFrameMatDiffSort;
+    movieFrameMatDiff=movieFrameMatDiff+movieFrameMatBW;
+    //movieFrameMatDiffOrig=movieFrameMatDiffOrig-movieFrameMatBWInv+movieFrameMatBW;
+    cv::Mat movieFrameMatDiffSort(480,270, CV_16UC1, cv::Scalar::all(0));
+    //cv::Mat movieFrameMatDiffSort2(480,270, CV_16UC1, cv::Scalar::all(0));
+    cv::sort(movieFrameMatDiff, movieFrameMatDiffSort,CV_SORT_EVERY_ROW+CV_SORT_DESCENDING);
+    cv::sort(movieFrameMatDiffSort, movieFrameMatDiffSort,CV_SORT_EVERY_COLUMN+CV_SORT_DESCENDING);
+    
+    //int scaledAve=movieFrameMatDiffSort[100][100];
+    
+    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
+    //movieFrameMatDiff=movieFrameMatDiff/25;
+    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
+    //movieFrameMatDiff=movieFrameMatDiff/25;
+    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
+    //movieFrameMatDiff=movieFrameMatDiff/25;
+    
+    //cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
+    //movieFrameMatDiff=movieFrameMatDiff/25;
+    //cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
+    //movieFrameMatDiff=movieFrameMatDiff/25;
+    //cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
+    //movieFrameMatDiff=movieFrameMatDiff/25;
+    
+    
+    movieFrameMatDiffOrig = movieFrameMatDiff.clone();
+    
+    
+    
+    //imageAve.val[0]=scaledAve;
+    
+    movieFrameMatBW.convertTo(movieFrameMatBW, CV_8UC1);
+    movieFrameMatDiffSort.convertTo(movieFrameMatDiffSort, CV_8UC1);
+    unsigned char scaledAve=movieFrameMatDiffSort.at<unsigned char>(135,400);
+    NSLog(@"img 100x100: %d",scaledAve);
+    imageAve.val[0]=scaledAve;
+    double minVal;
+    double maxValTrash;
+    cv::minMaxLoc(movieFrameMatDiff, &minVal, &maxValTrash);
+    NSLog(@"img minval: %f",minVal);
+    
+    
+    //@new code end
+    
+    
+    movieFrameMatDiffOrig = movieFrameMatDiff.clone();
+    
+    
+    //int rowRangeLow = 30;
+    //int rowRangeHigh = 330;
+    //int colRangeLow = 90;
+    //int colRangeHigh = 390;
+    //cv::Mat centerRegion = movieFrameMatDiffOrig(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
+
+    //cv::Scalar imageAve = cv::mean(centerRegion);
     NSLog(@"img avg: %f",imageAve.val[0]);
     
     bool findinWorms=TRUE;
@@ -331,7 +439,7 @@
         NSLog(@"max x: %i",maxIdx[0]);
         NSLog(@"max y: %i",maxIdx[1]);
         //only advance to the next stage of worm id if the patch max is 266 times higher than the image ave
-        if (maxVal > (imageAve.val[0] * 450)) {
+        if (maxVal > (imageAve.val[0] * 10)) {
             //setup our box sizes around the worm
             int col=floor(maxIdx[1]);
             int row=maxIdx[0];
@@ -407,11 +515,10 @@
             cv::Scalar selAve=cv::mean(selRegion);
             cv::Scalar wholeAve=cv::mean(wholeRegion);
             
-            movieFrameMatDiff(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(0);
-            
+            movieFrameMatDiff(cv::Range(rowRangeLow+sizeTweak,rowRangeHigh-sizeTweak),cv::Range(colRangeLow+sizeTweak,colRangeHigh-sizeTweak))=cv::Scalar::all(0);            
             NSLog(@"center intensity norm: %f",selAve.val[0]/wholeAve.val[0]);
             
-            if (selAve.val[0]>wholeAve.val[0]*1.3){
+            if (selAve.val[0]>wholeAve.val[0]*(1.2-tweak) || wholeAve.val[0]>imageAve.val[0]*7){
                 foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
                 NSLog(@"%s","found some worms!");
                 
@@ -428,6 +535,9 @@
             movieFrameMatDiff=cv::Mat();
         }
     }
+    
+    NSLog(@"numcoords, %i", [coordsArray count]);
+    NSLog(@"movie, %@", urls[movidx]);
 
     [coordsArray addObject:urls[movidx]];
 

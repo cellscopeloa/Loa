@@ -10,6 +10,7 @@
 		821348B2165B396B0066780E /* Analysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B1165B396B0066780E /* Analysis.mm */; };
 		821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 821348B3165B3ABE0066780E /* UIImage+OpenCV.mm */; };
 		821348B8165B50990066780E /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 821348B7165B50980066780E /* ResultsViewController.m */; };
+		82CAE8761762AE6700DC9744 /* image-life-file-patient-icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 82CAE8751762AE6700DC9744 /* image-life-file-patient-icon.jpg */; };
 		82F4B20716B3024D00B6C322 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82F4B20616B3024D00B6C322 /* opencv2.framework */; };
 		9B03AE1916C36ACB00DD25F3 /* BranchStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B03AE1816C36ACB00DD25F3 /* BranchStoryboard.storyboard */; };
 		9B307587167EFC7B007DD13F /* bloodiconsmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B307585167EFC7B007DD13F /* bloodiconsmall.png */; };
@@ -123,6 +124,7 @@
 		821348B4165B3ABE0066780E /* UIImage+OpenCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+OpenCV.h"; sourceTree = "<group>"; };
 		821348B6165B50980066780E /* ResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsViewController.h; sourceTree = "<group>"; };
 		821348B7165B50980066780E /* ResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsViewController.m; sourceTree = "<group>"; };
+		82CAE8751762AE6700DC9744 /* image-life-file-patient-icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "image-life-file-patient-icon.jpg"; sourceTree = "<group>"; };
 		82F4B20616B3024D00B6C322 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = "../../cell-scope-loa/opencv2.framework"; sourceTree = "<group>"; };
 		9B03AE1816C36ACB00DD25F3 /* BranchStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BranchStoryboard.storyboard; sourceTree = "<group>"; };
 		9B307585167EFC7B007DD13F /* bloodiconsmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bloodiconsmall.png; path = Images/bloodiconsmall.png; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 			isa = PBXGroup;
 			children = (
 				9B30758C167FB67E007DD13F /* bloodiconlarge copy.png */,
+				82CAE8751762AE6700DC9744 /* image-life-file-patient-icon.jpg */,
 				9B307585167EFC7B007DD13F /* bloodiconsmall.png */,
 				9BD0161D164759A200A7C37B /* retrycurl.png */,
 				9BD015FF1646F45700A7C37B /* camera_button.png */,
@@ -633,6 +636,7 @@
 				9B30758D167FB67E007DD13F /* bloodiconlarge copy.png in Resources */,
 				9B30758F167FB699007DD13F /* bloodiconlarge copy.png in Resources */,
 				9B03AE1916C36ACB00DD25F3 /* BranchStoryboard.storyboard in Resources */,
+				82CAE8761762AE6700DC9744 /* image-life-file-patient-icon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
