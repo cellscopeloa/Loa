@@ -42,7 +42,7 @@
     numFramesMax = frames;
     numMovies = movies;
     sensitivity = sense;
-    NSLog(@"Using sensitivity: %f", sensitivity);
+    //NSLog(@"Using sensitivity: %f", sensitivity);
     
     coordsArray = [[NSMutableArray alloc] init];
     movieLengths = [[NSMutableArray alloc] init];
@@ -121,7 +121,7 @@
 
 // Advance the write buffer to the next movie
 - (void)nextMovie:(NSURL*) url {
-    NSLog(@"%d frames in last movie", frameIdx-1);
+    //NSLog(@"%d frames in last movie", frameIdx-1);
     NSNumber* movlen = [NSNumber numberWithInt:(frameIdx-1)];
     [movieLengths addObject:movlen];
     [urls addObject:url];
@@ -140,7 +140,7 @@
         frameBuffers->at(i).release();
     }
     
-    NSArray* keys = [[NSArray alloc] initWithObjects:@"progress", @"done", @"coords",@"urls", nil];
+    NSArray* keys = [[NSArray alloc] initWithObjects:@"progress", @"done", @"coords", @"urls", nil];
     NSArray* objects = [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],[NSNumber numberWithInt:1],coordinatesPerMovie,urls,nil];
     NSDictionary* userInfo = [[NSDictionary alloc] initWithObjects:objects forKeys:keys];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"analysisProgress" object:self userInfo:userInfo];
@@ -324,7 +324,7 @@
     cv::Mat centerRegion = movieFrameMatDiffOrig(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
 
     cv::Scalar imageAve = cv::mean(centerRegion);
-    NSLog(@"img avg: %f",imageAve.val[0]);
+    // NSLog(@"img avg: %f",imageAve.val[0]);
     
     bool findinWorms=TRUE;
     while(findinWorms==TRUE) {
@@ -333,18 +333,18 @@
         double maxVal;
         int maxIdx[2] = {255, 255};
         minMaxIdx(findinWormsConv, 0, &maxVal, 0, maxIdx);
-        NSLog(@"img max: %f",maxVal);
-        NSLog(@"max x: %i",maxIdx[0]);
-        NSLog(@"max y: %i",maxIdx[1]);
+        //NSLog(@"img max: %f",maxVal);
+        //NSLog(@"max x: %i",maxIdx[0]);
+        //NSLog(@"max y: %i",maxIdx[1]);
         
         // Calculate the sensitivity
         int low = 250;
         int high = 650;
         float sensemul = (sensitivity*-1.0 + 1) / 2.0;
         int rangemul = round(sensemul * (high-low) + low);
-        NSLog(@"Sensitivy: %f", sensitivity);
-        NSLog(@"sensemul: %f", sensemul);
-        NSLog(@"Using range multiplier %d", rangemul);
+        //NSLog(@"Sensitivy: %f", sensitivity);
+        //NSLog(@"sensemul: %f", sensemul);
+        //NSLog(@"Using range multiplier %d", rangemul);
         
         //only advance to the next stage of worm id if the patch max is 266 times higher than the image ave
         if (maxVal > (imageAve.val[0] * rangemul)) {
@@ -425,11 +425,11 @@
             
             movieFrameMatDiff(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(0);
             
-            NSLog(@"center intensity norm: %f",selAve.val[0]/wholeAve.val[0]);
+            //NSLog(@"center intensity norm: %f",selAve.val[0]/wholeAve.val[0]);
             
             if (selAve.val[0]>wholeAve.val[0]*1.3){
                 foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
-                NSLog(@"%s","found some worms!");
+                //NSLog(@"%s","found some worms!");
                 
                 NSNumber *x = [NSNumber numberWithInt:maxIdx[1]];
                 [coordsArray addObject:x];
@@ -449,7 +449,7 @@
 
     [coordinatesPerMovie addObject:coordsArray];
     // Now we are done finding worms
-    NSLog(@"done finding worms");
+    //NSLog(@"done finding worms");
     
     
     movieFrameMatDiffOrig.convertTo(movieFrameMatDiffOrig,CV_16UC1);
@@ -477,14 +477,29 @@
     outUIImage = [[UIImage alloc] initWithCVMat:outImageRGB];
     outImageRGB.release();
     outImageRGB=cv::Mat();
-    UIImageWriteToSavedPhotosAlbum(outUIImage,
+    
+    // #MHB Changed
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    // Request to save the image to camera roll
+    [library writeImageToSavedPhotosAlbum:[outUIImage CGImage] orientation:(ALAssetOrientation)[outUIImage imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error){
+        if (error) {
+            NSLog(@"error saving image to photo album");
+        } else {
+            NSNumber* numberindex = [[NSNumber alloc] initWithInteger:movidx];
+            [delegate processedMovieResult:outUIImage savedURL:assetURL movieIndex:numberindex];
+        }  
+    }];
+    
+    // #MHB Commented out
+    /* UIImageWriteToSavedPhotosAlbum(outUIImage,
                                    self, // send the message to 'self' when calling the callback
                                    @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                   NULL); // you generally won't need a contextInfo here*/
+                                   NULL); // you generally won't need a contextInfo here
+    */
     
     movieFrameMatDiffOrig8.release();
     movieFrameMatDiffOrig8=cv::Mat();
-    NSLog(@"%s","finished!");
+    //NSLog(@"%s","finished!");
     self.outImage=outUIImage;
 }
 
@@ -502,6 +517,8 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"analysisProgress" object:self userInfo:userInfo];
 }
 
+// #MHB Commented out
+/*
 - (void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo {
     if (error) {
         NSLog(@"error saving image");
@@ -509,11 +526,12 @@
         // Do anything needed to handle the error or display it to the user
     } else {
         NSLog(@"image saved in photo album");
-        [delegate processedMovieResult:image];
+        [delegate processedMovieResult:image savedURL:];
         
         // .... do anything you want here to handle
         // .... when the image has been saved in the photo album
     }
 }
+ */
 
 @end

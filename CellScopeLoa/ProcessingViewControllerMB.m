@@ -16,7 +16,9 @@
 
 dispatch_queue_t backgroundQueue;
 
-@interface ProcessingViewControllerMB ()
+@interface ProcessingViewControllerMB () {
+    id progressObserver;
+}
 
 @end
 
@@ -42,11 +44,22 @@ dispatch_queue_t backgroundQueue;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    instructions.text = NSLocalizedString(@"PROCESSING",nil);
     backgroundQueue = dispatch_queue_create("edu.berkeley.cellscope.analysisqueue", NULL);
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    instructions.text = NSLocalizedString(@"PROCESSING",nil);
 	// Do any additional setup after loading the view
     progressBar.progress = 0.0;
     [self processImages];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:progressObserver name:@"analysisProgress" object:nil];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -68,7 +81,7 @@ dispatch_queue_t backgroundQueue;
 {
     // Register for progress notifications from processing code
     NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"analysisProgress" object:nil
+    progressObserver = [[NSNotificationCenter defaultCenter] addObserverForName:@"analysisProgress" object:nil
                                                        queue:mainQueue usingBlock:^(NSNotification *note)
      {
          NSDictionary* userInfo = note.userInfo;
@@ -76,17 +89,19 @@ dispatch_queue_t backgroundQueue;
          NSNumber* done = [userInfo objectForKey:@"done"];
          if ([done integerValue] == 1) {
              NSMutableArray *coordinatesPerMovie = [userInfo objectForKey:@"coords"];
+             // Write coordinates to database
+             // Add results picture to the database
              for(int i=0; i<[coordinatesPerMovie count]; i++) {
-
                  [program addMovieFeatures:coordinatesPerMovie[i]];
              }
-
              
-             // Write coordinates to database
              [self performSegueWithIdentifier:@"Results" sender:self];
          }
          else {
              [progressBar setProgress:progress.doubleValue];
+             float angleRadians = 90.0 * ((float)M_PI / 180.0f);
+             CGAffineTransform rotate = CGAffineTransformMakeRotation(angleRadians);
+             [resultsImageView setTransform:rotate];
              resultsImageView.image = resultsImage;
          }
      }];
@@ -100,9 +115,10 @@ dispatch_queue_t backgroundQueue;
     });
 }
 
-- (void)processedMovieResult:(UIImage*)image
+- (void)processedMovieResult:(UIImage*)image savedURL:(NSURL*)imageurl movieIndex:(NSNumber*)movidx;
 {
     resultsImage = image;
+    [program addMovieProcessed:image atURL:imageurl forMovieIndex:movidx];
 }
 
 - (void)didReceiveMemoryWarning

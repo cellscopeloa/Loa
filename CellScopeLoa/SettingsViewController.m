@@ -58,6 +58,11 @@
     return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
 }
 
+-(NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortraitUpsideDown;
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:@"MainMenu"]) {

@@ -22,6 +22,8 @@
 @synthesize frameRecord;
 @synthesize analysis;
 @synthesize sensitivity;
+@synthesize locationManager;
+@synthesize username;
 
 - (LoaProgram*)initWithMode:(NSString *)guidedMode Sensitivity:(float)sense
 {
@@ -32,6 +34,7 @@
     totalfields = 3;
     fovnumber = 0;
     currentSampleSerial = Nil;
+    [self.locationManager startUpdatingLocation];
     return self;
 }
 
@@ -41,11 +44,24 @@
     
     // Setup a new sample with serialnumber equal to the current datetime
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
-    [format setDateFormat:@"MMM dd, yyyy HH:mm"];
+    [format setDateFormat:@"MMM dd, yyyy HH:mm:ss"];
     NSDate *now = [[NSDate alloc] init];
     NSString *dateString = [format stringFromDate:now];
     
     sample.serialnumber = dateString;
+    sample.username = self.username;
+    sample.capturetime = [NSDate date];
+    CLLocation* location = [locationManager location];
+    if(location == Nil) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"GPS Error" message: @"Location cannot be saved" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    else {
+        CLLocationCoordinate2D coordinate = [location coordinate];
+        sample.lattitude = [NSNumber numberWithDouble:coordinate.latitude];
+        sample.longitude = [NSNumber numberWithDouble:coordinate.longitude];
+    }
+    
     NSLog(@"Creating with: %@", sample.serialnumber);
     NSError *error;
     if (![managedObjectContext save:&error]) {
@@ -161,7 +177,66 @@
         feature.ycoord = coordinates[i];
         i++;
         [[sampleMovie mutableSetValueForKey:@"features"] addObject:feature];
+   }
+}
+
+- (void)addMovieProcessed:(UIImage *)processedImage atURL:(NSURL*)url forMovieIndex:(NSNumber*)movidx
+{
+    
+    NSLog(@"Current sample serial: %@", currentSampleSerial);
+    
+    // Add the sample movie to the current sample in the database
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample" inManagedObjectContext: managedObjectContext];
+    [request setEntity:entity];
+    
+    // Pull out the sample with this serial number
+    NSPredicate *searchFilter = [NSPredicate predicateWithFormat:@"serialnumber LIKE %@", currentSampleSerial];
+    [request setPredicate:searchFilter];
+
+    NSError* error;
+    NSArray *results = [managedObjectContext executeFetchRequest:request error:&error];
+    Sample* sample = [results objectAtIndex:0];
+    
+    NSLog(@"Picked up # samples: %d", [sample.movies count]);
+    NSLog(@"Movie index: %d", movidx.integerValue);
+    
+    NSEnumerator* enumerator = [sample.movies objectEnumerator];
+    SampleMovie* samplemovie;
+    for(int i=0; i <= movidx.integerValue; i++) {
+        samplemovie = (SampleMovie*)[enumerator nextObject];
+    }
+    
+    samplemovie.processedimagepath = [url absoluteString];
+    NSLog(@"Picked up samplemovie: %@", samplemovie.path);
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"Error saving managed object context: %@", [error localizedDescription]);
     }
 }
+
+- (CLLocationManager *)locationManager {
+    
+    if (locationManager != nil) {
+        return locationManager;
+    }
+    
+    locationManager = [[CLLocationManager alloc] init];
+    locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
+    locationManager.delegate = self;
+    
+    return locationManager;
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation {
+    NSLog(@"Did update location");
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error {
+    // Pass
+}
+
 
 @end

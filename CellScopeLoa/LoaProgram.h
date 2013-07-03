@@ -7,15 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 #import "Sample.h"
 #import "MotionAnalysis.h"
 
-@interface LoaProgram : NSObject
+@interface LoaProgram : NSObject <CLLocationManagerDelegate>
 
 @property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
 
 @property (strong, nonatomic) NSString* currentSampleSerial;
-
+@property (strong, nonatomic) NSString* username;
 
 @property (strong, nonatomic) NSString* guided;
 @property (nonatomic) NSInteger fovnumber;
@@ -27,6 +28,8 @@
 @property (strong, nonatomic) NSMutableArray* frameRecord;
 @property (strong, nonatomic) MotionAnalysis* analysis;
 
+@property (nonatomic, retain) CLLocationManager *locationManager;
+
 - (LoaProgram*)initWithMode:(NSString*)guided Sensitivity:(float)sensitivity;
 - (NSString*)fovString;
 
@@ -35,6 +38,7 @@
 - (NSString*)currentStatus;
 - (NSArray*)currentMovies;
 - (void)addMovieFeatures:(NSMutableArray*)coordinatesFromMike;
+- (void)addMovieProcessed:(UIImage *)processedImage atURL:(NSURL*)url forMovieIndex:(NSNumber*)movidx;
 
 
 @end

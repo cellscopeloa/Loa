@@ -29,6 +29,7 @@
 @synthesize videoHDOutput;
 @synthesize videoPreviewOutput;
 @synthesize fieldcounter;
+@synthesize captureButton;
 
 @synthesize camera;
 
@@ -139,6 +140,8 @@
     progressBar.alpha = 1.0;
     [UIView animateWithDuration:1.0 animations:^{
         instructions.alpha = 0.0;
+        captureButton.alpha = 0.2;
+        captureButton.enabled = false;
     } completion:^(BOOL finished) {
         // pass
     }];
@@ -196,6 +199,8 @@
              instructIdx++;
              [self checkStatus];
              instructions.text = [instructionText objectAtIndex:instructIdx];
+             captureButton.alpha = 1.0;
+             captureButton.enabled = true;
          }];
 	}
 }
@@ -205,6 +210,9 @@
     NSString* status = [program currentStatus];
     NSLog(@"Current status: ");
     if([status isEqualToString:@"Done"]) {
+        // Reset the instructions, unlock the camera
+        instructIdx = 0;
+        [camera unlockSettings];
         [self performSegueWithIdentifier:@"Analyze" sender:self];
     }
 }

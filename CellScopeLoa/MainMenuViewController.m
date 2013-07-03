@@ -7,11 +7,12 @@
 //
 
 #import "MainMenuViewController.h"
-#import "AddUserViewController.h"
+#import "UsersViewController.h"
 #import "LoaProgram.h"
 #import "CaptureViewController.h"
 #import "InstructionViewController.h"
 #import "ReviewVideoViewController.h"
+#import "DataTableViewController.h"
 #import "SettingsViewController.h"
 
 @interface MainMenuViewController ()
@@ -23,6 +24,7 @@
 @synthesize sensitivity;
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext;
+@synthesize userLabel;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -46,6 +48,18 @@
     // Set initial sensitivity
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString* activeUsername = (NSString*)[userDefaults valueForKey:@"ActiveUsername"];
+    if(activeUsername == Nil) {
+        userLabel.text = @"Default User";
+    }
+    else {
+        userLabel.text = activeUsername;
+    }
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -56,13 +70,15 @@
 {
     NSLog(@"Sensititv: now: %f", sensitivity);
     if([segue.identifier isEqualToString:@"Users"]) {
-        AddUserViewController *addUserViewController = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
-        addUserViewController.managedObjectContext = self.managedObjectContext;
+        UsersViewController *usersViewController = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
+        usersViewController.delegate = self;
+        usersViewController.managedObjectContext = self.managedObjectContext;
     }
     else if([segue.identifier isEqualToString:@"Video"]) {
         LoaProgram* program = [[LoaProgram alloc] initWithMode:@"Advanced" Sensitivity:sensitivity];
         program.managedObjectContext = managedObjectContext;
         program.sensitivity = sensitivity;
+        program.username = userLabel.text;
         ReviewVideoViewController *reviewVideoViewController = [segue destinationViewController];
         reviewVideoViewController.program = program;
     }
@@ -71,6 +87,7 @@
         LoaProgram* program = [[LoaProgram alloc] initWithMode:@"Advanced" Sensitivity:sensitivity];
         program.managedObjectContext = managedObjectContext;
         program.sensitivity = sensitivity;
+        program.username = userLabel.text;
         InstructionViewController *instructionViewController = [segue destinationViewController];
         instructionViewController.program = program;
     }
@@ -80,6 +97,7 @@
         NSLog(@"Sensitivity at: %f", sensitivity);
         program.managedObjectContext = managedObjectContext;
         program.sensitivity = sensitivity;
+        program.username = userLabel.text;
         CaptureViewController *captureViewController = [segue destinationViewController];
         captureViewController.program = program;
         captureViewController.managedObjectContext = managedObjectContext;
@@ -88,6 +106,10 @@
         SettingsViewController* settings = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
         settings.managedObjectContext = managedObjectContext;
         settings.delegate = self;
+    }
+    else if([segue.identifier isEqualToString:@"Data"]) {
+        DataTableViewController* datatable = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
+        datatable.managedObjectContext = managedObjectContext;
     }
 }
 
@@ -181,8 +203,16 @@
         }
     }
     else if(indexPath.row == 1) {
+        [self performSegueWithIdentifier:@"Data" sender:self];
+    }
+    else if(indexPath.row == 2) {
         [self performSegueWithIdentifier:@"Settings" sender:self];
     }
+    else if(indexPath.row == 3) {
+        [self performSegueWithIdentifier:@"Users" sender:self];
+    }
+    
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Settings delegate
@@ -191,6 +221,13 @@
 {
     sensitivity = value;
     NSLog(@"Set sensitivity to: %f", sensitivity);
+}
+
+- (void)didSelectUser:(NSString *)username
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setValue:username forKey:@"ActiveUsername"];
+    userLabel.text = username;
 }
 
 @end

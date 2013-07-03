@@ -10,6 +10,6 @@
 
 @protocol ProcessingDelegate <NSObject>
 
-- (void)processedMovieResult:(UIImage*)image;
+- (void)processedMovieResult:(UIImage*)image savedURL:(NSURL*)imageurl movieIndex:(NSNumber*)movidx;
 
 @end

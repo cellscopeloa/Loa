@@ -171,7 +171,7 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      */
     
-    if(indexPath.section == 2) {
+    if(indexPath.section == 1) {
         [self didSaveUser:tableView];
     }
 }

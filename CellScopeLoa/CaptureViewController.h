@@ -25,6 +25,7 @@
 @property (nonatomic) NSInteger instructIdx;
 @property (weak, nonatomic) IBOutlet UITextView *instructions;
 @property (strong, nonatomic) IBOutlet UIView *pLayer;
+@property (weak, nonatomic) IBOutlet UIButton *captureButton;
 
 @property (nonatomic, strong) RTPCamera *camera;
 @property (nonatomic) NSInteger isRecording;

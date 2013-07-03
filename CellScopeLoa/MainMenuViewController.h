@@ -10,11 +10,17 @@
 #import <UIKit/UIKit.h>
 #import "SettingsDelegate.h"
 
-@interface MainMenuViewController : UITableViewController <SettingsDelegate>
+@protocol SelectUserDelegate <NSObject>
+@required
+- (void)didSelectUser:(NSString *)username;
+@end
+
+@interface MainMenuViewController : UITableViewController <SettingsDelegate, SelectUserDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic, assign) float sensitivity;
+@property (weak, nonatomic) IBOutlet UILabel *userLabel;
 
 @end

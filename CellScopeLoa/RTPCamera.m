@@ -120,6 +120,22 @@
     }
 }
 
+- (void)unlockSettings
+{
+    // Lock exposure and white balance
+    if ([self.device isExposureModeSupported:AVCaptureExposureModeLocked] ) {
+        [self.device lockForConfiguration:nil];
+        [self.device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
+        [self.device unlockForConfiguration];
+    }
+    
+    if ([self.device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeLocked] ) {
+        [self.device lockForConfiguration:nil];
+        [self.device setWhiteBalanceMode:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance];
+        [self.device unlockForConfiguration];
+    }
+}
+
 - (void)createNewAssetWriterOutput
 {
     /* That's going to go somewhere, I imagine you've got the URL for that sorted,
