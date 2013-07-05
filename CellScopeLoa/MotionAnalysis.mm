@@ -448,12 +448,12 @@
         //NSLog(@"max y: %i",maxIdx[1]);
         
         // Calculate the sensitivity
-        int low = 250;
-        int high = 650;
+        int low = 1;
+        int high = 640;
         float sensemul = (sensitivity*-1.0 + 1) / 2.0;
         int rangemul = round(sensemul * (high-low) + low);
         //NSLog(@"Sensitivy: %f", sensitivity);
-        //NSLog(@"sensemul: %f", sensemul);
+        NSLog(@"rangemul: %i", rangemul);
         //NSLog(@"Using range multiplier %d", rangemul);
         
         //only advance to the next stage of worm id if the patch max is 266 times higher than the image ave

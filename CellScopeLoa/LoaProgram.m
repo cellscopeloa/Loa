@@ -49,6 +49,7 @@
     NSString *dateString = [format stringFromDate:now];
     
     sample.serialnumber = dateString;
+    //NSLog(@"%@",sample.username);
     sample.username = self.username;
     sample.capturetime = [NSDate date];
     CLLocation* location = [locationManager location];
