@@ -23,6 +23,7 @@
 }
 
 @synthesize coordsArray;
+@synthesize tempCoordsArray;
 @synthesize outImage;
 @synthesize urls;
 @synthesize coordinatesPerMovie;
@@ -45,6 +46,8 @@
     //NSLog(@"Using sensitivity: %f", sensitivity);
     
     coordsArray = [[NSMutableArray alloc] init];
+    tempCoordsArray = [[NSMutableArray alloc] init];
+
     movieLengths = [[NSMutableArray alloc] init];
     urls = [[NSMutableArray alloc] init];
     coordinatesPerMovie = [[NSMutableArray alloc] init];
@@ -150,6 +153,7 @@
     // Start at the first frame
     frameIdx = 0;
     coordsArray = [[NSMutableArray alloc] init];
+    tempCoordsArray = [[NSMutableArray alloc] init];
 
     movieIdx = movidx;
     NSNumber *movielength = [movieLengths objectAtIndex:0];
@@ -159,7 +163,7 @@
     int totalframes = numFrames;
     int rows = 360;
     int cols = 480;
-    int wormSize=50; //must be even
+    int wormSize=80; //must be even
     int innerBoxSize=30; //must be even
     int sz[3] = {rows,cols,3};
     
@@ -172,11 +176,11 @@
     cv::Mat outImage(3, sz, CV_16UC(1), cv::Scalar::all(0));
     
     // Kernels for block averages
-    cv::Mat blockAvg3x3 = cv::Mat::ones(4, 4, CV_32F);
+    cv::Mat blockAvg3x3 = cv::Mat::ones(5, 5, CV_32F);
     cv::Mat blockAve7x7(7, 7, CV_32F, cv::Scalar::all(.02));
 
-    cv::Mat blockAvg12x12 = cv::Mat::ones(12, 12, CV_32F);
-    cv::Mat blockAvg50x50 = cv::Mat::ones(50,50,CV_32F);
+    cv::Mat blockAvg12x12 = cv::Mat::ones(15, 15, CV_32F);
+    cv::Mat blockAvg50x50 = cv::Mat::ones(67,67,CV_32F);
     
     // Matrix for storing normalized frames
     cv::Mat movieFrameMatNorm(rows, cols, CV_16UC1);
@@ -318,7 +322,13 @@
         frameIdx = frameIdx + framesToSkip;
         i = i+1;
     }
-    
+    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
+    movieFrameMatDiff=movieFrameMatDiff/25;
+    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
+    movieFrameMatDiff=movieFrameMatDiff/25;
+    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
+    movieFrameMatDiff=movieFrameMatDiff/25;
+
     //cv::Mat movieFrameMatBack;
     //cv::Mat_<double>gk(49,49);
     //gk=cv::getGaussianKernel(2500,10,CV_32F);
@@ -362,6 +372,7 @@
         sizeTweak=0.07;
         backTweak=.35;
         tweak=0.06;
+        wormSize=50;
 
     }
     int filling = cv::floodFill(movieFrameMatBW, cv::Point(0,0), (imageAve.val[0]/(1.25+backTweak)), (cv::Rect*)0, 100, 200);
@@ -541,13 +552,46 @@
                 //NSLog(@"%s","found some worms!");
                 
                 NSNumber *x = [NSNumber numberWithInt:maxIdx[1]];
-                [coordsArray addObject:x];
+                [tempCoordsArray addObject:x];
                 NSNumber *y = [NSNumber numberWithInt:maxIdx[0]];
-                [coordsArray addObject:y];
+                [tempCoordsArray addObject:y];
                 }
             
         }
+        else if ([tempCoordsArray count]>20 && tweak==-.1){
+            NSLog(@"adjusting params, count is %i, ", [tempCoordsArray count] );
+            [tempCoordsArray removeAllObjects];
+            foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
+            movieFrameMatDiff=movieFrameMatDiffOrig.clone();
+            tweak=0;
+        }
+        else if (tweak==0 && [tempCoordsArray count]>25) {
+            NSLog(@"adjusting params, count is %i, ", [tempCoordsArray count] );
+            [tempCoordsArray removeAllObjects];
+            foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
+            movieFrameMatDiff=movieFrameMatDiffOrig.clone();
+            
+            backTweak=.125;
+            sizeTweak=0.01;
+            tweak=.03;
+            
+        }
+        else if (tweak==.03 && [tempCoordsArray count]>30) {
+            NSLog(@"adjusting params, count is %i, ", [tempCoordsArray count] );
+            [tempCoordsArray removeAllObjects];
+            foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
+            movieFrameMatDiff=movieFrameMatDiffOrig.clone();
+            
+            sizeTweak=0.07;
+            backTweak=.35;
+            tweak=0.06;
+            wormSize=50;
+            
+        }
+
         else {
+            coordsArray=tempCoordsArray;
+
             break;
             movieFrameMatDiff.release();
             movieFrameMatDiff=cv::Mat();

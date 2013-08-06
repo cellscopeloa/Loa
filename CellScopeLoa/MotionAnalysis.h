@@ -14,6 +14,8 @@
 @interface MotionAnalysis : NSObject
 
 @property (strong, nonatomic) NSMutableArray *coordsArray;
+@property (strong, nonatomic) NSMutableArray *tempCoordsArray;
+
 @property (strong, nonatomic) NSMutableArray *urls;
 @property UIImage *outImage;
 @property (strong, nonatomic) NSMutableArray * coordinatesPerMovie;
