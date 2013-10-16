@@ -207,44 +207,19 @@
     frameIdx = 0;
     
     // Compute difference image from current movie
-    
-    //while(i < 50/framesToSkip) {
-    //while(i < numFrames/framesToSkip) {
     while(frameIdx+avgFrames <= (numFrames-20)) {
-
         [self setProgressWithMovie:movidx Frame:frameIdx];
         while(i <= avgFrames) {
-            //NSLog(@"numFrames: %i", numFrames);
-            //NSLog(@"i: %i", i);
-
             // Update the progress bar
             [self setProgressWithMovie:movidx Frame:frameIdx];
-            
             // Grab the current movie from the frame buffer list
             int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames+10);
             //NSLog(@"bufferidxinit: %i", bufferIdx);
             movieFrameMat = frameBuffers->at(bufferIdx);
-            
-            /******debug*/
-            /*if (i%10==0){
-                NSLog(@"writing debug image");
-                cv::Mat debugOut(rows, cols, CV_8UC1, cv::Scalar::all(0));
-                movieFrameMat.convertTo(debugOut, CV_8UC1);
-                UIImage * outUIImage = [[UIImage alloc] initWithCVMat:debugOut];
-                UIImageWriteToSavedPhotosAlbum(outUIImage,
-                                               self, // send the message to 'self' when calling the callback
-                                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                               NULL); // you generally won't need a contextInfo here
-            }*/
-            
-            // Convert the frame into 16 bit grayscale. Space for optimization
-            
-            //@new  
             if (i==0){
                 double trash= threshold(movieFrameMat, movieFrameMatBW, 50, 255, CV_THRESH_BINARY);
             }
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
-            
             // 3x3 spatial filter to reduce noise and downsample
             cv::filter2D(movieFrameMat, movieFrameMat, -1, blockAvg3x3, cv::Point(-1,-1));
             
@@ -264,7 +239,6 @@
             i=i+1;
             frameIdx = frameIdx + framesToSkip;
         }
-        //NSLog(@"i: %i", i);
 
         if (i == avgFrames+1){
             //NSLog(@"dividing first cum image");
@@ -274,7 +248,6 @@
         if (i > avgFrames+1) {
             // Grab the current movie from the frame buffer list
             int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames-framesToSkip+10);
-            //NSLog(@"bufferidxadd: %i", bufferIdx);
             movieFrameMat = frameBuffers->at(bufferIdx);
             
             // Convert the frame into 16 bit grayscale. Space for optimization
@@ -300,7 +273,6 @@
             movieFrameMatFirst.release();
             movieFrameMatFirst=cv::Mat();
             cv::divide(movieFrameMatCum, avgFrames, movieFrameMatNorm);
-            //cv::filter2D(movieFrameMatNorm, movieFrameMatNorm,-1,kernel,cv::Point(-1,-1));
             cv::absdiff(movieFrameMatNormOld, movieFrameMatNorm, movieFrameMatDiffTmp);
             
             movieFrameMatNormOld.release();
@@ -328,17 +300,6 @@
     movieFrameMatDiff=movieFrameMatDiff/25;
     cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
     movieFrameMatDiff=movieFrameMatDiff/25;
-
-    //cv::Mat movieFrameMatBack;
-    //cv::Mat_<double>gk(49,49);
-    //gk=cv::getGaussianKernel(2500,10,CV_32F);
-    //cv::filter2D(movieFrameMatDiff, movieFrameMatBack,-1,gk,cv::Point(-1,-1));
-    //cv::Size ksize(49,49);
-    //cv::GaussianBlur(movieFrameMatDiff,movieFrameMatBack, ksize, .5, 0, cv::BORDER_DEFAULT);
-    //movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBack;
-    
-    //$new
-
     movieFrameMatBWInv=movieFrameMatBW.clone();
     movieFrameMatBWCopy=movieFrameMatBW.clone();
     cv::Scalar imageAve;
@@ -352,6 +313,7 @@
     double backTweak=0;
     
     if (stDev.val[0]<15) {
+        wormSize=100;
         sizeTweak=0;
         backTweak=0;
         tweak=-.1;
@@ -366,6 +328,7 @@
         backTweak=.125;
         sizeTweak=0.01;
         tweak=.03;
+        wormSize=70;
 
     }
     else {
@@ -373,6 +336,8 @@
         backTweak=.35;
         tweak=0.06;
         wormSize=50;
+        innerBoxSize=26;
+        NSLog(@"in max bracket");
 
     }
     int filling = cv::floodFill(movieFrameMatBW, cv::Point(0,0), (imageAve.val[0]/(1.25+backTweak)), (cv::Rect*)0, 100, 200);
@@ -382,71 +347,24 @@
     movieFrameMatBWInv.convertTo(movieFrameMatBWInv, CV_16UC1);
     movieFrameMatBWInv=movieFrameMatBWInv;
     movieFrameMatBWCopy.convertTo(movieFrameMatBWCopy, CV_16UC1);
-	
     movieFrameMatBW=movieFrameMatBW-movieFrameMatBWCopy;
-    
-    //cv::convertScaleAbs(movieFrameMatBWInv, movieFrameMatBWInv, -1, 255 );
-    
     movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBWInv;
-    //cv::Mat movieFrameMatDiffSort;
     movieFrameMatDiff=movieFrameMatDiff+movieFrameMatBW;
-    //movieFrameMatDiffOrig=movieFrameMatDiffOrig-movieFrameMatBWInv+movieFrameMatBW;
     cv::Mat movieFrameMatDiffSort(480,270, CV_16UC1, cv::Scalar::all(0));
-    //cv::Mat movieFrameMatDiffSort2(480,270, CV_16UC1, cv::Scalar::all(0));
     cv::sort(movieFrameMatDiff, movieFrameMatDiffSort,CV_SORT_EVERY_ROW+CV_SORT_DESCENDING);
     cv::sort(movieFrameMatDiffSort, movieFrameMatDiffSort,CV_SORT_EVERY_COLUMN+CV_SORT_DESCENDING);
-    
-    //int scaledAve=movieFrameMatDiffSort[100][100];
-    
     cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
-    //movieFrameMatDiff=movieFrameMatDiff/25;
     cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
-    //movieFrameMatDiff=movieFrameMatDiff/25;
     cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
-    //movieFrameMatDiff=movieFrameMatDiff/25;
-    
-    //cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
-    //movieFrameMatDiff=movieFrameMatDiff/25;
-    //cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
-    //movieFrameMatDiff=movieFrameMatDiff/25;
-    //cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
-    //movieFrameMatDiff=movieFrameMatDiff/25;
-    
-    
     movieFrameMatDiffOrig = movieFrameMatDiff.clone();
-    
-    
-    
-    //imageAve.val[0]=scaledAve;
-    
     movieFrameMatBW.convertTo(movieFrameMatBW, CV_8UC1);
     movieFrameMatDiffSort.convertTo(movieFrameMatDiffSort, CV_8UC1);
     unsigned char scaledAve=movieFrameMatDiffSort.at<unsigned char>(135,400);
-    NSLog(@"img 100x100: %d",scaledAve);
     imageAve.val[0]=scaledAve;
     double minVal;
     double maxValTrash;
     cv::minMaxLoc(movieFrameMatDiff, &minVal, &maxValTrash);
-    NSLog(@"img minval: %f",minVal);
-    
-    
-    //@new code end
-    
-    
     movieFrameMatDiffOrig = movieFrameMatDiff.clone();
-    
-    
-    //int rowRangeLow = 30;
-    //int rowRangeHigh = 330;
-    //int colRangeLow = 90;
-    //int colRangeHigh = 390;
-    //cv::Mat centerRegion = movieFrameMatDiffOrig(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
-
-    //cv::Scalar imageAve = cv::mean(centerRegion);
-    //NSLog(@"img avg: %f",imageAve.val[0]);
-    //cv::Scalar imageAve = cv::mean(centerRegion);
-    // NSLog(@"img avg: %f",imageAve.val[0]);
-    
     bool findinWorms=TRUE;
     while(findinWorms==TRUE) {
         cv::Mat findinWormsConv;
@@ -464,8 +382,7 @@
         float sensemul = (sensitivity*-1.0 + 1) / 2.0;
         int rangemul = round(sensemul * (high-low) + low);
         //NSLog(@"Sensitivy: %f", sensitivity);
-        NSLog(@"rangemul: %i", rangemul);
-        //NSLog(@"Using range multiplier %d", rangemul);
+        //NSLog(@"rangemul: %i", rangemul);
         
         //only advance to the next stage of worm id if the patch max is 266 times higher than the image ave
         if (maxVal > (imageAve.val[0] * rangemul)) {
@@ -545,7 +462,7 @@
             cv::Scalar wholeAve=cv::mean(wholeRegion);
             
             movieFrameMatDiff(cv::Range(rowRangeLow+sizeTweak,rowRangeHigh-sizeTweak),cv::Range(colRangeLow+sizeTweak,colRangeHigh-sizeTweak))=cv::Scalar::all(0);            
-            NSLog(@"center intensity norm: %f",selAve.val[0]/wholeAve.val[0]);
+            //NSLog(@"center intensity norm: %f",selAve.val[0]/wholeAve.val[0]);
             
             if (selAve.val[0]>wholeAve.val[0]*(1.2-tweak) || wholeAve.val[0]>imageAve.val[0]*7){
                 foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
@@ -558,7 +475,7 @@
                 }
             
         }
-        else if ([tempCoordsArray count]>20 && tweak==-.1){
+        else if ([tempCoordsArray count]>16 && tweak==-.1){
             NSLog(@"adjusting params, count is %i, ", [tempCoordsArray count] );
             [tempCoordsArray removeAllObjects];
             foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
@@ -574,6 +491,7 @@
             backTweak=.125;
             sizeTweak=0.01;
             tweak=.03;
+            wormSize=70;
             
         }
         else if (tweak==.03 && [tempCoordsArray count]>30) {
@@ -586,8 +504,24 @@
             backTweak=.35;
             tweak=0.06;
             wormSize=50;
+            innerBoxSize=26;
+
             
         }
+        else if (tweak==.06 && [tempCoordsArray count]>35) {
+            NSLog(@"adjusting params 4, count is %i, ", [tempCoordsArray count] );
+            [tempCoordsArray removeAllObjects];
+            foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
+            movieFrameMatDiff=movieFrameMatDiffOrig.clone();
+            
+            sizeTweak=0.07;
+            backTweak=.35;
+            tweak=0.175;
+            wormSize=40;
+            innerBoxSize=20;
+            
+        }
+
 
         else {
             coordsArray=tempCoordsArray;
