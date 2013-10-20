@@ -25,6 +25,7 @@
 @synthesize background;
 @synthesize countLabel;
 @synthesize wormsField;
+@synthesize sampleIDLabel;
 
 -(void)setupInstructionSet
 {
@@ -72,6 +73,7 @@
 
 - (void)showResults
 {
+    sampleIDLabel.text = program.currentSampleSerial;
     float numberoffov = 3.0;
     NSArray* movies = [program currentMovies];
     int wormcount = 0;

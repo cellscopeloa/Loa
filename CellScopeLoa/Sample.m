@@ -2,7 +2,7 @@
 //  Sample.m
 //  CellScopeLoa
 //
-//  Created by Matthew Bakalar on 7/1/13.
+//  Created by Matthew Bakalar on 10/20/13.
 //  Copyright (c) 2013 Matthew Bakalar. All rights reserved.
 //
 
@@ -12,11 +12,12 @@
 
 @implementation Sample
 
-@dynamic serialnumber;
-@dynamic username;
+@dynamic capturetime;
 @dynamic lattitude;
 @dynamic longitude;
-@dynamic capturetime;
+@dynamic serialnumber;
+@dynamic username;
+@dynamic synced;
 @dynamic movies;
 
 @end

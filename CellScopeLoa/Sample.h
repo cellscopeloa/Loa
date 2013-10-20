@@ -2,7 +2,7 @@
 //  Sample.h
 //  CellScopeLoa
 //
-//  Created by Matthew Bakalar on 7/1/13.
+//  Created by Matthew Bakalar on 10/20/13.
 //  Copyright (c) 2013 Matthew Bakalar. All rights reserved.
 //
 
@@ -13,11 +13,12 @@
 
 @interface Sample : NSManagedObject
 
-@property (nonatomic, retain) NSString * serialnumber;
-@property (nonatomic, retain) NSString * username;
+@property (nonatomic, retain) NSDate * capturetime;
 @property (nonatomic, retain) NSNumber * lattitude;
 @property (nonatomic, retain) NSNumber * longitude;
-@property (nonatomic, retain) NSDate * capturetime;
+@property (nonatomic, retain) NSString * serialnumber;
+@property (nonatomic, retain) NSString * username;
+@property (nonatomic, retain) NSNumber * synced;
 @property (nonatomic, retain) NSSet *movies;
 @end
 

@@ -13,6 +13,7 @@
 @synthesize thumbnail;
 @synthesize mainLabel;
 @synthesize detailLabel;
+@synthesize syncIcon;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

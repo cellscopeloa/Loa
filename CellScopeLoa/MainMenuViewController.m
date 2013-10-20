@@ -60,6 +60,14 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([[defaults objectForKey:@"run"] isEqualToString:@"firstRun"]) {
+        [self performSegueWithIdentifier:@"SetDeviceID" sender:self];
+    }
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -73,6 +81,9 @@
         UsersViewController *usersViewController = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
         usersViewController.delegate = self;
         usersViewController.managedObjectContext = self.managedObjectContext;
+    }
+    else if([segue.identifier isEqualToString:@"SetDeviceID"]) {
+        NSLog(@"Set Device ID");
     }
     else if([segue.identifier isEqualToString:@"Video"]) {
         LoaProgram* program = [[LoaProgram alloc] initWithMode:@"Advanced" Sensitivity:sensitivity];

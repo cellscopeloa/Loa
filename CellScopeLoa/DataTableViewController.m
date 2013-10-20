@@ -15,6 +15,10 @@
 #import "DataReviewImagesViewController.h"
 #import "CountViewController.h"
 
+static NSString *const kKeychainItemName = @"Google Drive Quickstart";
+static NSString *const kClientID = @"822665295778.apps.googleusercontent.com";
+static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
+
 @interface DataTableViewController ()
 
 @end
@@ -23,6 +27,7 @@
 
 @synthesize managedObjectContext;
 @synthesize lastSelectedIndex;
+@synthesize driveService;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -36,12 +41,48 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // Initialize the drive service & load existing credentials from the keychain if available
+    self.driveService = [[GTLServiceDrive alloc] init];
+    self.driveService.authorizer = [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
+                                                                                         clientID:kClientID
+                                                                                     clientSecret:kClientSecret];
+    
+    // Log out of any google credentials we have
+    if([self isAuthorized]) {
+        // [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
+        // [[self driveService] setAuthorizer:nil];
+    }
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self loadSamples];
+    sleep (0.5);
+    [self.tableView reloadData];
+    sleep (0.5);
+}
+
+- (void)loadSamples
+{
+    NSError *error;
+    NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc]
+                                        initWithKey:@"capturetime" ascending:NO];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample"
+                                              inManagedObjectContext:managedObjectContext];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    [fetchRequest setEntity:entity];
+    NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    self.samples = fetchedObjects;
+    //[self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -60,30 +101,23 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSError *error;
-    NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc]
-                                        initWithKey:@"capturetime" ascending:NO];
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample"
-                                              inManagedObjectContext:managedObjectContext];
-    [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-    [fetchRequest setEntity:entity];
-    NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    self.samples = fetchedObjects;
-    
-    return [self.samples count];
+    if (self.samples == nil) {
+        return 0;
+    }
+    else {
+        return [self.samples count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"ResultsCell";
     ImageThumbCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     if (cell == nil) {
         cell = [[ImageThumbCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    
     Sample *sample = (Sample*)[self.samples objectAtIndex:indexPath.row];
     
     // Configure datetime
@@ -119,6 +153,8 @@
         
     cell.mainLabel.text = dateString;
     cell.detailLabel.text = sample.username;
+    
+    cell.syncIcon.hidden = !(sample.synced);
     
     return cell;
 }
@@ -181,6 +217,208 @@
 {
     lastSelectedIndex = [NSNumber numberWithInt:indexPath.row];
     [self performSegueWithIdentifier:@"ViewSample" sender:self];
+}
+
+#pragma mark - Google Drive
+// Creates the auth controller for authorizing access to Google Drive.
+- (GTMOAuth2ViewControllerTouch *)createAuthController
+{
+    GTMOAuth2ViewControllerTouch *authController;
+    authController = [[GTMOAuth2ViewControllerTouch alloc] initWithScope:kGTLAuthScopeDriveFile
+                                                                clientID:kClientID
+                                                            clientSecret:kClientSecret
+                                                        keychainItemName:kKeychainItemName
+                                                                delegate:self
+                                                        finishedSelector:@selector(viewController:finishedWithAuth:error:)];
+    return authController;
+}
+
+// Helper to check if user is authorized
+- (BOOL)isAuthorized
+{
+    return [((GTMOAuth2Authentication *)self.driveService.authorizer) canAuthorize];
+}
+
+- (IBAction)onExport:(id)sender {
+    if (![self isAuthorized])
+    {
+        // Not yet authorized, request authorization and push the login UI onto the navigation stack.
+        [self presentViewController:[self createAuthController] animated:YES completion:nil];
+    }
+    [self uploadSamples];
+}
+
+// Handle completion of the authorization process, and updates the Drive service
+// with the new credentials.
+- (void)viewController:(GTMOAuth2ViewControllerTouch *)viewController
+      finishedWithAuth:(GTMOAuth2Authentication *)authResult
+                 error:(NSError *)error
+{
+    if (error != nil)
+    {
+        [self showAlert:@"Authentication Error" message:error.localizedDescription];
+        self.driveService.authorizer = nil;
+    }
+    else
+    {
+        self.driveService.authorizer = authResult;
+    }
+    [self dismissViewControllerAnimated:viewController completion:nil];
+}
+
+// Uploads a video to Google Drive
+- (void)uploadVideo:(NSData*)data withName:(NSString*)name
+{
+    GTLDriveFile *file = [GTLDriveFile object];
+    file.title = name;
+    file.descriptionProperty = @"Uploaded from the Google Drive iOS Quickstart";
+    file.mimeType = @"video/mov";
+    
+    GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:data MIMEType:file.mimeType];
+    GTLQueryDrive *query = [GTLQueryDrive queryForFilesInsertWithObject:file
+                                                       uploadParameters:uploadParameters];
+    
+    UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading to Google Drive"];
+    
+    [self.driveService executeQuery:query
+                  completionHandler:^(GTLServiceTicket *ticket,
+                                      GTLDriveFile *insertedFile, NSError *error) {
+                      [waitIndicator dismissWithClickedButtonIndex:0 animated:YES];
+                      if (error == nil)
+                      {
+                          NSLog(@"File ID: %@", insertedFile.identifier);
+                          [self showAlert:@"Google Drive" message:@"File saved!"];
+                      }
+                      else
+                      {
+                          NSLog(@"An error occurred: %@", error);
+                          [self showAlert:@"Google Drive" message:@"Sorry, an error occurred!"];
+                      }
+                  }];
+}
+
+// Helper for showing a wait indicator in a popup
+- (UIAlertView*)showWaitIndicator:(NSString *)title
+{
+    UIAlertView *progressAlert;
+    progressAlert = [[UIAlertView alloc] initWithTitle:title
+                                               message:@"Please wait..."
+                                              delegate:nil
+                                     cancelButtonTitle:nil
+                                     otherButtonTitles:nil];
+    [progressAlert show];
+    
+    UIActivityIndicatorView *activityView;
+    activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    activityView.center = CGPointMake(progressAlert.bounds.size.width / 2,
+                                      progressAlert.bounds.size.height - 45);
+    
+    [progressAlert addSubview:activityView];
+    [activityView startAnimating];
+    return progressAlert;
+}
+
+// Helper for showing an alert
+- (void)showAlert:(NSString *)title message:(NSString *)message
+{
+    UIAlertView *alert;
+    alert = [[UIAlertView alloc] initWithTitle: title
+                                       message: message
+                                      delegate: nil
+                             cancelButtonTitle: @"OK"
+                             otherButtonTitles: nil];
+    [alert show];
+}
+
+// Upload all samples that have not been marked synced
+- (void)uploadSamples
+{
+    for (Sample *sample in self.samples) {
+        // Configure thumbnail
+        NSSet* movies = sample.movies;
+        int movnum = 0;
+        for (SampleMovie *movie in movies)
+        {
+            NSURL* url = [NSURL URLWithString:movie.path];
+            AVAsset *video = [AVURLAsset URLAssetWithURL:url options:nil];
+            NSArray *keys = @[@"tracks", @"duration"];
+            [video loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+                
+                NSError *error = nil;
+                AVKeyValueStatus tracksStatus = [video statusOfValueForKey:@"duration" error:&error];
+                switch (tracksStatus) {
+                    case AVKeyValueStatusLoaded:
+                        break;
+                    case AVKeyValueStatusFailed:
+                        break;
+                    case AVKeyValueStatusCancelled:
+                        // Do whatever is appropriate for cancelation.
+                        break;
+                }
+                
+                NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:video];
+                if ([compatiblePresets containsObject:AVAssetExportPresetHighestQuality]) {
+                    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]
+                                                           initWithAsset:video presetName:AVAssetExportPreset960x540];
+                    NSString *tempName = [NSString stringWithFormat:@"%@_%d.mov", sample.serialnumber, movnum];
+                    NSString *tempFileTemplate = [NSTemporaryDirectory()
+                                                  stringByAppendingPathComponent:tempName];
+                    
+                    NSFileManager *fileManager = [NSFileManager defaultManager];
+                    if ([fileManager fileExistsAtPath:tempFileTemplate]) {
+                        NSError *error;
+                        if ([fileManager removeItemAtPath:tempFileTemplate error:&error] == NO) {
+                            NSLog(@"removeItemAtPath %@ error:%@", tempFileTemplate, error);
+                        }
+                    }
+
+                    exportSession.outputURL = [NSURL fileURLWithPath:tempFileTemplate];
+                    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+                    
+                    // CMTimeRange range = CMTimeRangeMake(video, CMTimeSubtract(self.endTime, self.startTime));
+                    // startTime and endTime is the duration that we need to save.
+                    // exportSession.timeRange = range;
+                    
+                    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+                        
+                        switch ([exportSession status]) {
+                            case AVAssetExportSessionStatusCompleted:
+                            {
+                                NSData *data = [NSData dataWithContentsOfFile:tempFileTemplate];
+                                [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+                                    
+                                    //Your code goes in here
+                                    [self uploadVideo:data withName:tempName];
+                                    
+                                }];
+                                break;
+                            }
+                            case AVAssetExportSessionStatusWaiting:
+                                NSLog(@"Export Waiting");
+                                break;
+                            case AVAssetExportSessionStatusExporting:
+                                NSLog(@"Export Exporting");
+                                break;
+                            case AVAssetExportSessionStatusFailed:
+                            {
+                                NSError *error = [exportSession error];
+                                NSLog(@"Export failed: %@", [error localizedDescription]);
+                                break;
+                            }
+                            case AVAssetExportSessionStatusCancelled:
+                                NSLog(@"Export canceled");
+                                break;
+                            default:
+                                break;
+                        }
+                    }];
+                     
+                }
+                
+            }];
+            movnum++;
+        }
+    }
 }
 
 - (IBAction)donePressed:(id)sender {

@@ -171,6 +171,7 @@
                 error:(NSError *)error
 {
     // Store the video in the asset library
+    NSLog(@"Storing video in the asset library...");
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL])
     {

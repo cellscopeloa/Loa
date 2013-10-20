@@ -43,12 +43,17 @@
     Sample* sample = [NSEntityDescription insertNewObjectForEntityForName:@"Sample" inManagedObjectContext: managedObjectContext];
     
     // Setup a new sample with serialnumber equal to the current datetime
-    NSDateFormatter *format = [[NSDateFormatter alloc] init];
-    [format setDateFormat:@"MMM dd, yyyy HH:mm:ss"];
-    NSDate *now = [[NSDate alloc] init];
-    NSString *dateString = [format stringFromDate:now];
-    
-    sample.serialnumber = dateString;
+    // Generate an ID number
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *deviceID = [defaults objectForKey:@"DeviceID"];
+    NSNumber *sampleNumber = [defaults objectForKey:@"sampleNumber"];
+    NSString* sampleID = [NSString stringWithFormat:@"%@-%05d", deviceID, sampleNumber.intValue];
+    // Increment the sample ID number
+    [defaults setObject:[NSNumber numberWithInt:(sampleNumber.intValue+1)] forKey:@"sampleNumber"];
+    [defaults synchronize];
+
+    sample.synced = false;
+    sample.serialnumber = sampleID;
     //NSLog(@"%@",sample.username);
     sample.username = self.username;
     sample.capturetime = [NSDate date];

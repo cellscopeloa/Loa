@@ -7,12 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <AVFoundation/AVFoundation.h>
+#import <Foundation/Foundation.h>
 
-@interface DataTableViewController : UITableViewController
+#import "GTMOAuth2ViewControllerTouch.h"
+#import "GTLDrive.h"
+
+@interface DataTableViewController : UITableViewController <UINavigationControllerDelegate>
 
 @property (nonatomic, strong) NSNumber* lastSelectedIndex;
 @property (nonatomic, strong) NSManagedObjectContext* managedObjectContext;
 @property (nonatomic, strong) NSArray* samples;
+@property (nonatomic, strong) GTLServiceDrive *driveService;
+
+- (IBAction)onExport:(id)sender;
+
 - (IBAction)donePressed:(id)sender;
 
 @end

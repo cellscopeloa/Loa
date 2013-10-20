@@ -388,8 +388,8 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "63"
          endingLineNumber = "63"
-         landmarkName = "@implementation MotionAnalysis"
-         landmarkType = "3">
+         landmarkName = "-initWithWidth:Height:Frames:Movies:Sensitivity:"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -401,7 +401,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "64"
          endingLineNumber = "64"
-         landmarkName = "-writeNextFrame:"
+         landmarkName = "-initWithWidth:Height:Frames:Movies:Sensitivity:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -609,8 +609,8 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "134"
          endingLineNumber = "134"
-         landmarkName = "-processAllMovies"
-         landmarkType = "5">
+         landmarkName = "@implementation MotionAnalysis"
+         landmarkType = "3">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"

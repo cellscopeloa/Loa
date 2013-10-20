@@ -10,6 +10,7 @@
 #import "LoaProgram.h"
 
 @interface ResultsViewController : UIViewController
+@property (weak, nonatomic) IBOutlet UILabel *sampleIDLabel;
 
 @property UIImage* backImage;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;

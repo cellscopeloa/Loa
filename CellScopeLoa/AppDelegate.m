@@ -66,7 +66,13 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults objectForKey:@"firstRun"]) {
         [defaults setObject:[NSDate date] forKey:@"firstRun"];
+        [defaults setObject:@"firstRun" forKey:@"run"];
         [defaults setObject:[NSNumber numberWithFloat:0.0] forKey:@"sensitivity"];
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:@"sampleNumber"];
+    }
+    else
+    {
+        [defaults setObject:@"notFirstRun" forKey:@"run"];
     }
     
     UIViewController *rootViewController = self.window.rootViewController;
