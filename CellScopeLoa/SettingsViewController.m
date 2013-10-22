@@ -19,6 +19,7 @@
 @synthesize sensitivityIndicator;
 @synthesize delegate;
 @synthesize sensitivitySlide;
+@synthesize rotateSwitch;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -35,6 +36,8 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSNumber* sense = [defaults objectForKey:@"sensitivity"];
+    NSNumber* tabletMode = [defaults objectForKey:@"tabletMode"];
+    [rotateSwitch setOn:tabletMode.boolValue];
     sensitivitySlide.value = (sense.floatValue + 1.0)/2.0;
     sensitivityIndicator.text = [NSString stringWithFormat:@"%.2f", sense.floatValue];
     NSLog(@"Loaded sensitivity: %f", sense.floatValue);
@@ -80,6 +83,9 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:[NSNumber numberWithFloat:sense] forKey:@"sensitivity"];
         [defaults synchronize];
+        
+        // Store switch value
+        [defaults setObject:[NSNumber numberWithBool:rotateSwitch.isOn] forKey:@"tabletMode"];
         
         menu.managedObjectContext = managedObjectContext;
     }
@@ -143,6 +149,9 @@
 
     }
     // Navigation logic may go here. Create and push another view controller.
+}
+
+- (IBAction)onRotateSwitch:(id)sender {
 }
 
 - (IBAction)sensitivityValueChanged:(id)sender {

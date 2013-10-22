@@ -67,9 +67,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 {
     [super viewWillAppear:animated];
     [self loadSamples];
-    sleep (1.0);
     [self.tableView reloadData];
-    sleep (1.0);
 }
 
 - (void)loadSamples

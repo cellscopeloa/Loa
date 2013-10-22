@@ -142,7 +142,10 @@
      so create a suitable asset writer; we'll put our H.264 within the normal
      MPEG4 container */
     
-    outputPath = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"movie.MOV"]];
+    NSString *guid = [[NSProcessInfo processInfo] globallyUniqueString] ;
+    NSString *uniqueFileName = [NSString stringWithFormat:@"%@_%@.MOV", @"movie", guid];
+
+    outputPath = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), uniqueFileName]];
     // Clear temporary movie location
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[outputPath relativePath]])

@@ -15,8 +15,10 @@
 @property (weak, nonatomic) IBOutlet UISlider *sensitivitySlide;
 @property (weak, nonatomic) IBOutlet UILabel *sensitivityIndicator;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (weak, nonatomic) IBOutlet UISwitch *rotateSwitch;
 
 @property (weak, nonatomic) id<SettingsDelegate> delegate;
+- (IBAction)onRotateSwitch:(id)sender;
 
 - (IBAction)sensitivityValueChanged:(id)sender;
 

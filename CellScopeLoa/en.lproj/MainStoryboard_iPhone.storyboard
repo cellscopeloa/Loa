@@ -267,7 +267,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Set device ID" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YFi-9y-ei9">
-                                <rect key="frame" x="113" y="20" width="102" height="21"/>
+                                <rect key="frame" x="107" y="20" width="102" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -301,8 +301,8 @@
                                 <rect key="frame" x="122" y="134" width="79" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </switch>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tablet mode" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WZI-PI-IYP">
-                                <rect key="frame" x="113" y="105" width="95" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rotate screen" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WZI-PI-IYP">
+                                <rect key="frame" x="107" y="105" width="107" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -1013,7 +1013,7 @@
                             <tableViewSection headerTitle="Detection Settings" id="862-2e-TcR">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="VeW-QP-Ure">
-                                        <rect key="frame" x="0.0" y="46" width="320" height="46"/>
+                                        <rect key="frame" x="0.0" y="46" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
@@ -1060,12 +1060,47 @@
                                             <constraint firstItem="Z84-Vh-h9H" firstAttribute="top" secondItem="SUW-jS-McX" secondAttribute="top" type="default" id="riZ-lV-1YL"/>
                                         </constraints>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="FUz-fb-Aqn">
+                                        <rect key="frame" x="0.0" y="91" width="320" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="10" y="0.0" width="300" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="c1g-xM-K0E">
+                                                    <rect key="frame" x="203" y="5" width="79" height="27"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <connections>
+                                                        <action selector="onRotateSwitch:" destination="hZX-TX-JuC" eventType="valueChanged" id="dDX-Fp-qYE"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rotate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CKf-f7-WKu">
+                                                    <rect key="frame" x="20" y="11" width="51" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="WX5-yP-2QC"/>
+                                                        <constraint firstAttribute="width" constant="51" id="bKk-Dg-dyw"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstItem="CKf-f7-WKu" firstAttribute="centerY" secondItem="FUz-fb-Aqn" secondAttribute="centerY" constant="-1" type="default" id="BXe-3c-35T"/>
+                                            <constraint firstItem="CKf-f7-WKu" firstAttribute="leading" secondItem="FUz-fb-Aqn" secondAttribute="leading" constant="30" type="default" id="GiP-cV-4yB"/>
+                                            <constraint firstAttribute="trailing" secondItem="c1g-xM-K0E" secondAttribute="trailing" constant="30" type="default" id="W3H-5d-Vra"/>
+                                            <constraint firstItem="CKf-f7-WKu" firstAttribute="bottom" secondItem="c1g-xM-K0E" secondAttribute="bottom" type="default" id="tL8-PI-sXB"/>
+                                        </constraints>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection id="jYt-2x-g9d">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="9hi-iw-xHR" style="IBUITableViewCellStyleDefault" id="pCR-Ha-tA3">
-                                        <rect key="frame" x="0.0" y="112" width="320" height="46"/>
+                                        <rect key="frame" x="0.0" y="156" width="320" height="46"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="10" y="1" width="300" height="43"/>
@@ -1093,6 +1128,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="rotateSwitch" destination="c1g-xM-K0E" id="Nrs-iv-dgq"/>
                         <outlet property="sensitivityIndicator" destination="hsk-mM-AtC" id="44y-kC-0vP"/>
                         <outlet property="sensitivitySlide" destination="SUW-jS-McX" id="SjU-Si-dBz"/>
                     </connections>
@@ -1195,7 +1231,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="1qg-5Q-Wmq"/>
         <segue reference="XhS-DO-q06"/>
-        <segue reference="86w-04-00L"/>
     </inferredMetricsTieBreakers>
 </document>
