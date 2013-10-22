@@ -25,6 +25,7 @@
 		9B5C639A178200F100F83492 /* ImageThumbCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C6399178200F000F83492 /* ImageThumbCell.m */; };
 		9B5C639D178208D500F83492 /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C639C178208D500F83492 /* SampleMovie.m */; };
 		9B5C63A317822FC800F83492 /* DataReviewImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C63A217822FC700F83492 /* DataReviewImagesViewController.m */; };
+		9B5E81CC1816C3EA00279077 /* SampleExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5E81CB1816C3EA00279077 /* SampleExporter.m */; };
 		9B6A765C1814554500827611 /* GoogleDriveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A765B1814554500827611 /* GoogleDriveViewController.m */; };
 		9B6A7B411814588000827611 /* GTMGatherInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A76671814587A00827611 /* GTMGatherInputStream.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9B6A7B421814588000827611 /* GTMHTTPFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A76691814587A00827611 /* GTMHTTPFetcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -223,6 +224,8 @@
 		9B5C639C178208D500F83492 /* SampleMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleMovie.m; sourceTree = "<group>"; };
 		9B5C63A117822FC700F83492 /* DataReviewImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataReviewImagesViewController.h; sourceTree = "<group>"; };
 		9B5C63A217822FC700F83492 /* DataReviewImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataReviewImagesViewController.m; sourceTree = "<group>"; };
+		9B5E81CA1816C3EA00279077 /* SampleExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleExporter.h; sourceTree = "<group>"; };
+		9B5E81CB1816C3EA00279077 /* SampleExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleExporter.m; sourceTree = "<group>"; };
 		9B6A765A1814554500827611 /* GoogleDriveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleDriveViewController.h; sourceTree = "<group>"; };
 		9B6A765B1814554500827611 /* GoogleDriveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleDriveViewController.m; sourceTree = "<group>"; };
 		9B6A76631814587A00827611 /* GTLDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLDefines.h; sourceTree = "<group>"; };
@@ -745,6 +748,8 @@
 				9B5C639C178208D500F83492 /* SampleMovie.m */,
 				9BE808701814870000525F7D /* Sample.h */,
 				9BE808711814870000525F7D /* Sample.m */,
+				9B5E81CA1816C3EA00279077 /* SampleExporter.h */,
+				9B5E81CB1816C3EA00279077 /* SampleExporter.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -1028,6 +1033,11 @@
 			attributes = {
 				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Matthew Bakalar";
+				TargetAttributes = {
+					9BD8A345163DA7BD009038BB = {
+						DevelopmentTeam = NPZGJ9L3C2;
+					};
+				};
 			};
 			buildConfigurationList = 9BD8A340163DA7BD009038BB /* Build configuration list for PBXProject "CellScopeLoa" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1236,6 +1246,7 @@
 				9B6A7C551814588000827611 /* GTLDriveCommentReplyList.m in Sources */,
 				9B5C63971781F4BE00F83492 /* DataTableViewController.m in Sources */,
 				9B6A7C631814588000827611 /* GTLQueryDrive.m in Sources */,
+				9B5E81CC1816C3EA00279077 /* SampleExporter.m in Sources */,
 				9B5C639A178200F100F83492 /* ImageThumbCell.m in Sources */,
 				9B5C639D178208D500F83492 /* SampleMovie.m in Sources */,
 				9B6A7B491814588000827611 /* GTMReadMonitorInputStream.m in Sources */,
@@ -1354,6 +1365,8 @@
 		9BD8A383163DA7BE009038BB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/cell-scope-loa\"",
@@ -1363,12 +1376,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CellScopeLoa/CellScopeLoa-Prefix.pch";
 				INFOPLIST_FILE = "CellScopeLoa/CellScopeLoa-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SDKROOT)/usr/lib/system\"",
 				);
 				OTHER_CFLAGS = "-mfpu=neon";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1376,6 +1391,8 @@
 		9BD8A384163DA7BE009038BB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/cell-scope-loa\"",
@@ -1385,6 +1402,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CellScopeLoa/CellScopeLoa-Prefix.pch";
 				INFOPLIST_FILE = "CellScopeLoa/CellScopeLoa-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SDKROOT)/usr/lib/system\"",
@@ -1394,6 +1412,7 @@
 					"-mfpu=neon",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

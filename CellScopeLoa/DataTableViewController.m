@@ -14,6 +14,7 @@
 #import "ImageThumbCell.h"
 #import "DataReviewImagesViewController.h"
 #import "CountViewController.h"
+#import "SampleExporter.h"
 
 static NSString *const kKeychainItemName = @"Google Drive Quickstart";
 static NSString *const kClientID = @"822665295778.apps.googleusercontent.com";
@@ -389,14 +390,13 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                         [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
                             GTLDriveFile *file = [GTLDriveFile object];
                             file.title = tempName;
-                            file.descriptionProperty = @"Uploaded from the Google Drive iOS Quickstart";
                             file.mimeType = @"video/mov";
                             
                             GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:data MIMEType:file.mimeType];
                             GTLQueryDrive *query = [GTLQueryDrive queryForFilesInsertWithObject:file
                                                                                uploadParameters:uploadParameters];
                             
-                            UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading to Google Drive"];
+                            UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading video to Google Drive"];
                             
                             [self.driveService executeQuery:query
                                           completionHandler:^(GTLServiceTicket *ticket,
@@ -461,6 +461,10 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 // Upload all samples that have not been marked synced
 - (void)uploadSamples
 {
+    // First, upload the database text file representation
+    NSString* datarep = [SampleExporter databaseString:self.samples];
+    [self syncDatabaseText:datarep];
+    
     Sample *sample = [sampleEnumerator nextObject];
     if(sample != nil) {
         NSLog(@"Upload next sample");
@@ -473,6 +477,35 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
             }];
         }
     }
+}
+
+- (void)syncDatabaseText:(NSString*)text
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString* deviceID = (NSString*)[defaults objectForKey:@"DeviceID"];
+    
+    NSData *fileContent = [text dataUsingEncoding:NSUTF8StringEncoding];
+    GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:fileContent MIMEType:@"text/plain"];
+    
+    GTLDriveFile *file = [GTLDriveFile object];
+    file.title = [NSString stringWithFormat:@"%@-database.txt", deviceID];
+    GTLQueryDrive *query = nil;
+    // This is a new file, instantiate an insert query.
+    query = [GTLQueryDrive queryForFilesInsertWithObject:file uploadParameters:uploadParameters];
+
+    UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading database record"];
+    
+    [self.driveService executeQuery:query completionHandler:^(GTLServiceTicket *ticket,
+                                                              GTLDriveFile *updatedFile,
+                                                              NSError *error) {
+        [waitIndicator dismissWithClickedButtonIndex:0 animated:YES];
+        if (error == nil) {
+            // pass
+        } else {
+            NSLog(@"An error occurred: %@", error);
+            [self showAlert:@"Error" message:@"Unable to save database file. Check internet connection and try again later."];
+        }
+    }];
 }
 
 - (IBAction)donePressed:(id)sender {

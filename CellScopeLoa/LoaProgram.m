@@ -59,8 +59,8 @@
     sample.capturetime = [NSDate date];
     CLLocation* location = [locationManager location];
     if(location == Nil) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"GPS Error" message: @"Location cannot be saved" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        //UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"GPS Error" message: @"Location cannot be saved" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        //[alert show];
     }
     else {
         CLLocationCoordinate2D coordinate = [location coordinate];
@@ -169,6 +169,7 @@
     NSError* error2;
     NSArray *results2 = [managedObjectContext executeFetchRequest:request2 error:&error2];
     SampleMovie* sampleMovie = [results2 objectAtIndex:0];
+    int featurecount = 0;
     int i=0;
     while (i < coordsLength-1) {
         NSLog(@"Add coordinate %d: ", i);
@@ -183,7 +184,16 @@
         feature.ycoord = coordinates[i];
         i++;
         [[sampleMovie mutableSetValueForKey:@"features"] addObject:feature];
+        
+        featurecount += 1;
    }
+    
+    // Update feature count
+    sampleMovie.numworms = [NSNumber numberWithInt:featurecount];
+    NSError* error;
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"Error saving managed object context: %@", [error localizedDescription]);
+    }
 }
 
 - (void)addMovieProcessed:(UIImage *)processedImage atURL:(NSURL*)url forMovieIndex:(NSNumber*)movidx
