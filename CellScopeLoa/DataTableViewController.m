@@ -23,7 +23,9 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 
 @end
 
-@implementation DataTableViewController
+@implementation DataTableViewController {
+    NSEnumerator* sampleEnumerator;
+}
 
 @synthesize managedObjectContext;
 @synthesize lastSelectedIndex;
@@ -82,6 +84,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     [fetchRequest setEntity:entity];
     NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     self.samples = fetchedObjects;
+    sampleEnumerator = [self.samples objectEnumerator];
     //[self.tableView reloadData];
 }
 
@@ -154,8 +157,13 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     cell.mainLabel.text = dateString;
     cell.detailLabel.text = sample.username;
     
-    cell.syncIcon.hidden = (sample.synced == 0);
-    
+    if(sample.synced.boolValue == NO)
+    {
+        cell.syncIcon.hidden = YES;
+    }
+    else {
+        cell.syncIcon.hidden = NO;
+    }
     return cell;
 }
 
@@ -324,7 +332,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                       if (error == nil)
                       {
                           NSLog(@"File ID: %@", insertedFile.identifier);
-                          [self showAlert:@"Google Drive" message:@"File saved!"];
+                          // [self showAlert:@"Google Drive" message:@"File saved!"];
                       }
                       else
                       {
@@ -334,7 +342,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                   }];
 }
 
-- (void)movieUploadBlock:(NSEnumerator*)movieEnumerator withMovie:(SampleMovie*)movie Sample:(Sample*)sample movNum:(NSNumber*)movnum
+- (void)movieUploadBlock:(NSEnumerator*)movieEnumerator withMovie:(SampleMovie*)movie Sample:(Sample*)sample movNum:(NSNumber*)movnum completion:(void (^)(void))block;
 {
     NSLog(@"Upload movie num: %d", movnum.intValue);
     NSURL* url = [NSURL URLWithString:movie.path];
@@ -399,7 +407,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                                               if (error == nil)
                                               {
                                                   NSLog(@"File ID: %@", insertedFile.identifier);
-                                                  [self showAlert:@"Google Drive" message:@"File saved!"];
+                                                  // [self showAlert:@"Google Drive" message:@"File saved!"];
                                               }
                                               else
                                               {
@@ -411,12 +419,14 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                                               SampleMovie* movie = [movieEnumerator nextObject];
                                               if (movie != nil) {
                                                   NSNumber* nextnum = [NSNumber numberWithInt:(movnum.intValue+1)];
-                                                  [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:nextnum];
+                                                  [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:nextnum completion:block];
                                               }
                                               else {
                                                   // Update item as synced
-                                                  sample.synced = [NSNumber numberWithInt:1];
+                                                  sample.synced = [NSNumber numberWithBool:YES];
                                                   [self.tableView reloadData];
+                                                  // Run completion block
+                                                  block();
                                               }
                                               
                                           }];
@@ -451,15 +461,18 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 // Upload all samples that have not been marked synced
 - (void)uploadSamples
 {
-    NSEnumerator *sampleEnumerator = [self.samples objectEnumerator];
     Sample *sample = [sampleEnumerator nextObject];
-    
-    //for (Sample *sample in self.samples) {
-        NSNumber* movnum = [NSNumber numberWithInt:0];
-        NSEnumerator *movieEnumerator = [sample.movies objectEnumerator];
-        SampleMovie* movie = [movieEnumerator nextObject];
-        [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:movnum];
-    //}
+    if(sample != nil) {
+        NSLog(@"Upload next sample");
+        if(sample.synced.boolValue == NO) {
+            NSNumber* movnum = [NSNumber numberWithInt:0];
+            NSEnumerator *movieEnumerator = [sample.movies objectEnumerator];
+            SampleMovie* movie = [movieEnumerator nextObject];
+            [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:movnum completion:^{
+                [self uploadSamples];
+            }];
+        }
+    }
 }
 
 - (IBAction)donePressed:(id)sender {

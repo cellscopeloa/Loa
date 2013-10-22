@@ -52,7 +52,7 @@
     [defaults setObject:[NSNumber numberWithInt:(sampleNumber.intValue+1)] forKey:@"sampleNumber"];
     [defaults synchronize];
 
-    sample.synced = [NSNumber numberWithInt:0];
+    sample.synced = [NSNumber numberWithBool:NO];
     sample.serialnumber = sampleID;
     //NSLog(@"%@",sample.username);
     sample.username = self.username;
