@@ -255,6 +255,9 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
         }];
     }
     else {
+        // First, upload the database text file representation
+        NSString* datarep = [SampleExporter databaseString:self.samples];
+        [self syncDatabaseText:datarep];
         [self uploadSamples];
     }
 }
@@ -461,10 +464,6 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 // Upload all samples that have not been marked synced
 - (void)uploadSamples
 {
-    // First, upload the database text file representation
-    NSString* datarep = [SampleExporter databaseString:self.samples];
-    [self syncDatabaseText:datarep];
-    
     Sample *sample = [sampleEnumerator nextObject];
     if(sample != nil) {
         NSLog(@"Upload next sample");
