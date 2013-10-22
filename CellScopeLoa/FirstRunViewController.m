@@ -15,6 +15,7 @@
 @implementation FirstRunViewController
 
 @synthesize deviceIDTextField;
+@synthesize tabletModeButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -40,6 +41,7 @@
 - (IBAction)onDone:(id)sender {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:deviceIDTextField.text forKey:@"DeviceID"];
+    [defaults setObject:[NSNumber numberWithBool:tabletModeButton.isOn] forKey:@"tabletMode"];
     [defaults setObject:@"notFirstRun" forKey:@"run"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self dismissViewControllerAnimated:YES completion:nil];

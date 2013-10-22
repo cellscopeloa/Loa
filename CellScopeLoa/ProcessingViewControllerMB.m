@@ -65,11 +65,8 @@ dispatch_queue_t backgroundQueue;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:@"Results"]) {
-        UITabBarController* tc = [segue destinationViewController];
-        ReviewViewController* reviewViewController = (ReviewViewController*)[[tc customizableViewControllers] objectAtIndex:0];
-        // ResultsViewController* resultsViewController = (ResultsViewController*)[[tc customizableViewControllers] objectAtIndex:1];
-        reviewViewController.program = program;
-        // resultsViewController.program = program;
+        ResultsViewController* rvc = [segue destinationViewController];
+        rvc.program = program;
     }
     if([segue.identifier isEqualToString:@"Review"]) {
         MainMenuViewController *menuViewController = [segue destinationViewController];
@@ -127,14 +124,17 @@ dispatch_queue_t backgroundQueue;
     // Dispose of any resources that can be recreated.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
-}
-
 -(NSUInteger)supportedInterfaceOrientations
 {
-    return UIInterfaceOrientationMaskPortraitUpsideDown;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSNumber* tabletMode = (NSNumber*)[defaults objectForKey:@"tabletMode"];
+    
+    if(tabletMode.boolValue) {
+        return UIInterfaceOrientationMaskAll;
+    }
+    else {
+        return UIInterfaceOrientationMaskPortraitUpsideDown;
+    }
 }
 
 @end

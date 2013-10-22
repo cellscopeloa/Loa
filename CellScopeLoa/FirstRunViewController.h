@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface FirstRunViewController : UIViewController
+@property (weak, nonatomic) IBOutlet UISwitch *tabletModeButton;
 @property (weak, nonatomic) IBOutlet UITextField *deviceIDTextField;
 - (IBAction)onDone:(id)sender;
 

@@ -53,14 +53,17 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
-}
-
 -(NSUInteger)supportedInterfaceOrientations
 {
-    return UIInterfaceOrientationMaskPortraitUpsideDown;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSNumber* tabletMode = (NSNumber*)[defaults objectForKey:@"tabletMode"];
+    
+    if(tabletMode.boolValue) {
+        return UIInterfaceOrientationMaskAll;
+    }
+    else {
+        return UIInterfaceOrientationMaskPortraitUpsideDown;
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

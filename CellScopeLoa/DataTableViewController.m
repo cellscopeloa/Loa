@@ -65,9 +65,9 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 {
     [super viewWillAppear:animated];
     [self loadSamples];
-    sleep (0.5);
+    sleep (1.0);
     [self.tableView reloadData];
-    sleep (0.5);
+    sleep (1.0);
 }
 
 - (void)loadSamples
@@ -154,7 +154,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     cell.mainLabel.text = dateString;
     cell.detailLabel.text = sample.username;
     
-    cell.syncIcon.hidden = !(sample.synced);
+    cell.syncIcon.hidden = (sample.synced == 0);
     
     return cell;
 }
@@ -243,9 +243,10 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     if (![self isAuthorized])
     {
         // Not yet authorized, request authorization and push the login UI onto the navigation stack.
-        [self presentViewController:[self createAuthController] animated:YES completion:nil];
+        [self presentViewController:[self createAuthController] animated:YES completion:^{
+            [self uploadSamples];
+        }];
     }
-    [self uploadSamples];
 }
 
 // Handle completion of the authorization process, and updates the Drive service
@@ -264,37 +265,6 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
         self.driveService.authorizer = authResult;
     }
     [self dismissViewControllerAnimated:viewController completion:nil];
-}
-
-// Uploads a video to Google Drive
-- (void)uploadVideo:(NSData*)data withName:(NSString*)name
-{
-    GTLDriveFile *file = [GTLDriveFile object];
-    file.title = name;
-    file.descriptionProperty = @"Uploaded from the Google Drive iOS Quickstart";
-    file.mimeType = @"video/mov";
-    
-    GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:data MIMEType:file.mimeType];
-    GTLQueryDrive *query = [GTLQueryDrive queryForFilesInsertWithObject:file
-                                                       uploadParameters:uploadParameters];
-    
-    UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading to Google Drive"];
-    
-    [self.driveService executeQuery:query
-                  completionHandler:^(GTLServiceTicket *ticket,
-                                      GTLDriveFile *insertedFile, NSError *error) {
-                      [waitIndicator dismissWithClickedButtonIndex:0 animated:YES];
-                      if (error == nil)
-                      {
-                          NSLog(@"File ID: %@", insertedFile.identifier);
-                          [self showAlert:@"Google Drive" message:@"File saved!"];
-                      }
-                      else
-                      {
-                          NSLog(@"An error occurred: %@", error);
-                          [self showAlert:@"Google Drive" message:@"Sorry, an error occurred!"];
-                      }
-                  }];
 }
 
 // Helper for showing a wait indicator in a popup
@@ -330,95 +300,163 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     [alert show];
 }
 
-// Upload all samples that have not been marked synced
-- (void)uploadSamples
+// Uploads a video to Google Drive
+- (void)uploadVideo:(NSData*)data withName:(NSString*)name
 {
-    for (Sample *sample in self.samples) {
-        // Configure thumbnail
-        NSSet* movies = sample.movies;
-        int movnum = 0;
-        for (SampleMovie *movie in movies)
-        {
-            NSURL* url = [NSURL URLWithString:movie.path];
-            AVAsset *video = [AVURLAsset URLAssetWithURL:url options:nil];
-            NSArray *keys = @[@"tracks", @"duration"];
-            [video loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
-                
-                NSError *error = nil;
-                AVKeyValueStatus tracksStatus = [video statusOfValueForKey:@"duration" error:&error];
-                switch (tracksStatus) {
-                    case AVKeyValueStatusLoaded:
-                        break;
-                    case AVKeyValueStatusFailed:
-                        break;
-                    case AVKeyValueStatusCancelled:
-                        // Do whatever is appropriate for cancelation.
-                        break;
-                }
-                
-                NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:video];
-                if ([compatiblePresets containsObject:AVAssetExportPresetHighestQuality]) {
-                    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]
-                                                           initWithAsset:video presetName:AVAssetExportPreset960x540];
-                    NSString *tempName = [NSString stringWithFormat:@"%@_%d.mov", sample.serialnumber, movnum];
-                    NSString *tempFileTemplate = [NSTemporaryDirectory()
-                                                  stringByAppendingPathComponent:tempName];
-                    
-                    NSFileManager *fileManager = [NSFileManager defaultManager];
-                    if ([fileManager fileExistsAtPath:tempFileTemplate]) {
-                        NSError *error;
-                        if ([fileManager removeItemAtPath:tempFileTemplate error:&error] == NO) {
-                            NSLog(@"removeItemAtPath %@ error:%@", tempFileTemplate, error);
-                        }
-                    }
+    GTLDriveFile *file = [GTLDriveFile object];
+    file.title = name;
+    file.descriptionProperty = @"Uploaded from the Google Drive iOS Quickstart";
+    file.mimeType = @"video/mov";
+    
+    GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:data MIMEType:file.mimeType];
+    GTLQueryDrive *query = [GTLQueryDrive queryForFilesInsertWithObject:file
+                                                       uploadParameters:uploadParameters];
+    
+    UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading to Google Drive"];
+    
+    [self.driveService executeQuery:query
+                  completionHandler:^(GTLServiceTicket *ticket,
+                                      GTLDriveFile *insertedFile, NSError *error) {
+                      [waitIndicator dismissWithClickedButtonIndex:0 animated:YES];
+                      if (error == nil)
+                      {
+                          NSLog(@"File ID: %@", insertedFile.identifier);
+                          [self showAlert:@"Google Drive" message:@"File saved!"];
+                      }
+                      else
+                      {
+                          NSLog(@"An error occurred: %@", error);
+                          [self showAlert:@"Google Drive" message:@"Sorry, an error occurred!"];
+                      }
+                  }];
+}
 
-                    exportSession.outputURL = [NSURL fileURLWithPath:tempFileTemplate];
-                    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
-                    
-                    // CMTimeRange range = CMTimeRangeMake(video, CMTimeSubtract(self.endTime, self.startTime));
-                    // startTime and endTime is the duration that we need to save.
-                    // exportSession.timeRange = range;
-                    
-                    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+- (void)movieUploadBlock:(NSEnumerator*)movieEnumerator withMovie:(SampleMovie*)movie Sample:(Sample*)sample movNum:(NSNumber*)movnum
+{
+    NSLog(@"Upload movie num: %d", movnum.intValue);
+    NSURL* url = [NSURL URLWithString:movie.path];
+    AVAsset *video = [AVURLAsset URLAssetWithURL:url options:nil];
+    NSArray *keys = @[@"tracks", @"duration"];
+    [video loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+        
+        NSError *error = nil;
+        AVKeyValueStatus tracksStatus = [video statusOfValueForKey:@"duration" error:&error];
+        switch (tracksStatus) {
+            case AVKeyValueStatusLoaded:
+                break;
+            case AVKeyValueStatusFailed:
+                break;
+            case AVKeyValueStatusCancelled:
+                // Do whatever is appropriate for cancelation.
+                break;
+        }
+    
+        NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:video];
+        if ([compatiblePresets containsObject:AVAssetExportPresetHighestQuality]) {
+            AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]
+                                                   initWithAsset:video presetName:AVAssetExportPreset960x540];
+            NSString *tempName = [NSString stringWithFormat:@"%@_%d.mov", sample.serialnumber, movnum.intValue];
+            NSString *tempFileTemplate = [NSTemporaryDirectory()
+                                          stringByAppendingPathComponent:tempName];
+            
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            if ([fileManager fileExistsAtPath:tempFileTemplate]) {
+                NSError *error;
+                if ([fileManager removeItemAtPath:tempFileTemplate error:&error] == NO) {
+                    NSLog(@"removeItemAtPath %@ error:%@", tempFileTemplate, error);
+                }
+            }
+            
+            exportSession.outputURL = [NSURL fileURLWithPath:tempFileTemplate];
+            exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+        
+            [exportSession exportAsynchronouslyWithCompletionHandler:^{
+                
+                switch ([exportSession status]) {
+                    case AVAssetExportSessionStatusCompleted:
+                    {
                         
-                        switch ([exportSession status]) {
-                            case AVAssetExportSessionStatusCompleted:
-                            {
-                                NSData *data = [NSData dataWithContentsOfFile:tempFileTemplate];
-                                [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-                                    
-                                    //Your code goes in here
-                                    [self uploadVideo:data withName:tempName];
-                                    
-                                }];
-                                break;
-                            }
-                            case AVAssetExportSessionStatusWaiting:
-                                NSLog(@"Export Waiting");
-                                break;
-                            case AVAssetExportSessionStatusExporting:
-                                NSLog(@"Export Exporting");
-                                break;
-                            case AVAssetExportSessionStatusFailed:
-                            {
-                                NSError *error = [exportSession error];
-                                NSLog(@"Export failed: %@", [error localizedDescription]);
-                                break;
-                            }
-                            case AVAssetExportSessionStatusCancelled:
-                                NSLog(@"Export canceled");
-                                break;
-                            default:
-                                break;
-                        }
-                    }];
-                     
+                        NSData *data = [NSData dataWithContentsOfFile:tempFileTemplate];
+                        [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+                            GTLDriveFile *file = [GTLDriveFile object];
+                            file.title = tempName;
+                            file.descriptionProperty = @"Uploaded from the Google Drive iOS Quickstart";
+                            file.mimeType = @"video/mov";
+                            
+                            GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:data MIMEType:file.mimeType];
+                            GTLQueryDrive *query = [GTLQueryDrive queryForFilesInsertWithObject:file
+                                                                               uploadParameters:uploadParameters];
+                            
+                            UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading to Google Drive"];
+                            
+                            [self.driveService executeQuery:query
+                                          completionHandler:^(GTLServiceTicket *ticket,
+                                                              GTLDriveFile *insertedFile, NSError *error) {
+                                              [waitIndicator dismissWithClickedButtonIndex:0 animated:YES];
+                                              if (error == nil)
+                                              {
+                                                  NSLog(@"File ID: %@", insertedFile.identifier);
+                                                  [self showAlert:@"Google Drive" message:@"File saved!"];
+                                              }
+                                              else
+                                              {
+                                                  NSLog(@"An error occurred: %@", error);
+                                                  [self showAlert:@"Google Drive" message:@"Sorry, an error occurred!"];
+                                              }
+                                              
+                                              // Launch the next movie upload
+                                              SampleMovie* movie = [movieEnumerator nextObject];
+                                              if (movie != nil) {
+                                                  NSNumber* nextnum = [NSNumber numberWithInt:(movnum.intValue+1)];
+                                                  [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:nextnum];
+                                              }
+                                              else {
+                                                  // Update item as synced
+                                                  sample.synced = [NSNumber numberWithInt:1];
+                                                  [self.tableView reloadData];
+                                              }
+                                              
+                                          }];
+
+                        }];
+                        break;
+                    }
+                    case AVAssetExportSessionStatusWaiting:
+                        NSLog(@"Export Waiting");
+                        break;
+                    case AVAssetExportSessionStatusExporting:
+                        NSLog(@"Export Exporting");
+                        break;
+                    case AVAssetExportSessionStatusFailed:
+                    {
+                        NSError *error = [exportSession error];
+                        NSLog(@"Export failed: %@", [error localizedDescription]);
+                        break;
+                    }
+                    case AVAssetExportSessionStatusCancelled:
+                        NSLog(@"Export canceled");
+                        break;
+                    default:
+                        break;
                 }
                 
             }];
-            movnum++;
         }
-    }
+    }];
+}
+
+// Upload all samples that have not been marked synced
+- (void)uploadSamples
+{
+    NSEnumerator *sampleEnumerator = [self.samples objectEnumerator];
+    Sample *sample = [sampleEnumerator nextObject];
+    
+    //for (Sample *sample in self.samples) {
+        NSNumber* movnum = [NSNumber numberWithInt:0];
+        NSEnumerator *movieEnumerator = [sample.movies objectEnumerator];
+        SampleMovie* movie = [movieEnumerator nextObject];
+        [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:movnum];
+    //}
 }
 
 - (IBAction)donePressed:(id)sender {
