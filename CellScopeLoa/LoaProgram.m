@@ -70,9 +70,6 @@
     
     NSLog(@"Creating with: %@", sample.serialnumber);
     NSError *error;
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"Error saving managed object context: %@", [error localizedDescription]);
-    }
     // Hold onto the current sample serial number
     currentSampleSerial = sample.serialnumber;
 }
@@ -85,9 +82,7 @@
                           inManagedObjectContext:managedObjectContext];
     movie.path = assetURL.absoluteString;
     NSError* error;
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"Error saving managed object context: %@", [error localizedDescription]);
-    }
+
     // Add the sample movie to the current sample in the database
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample" inManagedObjectContext: managedObjectContext];
@@ -190,10 +185,6 @@
     
     // Update feature count
     sampleMovie.numworms = [NSNumber numberWithInt:featurecount];
-    NSError* error;
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"Error saving managed object context: %@", [error localizedDescription]);
-    }
 }
 
 - (void)addMovieProcessed:(UIImage *)processedImage atURL:(NSURL*)url forMovieIndex:(NSNumber*)movidx
@@ -224,10 +215,6 @@
     }
     
     samplemovie.processedimagepath = [url absoluteString];
-    NSLog(@"Picked up samplemovie: %@", samplemovie.path);
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"Error saving managed object context: %@", [error localizedDescription]);
-    }
 }
 
 - (CLLocationManager *)locationManager {

@@ -50,6 +50,12 @@
     instructIdx = 0;
     instructions.text = [instructionText objectAtIndex:instructIdx];
     [self showResults];
+    
+    // Save results to the database
+    NSError *error;
+    if (![program.managedObjectContext save:&error]) {
+        NSLog(@"Error saving to managed context");
+    }
 }
 
 -(void) viewDidUnload {
