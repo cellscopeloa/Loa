@@ -15,6 +15,7 @@
 #import "DataReviewImagesViewController.h"
 #import "CountViewController.h"
 #import "SampleExporter.h"
+#import "Reachability.h"
 
 static NSString *const kKeychainItemName = @"Google Drive Quickstart";
 static NSString *const kClientID = @"822665295778.apps.googleusercontent.com";
@@ -31,6 +32,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 @synthesize managedObjectContext;
 @synthesize lastSelectedIndex;
 @synthesize driveService;
+@synthesize loginButton;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -53,8 +55,12 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     
     // Log out of any google credentials we have
     if([self isAuthorized]) {
+        loginButton.title = @"Logout";
         // [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
         // [[self driveService] setAuthorizer:nil];
+    }
+    else {
+        loginButton.title = @"Login";
     }
 
     // Uncomment the following line to preserve selection between presentations.
@@ -68,7 +74,13 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 {
     [super viewWillAppear:animated];
     [self loadSamples];
+    [self isAuthorized];
     [self.tableView reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [self isAuthorized];
 }
 
 - (void)loadSamples
@@ -243,22 +255,49 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 // Helper to check if user is authorized
 - (BOOL)isAuthorized
 {
-    return [((GTMOAuth2Authentication *)self.driveService.authorizer) canAuthorize];
+    BOOL authorized = [((GTMOAuth2Authentication *)self.driveService.authorizer) canAuthorize];
+    if(authorized) {
+        loginButton.title = @"Logout";
+    }
+    else {
+        loginButton.title = @"Login";
+    }
+    return authorized;
 }
 
-- (IBAction)onExport:(id)sender {
+- (IBAction)loginButtonPressed:(id)sender {
     if (![self isAuthorized])
     {
         // Not yet authorized, request authorization and push the login UI onto the navigation stack.
         [self presentViewController:[self createAuthController] animated:YES completion:^{
-            [self showAlert:@"Action" message:@"Please log in, then press sync again"];
+            // Pass
         }];
     }
     else {
-        // First, upload the database text file representation
-        NSString* datarep = [SampleExporter databaseString:self.samples];
-        [self syncDatabaseText:datarep];
-        [self uploadSamples];
+        [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
+        [[self driveService] setAuthorizer:nil];
+        loginButton.title = @"Login";
+    }
+}
+
+- (IBAction)onExport:(id)sender {
+    if ([self networkIsReachable]) {
+        if (![self isAuthorized])
+        {
+            // Not yet authorized, request authorization and push the login UI onto the navigation stack.
+            [self presentViewController:[self createAuthController] animated:YES completion:^{
+                [self showAlert:@"Action" message:@"Please log in, then press sync again"];
+            }];
+        }
+        else {
+            // First, upload the database text file representation
+            NSString* datarep = [SampleExporter databaseString:self.samples];
+            [self syncDatabaseText:datarep];
+            [self uploadSamples];
+        }
+    }
+    else {
+        [self showAlert:@"Network error" message:@"Wifi is not available."];
     }
 }
 
@@ -339,7 +378,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                       else
                       {
                           NSLog(@"An error occurred: %@", error);
-                          [self showAlert:@"Google Drive" message:@"Sorry, an error occurred!"];
+                          [self showAlert:@"Google Drive" message:@"Sorry, an upload error occurred!"];
                       }
                   }];
 }
@@ -505,6 +544,18 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
             [self showAlert:@"Error" message:@"Unable to save database file. Check internet connection and try again later."];
         }
     }];
+}
+
+-(BOOL)networkIsReachable
+{
+	Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus internetStatus = [reachability currentReachabilityStatus];
+    if (internetStatus == ReachableViaWiFi) {
+        return YES;
+    }
+    else {
+        return NO;
+    }
 }
 
 - (IBAction)donePressed:(id)sender {

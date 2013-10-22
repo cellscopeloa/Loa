@@ -26,6 +26,7 @@
 		9B5C639D178208D500F83492 /* SampleMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C639C178208D500F83492 /* SampleMovie.m */; };
 		9B5C63A317822FC800F83492 /* DataReviewImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C63A217822FC700F83492 /* DataReviewImagesViewController.m */; };
 		9B5E81CC1816C3EA00279077 /* SampleExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5E81CB1816C3EA00279077 /* SampleExporter.m */; };
+		9B5E81CF1816DC5900279077 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5E81CE1816DC5900279077 /* Reachability.m */; };
 		9B6A765C1814554500827611 /* GoogleDriveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A765B1814554500827611 /* GoogleDriveViewController.m */; };
 		9B6A7B411814588000827611 /* GTMGatherInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A76671814587A00827611 /* GTMGatherInputStream.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9B6A7B421814588000827611 /* GTMHTTPFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A76691814587A00827611 /* GTMHTTPFetcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -226,6 +227,8 @@
 		9B5C63A217822FC700F83492 /* DataReviewImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataReviewImagesViewController.m; sourceTree = "<group>"; };
 		9B5E81CA1816C3EA00279077 /* SampleExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleExporter.h; sourceTree = "<group>"; };
 		9B5E81CB1816C3EA00279077 /* SampleExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleExporter.m; sourceTree = "<group>"; };
+		9B5E81CD1816DC5900279077 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		9B5E81CE1816DC5900279077 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		9B6A765A1814554500827611 /* GoogleDriveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleDriveViewController.h; sourceTree = "<group>"; };
 		9B6A765B1814554500827611 /* GoogleDriveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleDriveViewController.m; sourceTree = "<group>"; };
 		9B6A76631814587A00827611 /* GTLDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLDefines.h; sourceTree = "<group>"; };
@@ -802,6 +805,8 @@
 		9BD8A350163DA7BD009038BB /* CellScopeLoa */ = {
 			isa = PBXGroup;
 			children = (
+				9B5E81CD1816DC5900279077 /* Reachability.h */,
+				9B5E81CE1816DC5900279077 /* Reachability.m */,
 				9BE8086D181477DF00525F7D /* FirstRunViewController.h */,
 				9BE8086E181477DF00525F7D /* FirstRunViewController.m */,
 				9B6A765D1814558400827611 /* Drive API */,
@@ -1198,6 +1203,7 @@
 				9BE8086F181477DF00525F7D /* FirstRunViewController.m in Sources */,
 				9BCBF33E16573F1500C5AD1D /* ProcessingViewController.m in Sources */,
 				9B6A7B651814588000827611 /* GTLQuery.m in Sources */,
+				9B5E81CF1816DC5900279077 /* Reachability.m in Sources */,
 				9B6A7B621814588000827611 /* GTLDateTime.m in Sources */,
 				9B6A7C641814588000827611 /* GTLServiceDrive.m in Sources */,
 				9BCBF3471659B7FB00C5AD1D /* ReviewViewController.m in Sources */,

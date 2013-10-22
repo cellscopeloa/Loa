@@ -221,9 +221,12 @@
 
 -(void)recordingComplete:(NSTimer *) theTimer
 {
+    sleep(1);
     [progressDelegate progressTaskComplete];
     writeout = NO;
+    NSLog(@"About to finish writing");
     [assetWriter finishWritingWithCompletionHandler:^(){
+        NSLog(@"Finished writing!");
         [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
             [progressTimer invalidate];
             // Signal the delegate that recording is complete
