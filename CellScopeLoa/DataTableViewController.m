@@ -424,6 +424,8 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                                               else {
                                                   // Update item as synced
                                                   sample.synced = [NSNumber numberWithBool:YES];
+                                                  NSError *error = nil;
+                                                  [self.managedObjectContext save:&error];  //saves the context to disk
                                                   [self.tableView reloadData];
                                                   // Run completion block
                                                   block();
