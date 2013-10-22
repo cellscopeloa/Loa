@@ -244,8 +244,11 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     {
         // Not yet authorized, request authorization and push the login UI onto the navigation stack.
         [self presentViewController:[self createAuthController] animated:YES completion:^{
-            [self uploadSamples];
+            [self showAlert:@"Action" message:@"Please log in, then press sync again"];
         }];
+    }
+    else {
+        [self uploadSamples];
     }
 }
 
