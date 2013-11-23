@@ -9,6 +9,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import "ProcessingViewController.h"
 #import "CaptureViewController.h"
+#import "MainMenuViewController.h"
 #import "MotionAnalysis.h"
 #import "SampleMovie.h"
 #import "LoaProgram.h"
@@ -30,6 +31,7 @@
 @synthesize videoPreviewOutput;
 @synthesize fieldcounter;
 @synthesize captureButton;
+@synthesize cancelBarButton;
 
 @synthesize camera;
 
@@ -71,11 +73,27 @@
     [self setupInstructionSet];
     instructIdx = 0;
     busyIndicator.hidesWhenStopped = YES;
-    progressBar.alpha = 0.0;
     progressBar.progress = 0.0;
+    progressBar.alpha = 0.0;
+    captureButton.enabled = NO;
     instructions.text = [instructionText objectAtIndex:instructIdx];
     // fieldcounter.text = [program fovString];
     fieldcounter.text = @"1";
+    
+    [NSTimer scheduledTimerWithTimeInterval:4.0
+                                     target:self
+                                   selector:@selector(cameraAvailable)
+                                   userInfo:nil
+                                    repeats:NO];
+}
+
+- (void)cameraAvailable
+{
+    captureButton.enabled = YES;
+}
+
+- (IBAction)focusPressed:(id)sender {
+    [self.camera autoFocus];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -118,6 +136,10 @@
         program.frameRecord = frameRecord;
         processingViewController.program = program;
     }
+    else if([segue.identifier isEqualToString:@"Cancel"]) {
+        MainMenuViewController* mvc = [segue destinationViewController];
+        mvc.managedObjectContext = managedObjectContext;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -137,11 +159,13 @@
     }
     
     [camera captureWithDuration:5.0 frameList:frames recordingDelegate:self progressDelegate:self];
-    progressBar.alpha = 1.0;
+    
     [UIView animateWithDuration:1.0 animations:^{
         instructions.alpha = 0.0;
-        captureButton.alpha = 0.2;
+        progressBar.alpha = 1.0;
         captureButton.enabled = false;
+        cancelBarButton.enabled = false;
+        
     } completion:^(BOOL finished) {
         // pass
     }];
@@ -160,8 +184,7 @@
 
 - (void)progressTaskComplete
 {
-    progressBar.alpha = 0.1;
-    busyIndicator.alpha = 1.0;
+    progressBar.alpha = 0.0;
     [busyIndicator startAnimating];
 }
 
@@ -184,9 +207,8 @@
              fieldcounter.text = [program fovString];
 
              // Stop the busy animations
-             progressBar.alpha = 0.0;
              [busyIndicator stopAnimating];
-             busyIndicator.alpha = 0.0;
+             progressBar.alpha = 0.0;
              [UIView animateWithDuration:0.5 animations:^{
                  instructions.alpha = 1.0;
              } completion:^(BOOL finished) {
@@ -200,8 +222,8 @@
              instructIdx++;
              [self checkStatus];
              instructions.text = [instructionText objectAtIndex:instructIdx];
-             captureButton.alpha = 1.0;
              captureButton.enabled = true;
+             cancelBarButton.enabled = true;
          }];
 	}
 }
@@ -216,6 +238,11 @@
         [camera unlockSettings];
         [self performSegueWithIdentifier:@"Analyze" sender:self];
     }
+}
+
+- (IBAction)cancelPressed:(id)sender {
+    [managedObjectContext reset];
+    [self performSegueWithIdentifier:@"Cancel" sender:self];
 }
 
 -(NSUInteger)supportedInterfaceOrientations

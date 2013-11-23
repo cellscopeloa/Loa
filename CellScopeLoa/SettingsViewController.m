@@ -136,7 +136,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath.section == 1) {
+    if(indexPath.section == 0) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         float sense = 0.0;
         sensitivitySlide.value = (sense + 1.0)/2.0;

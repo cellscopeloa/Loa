@@ -18,6 +18,8 @@
 
 @property (strong, nonatomic) LoaProgram* program;
 @property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelBarButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *captureButton;
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *busyIndicator;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
@@ -25,7 +27,6 @@
 @property (nonatomic) NSInteger instructIdx;
 @property (weak, nonatomic) IBOutlet UITextView *instructions;
 @property (strong, nonatomic) IBOutlet UIView *pLayer;
-@property (weak, nonatomic) IBOutlet UIButton *captureButton;
 
 @property (nonatomic, strong) RTPCamera *camera;
 @property (nonatomic) NSInteger isRecording;
@@ -42,5 +43,8 @@
 
 - (IBAction)onCapture:(id)sender;
 - (void)checkStatus;
+- (IBAction)cancelPressed:(id)sender;
+- (void)cameraAvailable;
+- (IBAction)focusPressed:(id)sender;
 
 @end

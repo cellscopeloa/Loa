@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "LoaProgram.h"
 
-@interface ResultsViewController : UIViewController
+@interface ResultsViewController : UIViewController <UIAlertViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *sampleIDLabel;
 
 @property UIImage* backImage;
@@ -26,5 +26,6 @@
 
 - (void)showResults;
 -(void)setupInstructionSet;
+- (IBAction)discardPressed:(id)sender;
 
 @end

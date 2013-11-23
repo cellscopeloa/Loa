@@ -55,12 +55,12 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     
     // Log out of any google credentials we have
     if([self isAuthorized]) {
-        loginButton.title = @"Logout";
+        loginButton.title = @"Sync logout";
         // [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
         // [[self driveService] setAuthorizer:nil];
     }
     else {
-        loginButton.title = @"Login";
+        loginButton.title = @"Sync login";
     }
 
     // Uncomment the following line to preserve selection between presentations.
@@ -165,8 +165,8 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                    resultBlock:resultblock
                    failureBlock:failureblock];
         
-    cell.mainLabel.text = dateString;
-    cell.detailLabel.text = sample.username;
+    cell.mainLabel.text = sample.serialnumber;
+    cell.detailLabel.text = dateString;
     
     if(sample.synced.boolValue == NO)
     {
@@ -257,10 +257,10 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 {
     BOOL authorized = [((GTMOAuth2Authentication *)self.driveService.authorizer) canAuthorize];
     if(authorized) {
-        loginButton.title = @"Logout";
+        loginButton.title = @"Sync logout";
     }
     else {
-        loginButton.title = @"Login";
+        loginButton.title = @"Sync login";
     }
     return authorized;
 }
@@ -276,7 +276,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     else {
         [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
         [[self driveService] setAuthorizer:nil];
-        loginButton.title = @"Login";
+        loginButton.title = @"Sync login";
     }
 }
 
@@ -456,10 +456,10 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                                               }
                                               
                                               // Launch the next movie upload
-                                              SampleMovie* movie = [movieEnumerator nextObject];
-                                              if (movie != nil) {
+                                              SampleMovie* newMovie = [movieEnumerator nextObject];
+                                              if (newMovie != nil) {
                                                   NSNumber* nextnum = [NSNumber numberWithInt:(movnum.intValue+1)];
-                                                  [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:nextnum completion:block];
+                                                  [self movieUploadBlock:movieEnumerator withMovie:newMovie Sample:sample movNum:nextnum completion:block];
                                               }
                                               else {
                                                   // Update item as synced

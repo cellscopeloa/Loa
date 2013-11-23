@@ -57,5 +57,6 @@
 - (void)createNewAssetWriterOutput;
 - (void)lockSettings;
 - (void)unlockSettings;
+- (void)autoFocus;
 
 @end

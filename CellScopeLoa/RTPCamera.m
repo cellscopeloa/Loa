@@ -136,6 +136,19 @@
     }
 }
 
+- (void)autoFocus
+{
+    if ([self.device isFocusModeSupported:AVCaptureFocusModeAutoFocus] ) {
+        NSLog(@"Focus!");
+        [self.device lockForConfiguration:nil];
+        [self.device setFocusMode:AVCaptureFocusModeAutoFocus];
+        [self.device unlockForConfiguration];
+        [self.device lockForConfiguration:nil];
+        [self.device setFocusMode:AVCaptureFocusModeLocked];
+        [self.device unlockForConfiguration];
+    }
+}
+
 - (void)createNewAssetWriterOutput
 {
     /* That's going to go somewhere, I imagine you've got the URL for that sorted,

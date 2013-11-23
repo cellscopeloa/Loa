@@ -50,12 +50,6 @@
     instructIdx = 0;
     instructions.text = [instructionText objectAtIndex:instructIdx];
     [self showResults];
-    
-    // Save results to the database
-    NSError *error;
-    if (![program.managedObjectContext save:&error]) {
-        NSLog(@"Error saving to managed context");
-    }
 }
 
 -(void) viewDidUnload {
@@ -72,6 +66,16 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:@"NewTest"]) {
+        // Save results to the database
+        NSError *error;
+        if (![program.managedObjectContext save:&error]) {
+            NSLog(@"Error saving to managed context");
+        }
+        CaptureViewController* captureViewController = [segue destinationViewController];
+        captureViewController.managedObjectContext = program.managedObjectContext;
+    }
+    else if([segue.identifier isEqualToString:@"Discard"]) {
+        [program.managedObjectContext reset];
         CaptureViewController* captureViewController = [segue destinationViewController];
         captureViewController.managedObjectContext = program.managedObjectContext;
     }
@@ -105,6 +109,32 @@
     wormsField.text = [NSString stringWithFormat:@"%@ mf/field", astr];
 }
 
+- (IBAction)discardPressed:(id)sender {
+    [self presentAlertView];
+}
+
+- (void)presentAlertView
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Discard?" message:@"Are you sure you want to discard the sample?" delegate:nil cancelButtonTitle:@"Discard" otherButtonTitles:nil];
+    [alertView addButtonWithTitle:@"Cancel"];
+    alertView.delegate = self;
+    [alertView show];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+// Called when a button is clicked. The view will be automatically dismissed after this call returns
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == 0) {
+        [self performSegueWithIdentifier:@"Discard" sender:self];
+    }
+    else
+    {
+        // Pass
+    }
+}
+
 - (NSUInteger)supportedInterfaceOrientations
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -117,5 +147,6 @@
         return UIInterfaceOrientationMaskPortraitUpsideDown;
     }
 }
+
 
 @end
