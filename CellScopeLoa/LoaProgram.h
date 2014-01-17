@@ -25,7 +25,6 @@
 @property (nonatomic, assign) float sensitivity;
 
 @property (nonatomic) NSInteger samplenumber;
-@property (strong, nonatomic) NSMutableArray* frameRecord;
 @property (strong, nonatomic) MotionAnalysis* analysis;
 
 @property (nonatomic, retain) CLLocationManager *locationManager;

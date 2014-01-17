@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" useAutolayout="YES" initialViewController="CtR-eW-mAW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" useAutolayout="YES" initialViewController="CtR-eW-mAW">
     <dependencies>
         <deployment defaultVersion="1792" identifier="iOS"/>
         <development version="4600" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <scenes>
         <!--Data Table View Controller - Results-->
@@ -509,8 +509,8 @@
                         <outlet property="instructions" destination="3Yl-Wz-j6C" id="XnQ-dx-76j"/>
                         <outlet property="pLayer" destination="j6G-gj-te9" id="S0V-qt-1Cm"/>
                         <outlet property="progressBar" destination="7aT-Aq-TCE" id="TOK-xi-6QE"/>
-                        <segue destination="TkM-XS-NLw" kind="modal" identifier="Analyze" id="e7M-YO-LoI"/>
                         <segue destination="CtR-eW-mAW" kind="modal" identifier="Cancel" id="Mcy-ue-7q9"/>
+                        <segue destination="TkM-XS-NLw" kind="modal" identifier="Process" id="VrF-8X-0Oc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EfM-rU-QI8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -524,20 +524,16 @@
             </objects>
             <point key="canvasLocation" x="2011" y="-807"/>
         </scene>
-        <!--Processing View ControllerMB-->
+        <!--Processing View Controller-->
         <scene sceneID="eMU-Gs-8gW">
             <objects>
-                <viewController id="TkM-XS-NLw" customClass="ProcessingViewControllerMB" sceneMemberID="viewController">
+                <viewController id="TkM-XS-NLw" customClass="ProcessingViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bQb-7b-P3w">
                         <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Q93-52-dwG">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="460"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.80000001192092896" contentMode="scaleToFill" editable="NO" text="Instructions for lightweight operation. Text in this box can go on for as many as three lines. This is an example." translatesAutoresizingMaskIntoConstraints="NO" id="eSq-ed-e2S">
-                                <rect key="frame" x="0.0" y="20" width="320" height="68"/>
+                                <rect key="frame" x="0.0" y="20" width="321" height="68"/>
                                 <color key="backgroundColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="68" id="5bK-Dj-ixf"/>
@@ -545,31 +541,33 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EqL-En-mmU">
-                                <rect key="frame" x="85" y="431" width="150" height="9"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="7Qu-pS-zSI">
+                                <rect key="frame" x="142" y="211" width="37" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="150" id="zN6-rn-Xjz"/>
-                                </constraints>
-                            </progressView>
+                            </activityIndicatorView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processed 3/5" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tuD-sv-fVG">
+                                <rect key="frame" x="105" y="256" width="111" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Q93-52-dwG" firstAttribute="leading" secondItem="bQb-7b-P3w" secondAttribute="leading" type="default" id="54m-2s-FDD"/>
                             <constraint firstItem="eSq-ed-e2S" firstAttribute="top" secondItem="bQb-7b-P3w" secondAttribute="top" constant="20" symbolic="YES" type="default" id="8zZ-Nn-ssa"/>
-                            <constraint firstItem="Q93-52-dwG" firstAttribute="leading" secondItem="eSq-ed-e2S" secondAttribute="leading" type="default" id="AXT-pc-fFK"/>
-                            <constraint firstAttribute="bottom" secondItem="Q93-52-dwG" secondAttribute="bottom" type="default" id="Bg5-nt-koJ"/>
-                            <constraint firstItem="EqL-En-mmU" firstAttribute="centerX" secondItem="eSq-ed-e2S" secondAttribute="centerX" type="default" id="MGR-Il-o32"/>
-                            <constraint firstAttribute="bottom" secondItem="EqL-En-mmU" secondAttribute="bottom" constant="20" symbolic="YES" type="default" id="Set-lt-QCV"/>
-                            <constraint firstAttribute="trailing" secondItem="eSq-ed-e2S" secondAttribute="trailing" type="default" id="Sxd-ia-26c"/>
-                            <constraint firstItem="Q93-52-dwG" firstAttribute="top" secondItem="bQb-7b-P3w" secondAttribute="top" type="default" id="dIH-Wd-Na3"/>
-                            <constraint firstItem="Q93-52-dwG" firstAttribute="trailing" secondItem="eSq-ed-e2S" secondAttribute="trailing" type="default" id="giQ-Il-rpp"/>
+                            <constraint firstItem="tuD-sv-fVG" firstAttribute="top" secondItem="7Qu-pS-zSI" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="AD1-mR-EhI"/>
+                            <constraint firstItem="7Qu-pS-zSI" firstAttribute="top" secondItem="bQb-7b-P3w" secondAttribute="top" constant="211" id="CxW-Oc-kQk"/>
+                            <constraint firstItem="tuD-sv-fVG" firstAttribute="centerX" secondItem="7Qu-pS-zSI" secondAttribute="centerX" type="default" id="LLy-VP-4oD"/>
+                            <constraint firstItem="eSq-ed-e2S" firstAttribute="leading" secondItem="bQb-7b-P3w" secondAttribute="leading" type="default" id="MNg-gz-PlT"/>
+                            <constraint firstItem="eSq-ed-e2S" firstAttribute="centerX" secondItem="bQb-7b-P3w" secondAttribute="centerX" type="default" id="b6H-QT-97i"/>
+                            <constraint firstItem="7Qu-pS-zSI" firstAttribute="centerX" secondItem="eSq-ed-e2S" secondAttribute="centerX" type="default" id="flT-WR-Q11"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="instructions" destination="eSq-ed-e2S" id="5cu-om-zTq"/>
-                        <outlet property="progressBar" destination="EqL-En-mmU" id="dVj-C6-j3x"/>
-                        <outlet property="resultsImageView" destination="Q93-52-dwG" id="fFU-Ql-yO7"/>
+                        <outlet property="activityTextLabel" destination="tuD-sv-fVG" id="9Jk-1G-NPC"/>
+                        <outlet property="activityView" destination="7Qu-pS-zSI" id="Rg4-Ai-aRI"/>
+                        <outlet property="instructionsView" destination="eSq-ed-e2S" id="03Z-Jz-Fxm"/>
                         <segue destination="Gd3-tt-ZaB" kind="modal" identifier="Results" id="8se-Ta-VRf"/>
                     </connections>
                 </viewController>
@@ -896,7 +894,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g5n-xP-WHi">
-                                            <rect key="frame" x="43" y="0.0" width="40" height="24"/>
+                                            <rect key="frame" x="10" y="0.0" width="300" height="43"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -994,7 +992,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Submit" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7mb-lG-Z8d">
-                                                    <rect key="frame" x="-9" y="-18" width="56" height="21"/>
+                                                    <rect key="frame" x="10" y="0.0" width="280" height="37"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1269,7 +1267,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="Mcy-ue-7q9"/>
         <segue reference="XhS-DO-q06"/>
-        <segue reference="1qg-5Q-Wmq"/>
     </inferredMetricsTieBreakers>
 </document>

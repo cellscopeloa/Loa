@@ -21,7 +21,6 @@
     NSString* lat = [NSString stringWithFormat:@"%@", sample.lattitude];
     NSString* lon = [NSString stringWithFormat:@"%@", sample.longitude];
     NSString* username = [NSString stringWithFormat:@"%@", sample.username];
-    NSString* synced = [NSString stringWithFormat:@"%@", sample.synced];
     
     [rep appendString:ser];
     [rep appendString:@"\t"];
@@ -33,16 +32,23 @@
     [rep appendString:@"\t"];
     [rep appendString:username];
     [rep appendString:@"\t"];
-    [rep appendString:synced];
-    [rep appendString:@"\t"];
     
     int count = 0;
     double nummovies = 0;
+    bool allsynced = YES;
     for (SampleMovie* movie in sample.movies)
     {
         count += movie.numworms.intValue;
         nummovies += 1;
+        if (!(movie.synced)) {
+            allsynced = NO;
+        }
     }
+    
+    NSString* synced = [NSString stringWithFormat:@"%@", allsynced ? @"YES" : @"NO"];
+    [rep appendString:synced];
+    [rep appendString:@"\t"];
+    
     double avgcount = count/nummovies;
     int estimate = (avgcount / (.00073));
     NSString* mfml = [NSString stringWithFormat:@"%d", estimate];

@@ -13,8 +13,14 @@
 #import "MotionAnalysis.h"
 #import "SampleMovie.h"
 #import "LoaProgram.h"
+#import "FrameBuffer.h"
 
-@interface CaptureViewController ()
+#define NUMFIELDS 5
+
+@interface CaptureViewController () {
+    FrameBuffer* frameBuffer;
+    NSInteger frameIndex;
+}
 
 @end
 
@@ -42,7 +48,6 @@
 @synthesize instructionText;
 @synthesize instructIdx;
 
-@synthesize frameRecord;
 
 -(void)setupInstructionSet
 {
@@ -98,17 +103,20 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSInteger frameWidth = 480;
+    NSInteger frameHeight = 360;
     // Setup the capture session
-    self.camera = [[RTPCamera alloc] init];
-    [self.camera setPreviewLayer:self.pLayer.layer];
+    self.camera = [[CaptureCamera alloc] init];
+    // Setup the camera
+    camera = [[CaptureCamera alloc] initWithWidth:frameWidth Height:frameHeight];
+    camera.recordingDelegate = self;
+    camera.progressDelegate = self;
+    camera.processingDelegate = self;
+    [camera setPreviewLayer:pLayer.layer];
+    [camera startCamera];
     
-    // Set the processing delegate
-    self.camera.processingDelegate = self;
-    // Set the camera image alpha to zero while we load
-    [self.camera start];
-    
-    int nframesmax = 200;
-    int fov = 3;
+    int nframesmax = (int)(5.0*(1/30.0));
+    int fov = NUMFIELDS;
     
     // Create a motion analysis object for image processing
     MotionAnalysis* analysis = [[MotionAnalysis alloc] initWithWidth: camera.width
@@ -131,9 +139,8 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([segue.identifier isEqualToString:@"Analyze"]) {
+    if([segue.identifier isEqualToString:@"Process"]) {
         ProcessingViewController* processingViewController = [segue destinationViewController];
-        program.frameRecord = frameRecord;
         processingViewController.program = program;
     }
     else if([segue.identifier isEqualToString:@"Cancel"]) {
@@ -150,15 +157,20 @@
 
 - (IBAction)onCapture:(id)sender
 {
-    NSMutableArray* frames = [[NSMutableArray alloc] init];
-    [frameRecord addObject:frames];
+    NSLog(@"On capture!");
+    // Initialize the frame buffer. 5 seconds of video at 30 frames per second
+    int nframes = (int)(5.0/(1/30.0));
+    // Drop reference to this frame buffer before creating a new one
+    frameBuffer = nil;
+    frameBuffer = [[FrameBuffer alloc] initWithWidth:camera.width.integerValue Height:camera.height.integerValue Frames:nframes];
+    frameIndex = 0;
     
     // Lock the exposure settings on first run
     if(instructIdx == 0) {
         [camera lockSettings];
     }
     
-    [camera captureWithDuration:5.0 frameList:frames recordingDelegate:self progressDelegate:self];
+    [camera captureWithDuration:5.0];
     
     [UIView animateWithDuration:1.0 animations:^{
         instructions.alpha = 0.0;
@@ -172,14 +184,22 @@
 }
 
 // Frame processing delegate
-- (void)processFrame:(RTPCamera*)sender Buffer:(CVBufferRef)buffer
+- (void)processFrame:(CaptureCamera*)sender Buffer:(CVBufferRef)buffer
 {
-    [program.analysis writeNextFrame:buffer];
+    [frameBuffer writeFrame:buffer atIndex:[NSNumber numberWithInteger:frameIndex]];
+    frameIndex += 1;
 }
 
-- (void)progressUpdate:(Float32)progress
+- (void)didFinishRecordingFrames:(CaptureCamera*)sender
 {
-    progressBar.progress = progress;
+    NSLog(@"Finished recording frames");
+    NSString* currentSampleSerial = program.currentSampleSerial;
+    [program.analysis processFrameBuffer:frameBuffer withSerial:currentSampleSerial];
+}
+
+- (void)updateProgress:(NSNumber*)progress
+{
+    progressBar.progress = progress.floatValue;
 }
 
 - (void)progressTaskComplete
@@ -194,7 +214,7 @@
                 error:(NSError *)error
 {
     // Store the video in the asset library
-    NSLog(@"Storing video in the asset library...");
+    
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL])
     {
@@ -203,7 +223,7 @@
          {
              // Store the video in the program database
              [program movieCapturedWithURL:assetURL];
-             
+    
              fieldcounter.text = [program fovString];
 
              // Stop the busy animations
@@ -214,9 +234,6 @@
              } completion:^(BOOL finished) {
                  // pass
              }];
-             
-             // Advance the analysis movie counter
-             [program.analysis nextMovie:assetURL];
              
              // Is it time to move on?
              instructIdx++;
@@ -236,7 +253,7 @@
         // Reset the instructions, unlock the camera
         instructIdx = 0;
         [camera unlockSettings];
-        [self performSegueWithIdentifier:@"Analyze" sender:self];
+        [self performSegueWithIdentifier:@"Process" sender:self];
     }
 }
 

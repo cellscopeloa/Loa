@@ -11,6 +11,8 @@
 #import "SampleMovie.h"
 #import "ImageFeature.h"
 
+#define NUMFIELDS 5
+
 @implementation LoaProgram
 
 @synthesize guided;
@@ -19,7 +21,6 @@
 @synthesize totalfields;
 @synthesize fovnumber;
 @synthesize samplenumber;
-@synthesize frameRecord;
 @synthesize analysis;
 @synthesize sensitivity;
 @synthesize locationManager;
@@ -31,7 +32,7 @@
     self.guided = guidedMode;
     self.sensitivity = sense;
     samplenumber = 10;
-    totalfields = 3;
+    totalfields = NUMFIELDS;
     fovnumber = 0;
     currentSampleSerial = Nil;
     [self.locationManager startUpdatingLocation];
@@ -117,7 +118,7 @@
 - (NSString*)currentStatus
 {
     NSLog(@"Field of view: %d", fovnumber);
-    if(fovnumber == 3) {
+    if(fovnumber == NUMFIELDS) {
         NSLog(@"Printing done");
         return @"Done";
     }

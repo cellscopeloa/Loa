@@ -9,6 +9,8 @@
 #import "SampleMovie.h"
 #import "CountViewController.h"
 
+#define NUMFOV 5.0
+
 @interface CountViewController () {
     NSArray* sampleMovies;
     NSArray* instructionText;
@@ -40,7 +42,7 @@
     InstructionTextView.text = [instructionText objectAtIndex:0];
 	// Do any additional setup after loading the view.
     sampleMovies = [[sample movies] allObjects];
-    float numberoffov = 3.0;
+    float numberoffov = NUMFOV;
     int wormcount = 0;
     for (SampleMovie* sm in sampleMovies) {
         wormcount += [[sm features] count];

@@ -11,7 +11,6 @@
 #import "LoaProgram.h"
 #import "CaptureViewController.h"
 #import "InstructionViewController.h"
-#import "ReviewVideoViewController.h"
 #import "DataTableViewController.h"
 #import "SettingsViewController.h"
 
@@ -90,8 +89,6 @@
         program.managedObjectContext = managedObjectContext;
         program.sensitivity = sensitivity;
         program.username = userLabel.text;
-        ReviewVideoViewController *reviewVideoViewController = [segue destinationViewController];
-        reviewVideoViewController.program = program;
     }
     // Test with instructions
     else if([segue.identifier isEqualToString:@"Test"]) {

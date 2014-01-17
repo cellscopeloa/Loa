@@ -2,27 +2,20 @@
 //  ProcessingViewController.h
 //  CellScopeLoa
 //
-//  Created by Matthew Bakalar on 11/16/12.
-//  Copyright (c) 2012 Matthew Bakalar. All rights reserved.
+//  Created by Matthew Bakalar on 1/16/14.
+//  Copyright (c) 2014 Matthew Bakalar. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "LoaProgram.h"
-#import "Analysis.h"
 
-@interface ProcessingViewController : UIViewController{
-    NSMutableArray *array;
-}
-@property (weak, nonatomic) IBOutlet UITextView *instructions;
+@interface ProcessingViewController : UIViewController
+
 @property (strong, nonatomic) LoaProgram* program;
-@property UIImage* resultsImage;
-@property int urlNum;
-//@property NSMutableArray * array;
-@property Analysis *loaLoaCounter;
-@property (weak, nonatomic) IBOutlet UIImageView *backImage;
-@property (weak, nonatomic) IBOutlet UIProgressView *progressBar;
-@property (weak, nonatomic) IBOutlet UIImageView *resultsImageView;
-@property NSMutableArray* frameRecord;
+@property (weak, nonatomic) IBOutlet UITextView *instructionsView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityView;
+@property (weak, nonatomic) IBOutlet UILabel *activityTextLabel;
 
-- (IBAction)onPressed:(id)sender;
+- (void) dataDownloadComplete:(NSNotification *)notif;
+
 @end

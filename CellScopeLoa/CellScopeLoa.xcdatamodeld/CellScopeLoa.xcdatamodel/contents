@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="12E55" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13B42" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="ImageFeature" representedClassName="ImageFeature" syncable="YES">
+        <attribute name="endFrame" optional="YES" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="startFrame" optional="YES" syncable="YES"/>
         <attribute name="xcoord" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="ycoord" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <relationship name="samplemovie" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SampleMovie" inverseName="features" inverseEntity="SampleMovie" syncable="YES"/>
@@ -19,6 +21,7 @@
         <attribute name="numworms" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="processedimagepath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="synced" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="features" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ImageFeature" inverseName="samplemovie" inverseEntity="ImageFeature" syncable="YES"/>
         <relationship name="sample" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Sample" inverseName="movies" inverseEntity="Sample" syncable="YES"/>
     </entity>
@@ -37,10 +40,10 @@
         <relationship name="settings" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Settings" inverseName="user" inverseEntity="Settings" syncable="YES"/>
     </entity>
     <elements>
-        <element name="ImageFeature" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Sample" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="SampleMovie" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Settings" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="User" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="ImageFeature" positionX="-369" positionY="-168" width="128" height="133"/>
+        <element name="Sample" positionX="63" positionY="-96" width="128" height="150"/>
+        <element name="SampleMovie" positionX="-155" positionY="-66" width="128" height="133"/>
+        <element name="Settings" positionX="144" positionY="-240" width="128" height="105"/>
+        <element name="User" positionX="-56" positionY="-270" width="128" height="135"/>
     </elements>
 </model>

@@ -9,12 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <dispatch/dispatch.h>
 #import <AVFoundation/AVFoundation.h>
-#import "RTPCamera.h"
+#import "CaptureCamera.h"
 #import "MovieProgressDelegate.h"
 #import "LoaProgram.h"
 #import "MotionAnalysis.h"
 
-@interface CaptureViewController : UIViewController <AVCaptureFileOutputRecordingDelegate,MovieProgressDelegate,FrameProcessingDelegate>
+@interface CaptureViewController : UIViewController <AVCaptureFileOutputRecordingDelegate, CaptureProgressDelegate,FrameProcessingDelegate>
 
 @property (strong, nonatomic) LoaProgram* program;
 @property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
@@ -28,10 +28,8 @@
 @property (weak, nonatomic) IBOutlet UITextView *instructions;
 @property (strong, nonatomic) IBOutlet UIView *pLayer;
 
-@property (nonatomic, strong) RTPCamera *camera;
+@property (nonatomic, strong) CaptureCamera *camera;
 @property (nonatomic) NSInteger isRecording;
-
-@property (nonatomic, strong) NSMutableArray* frameRecord;
 
 @property (nonatomic, strong) AVCaptureSession *session;
 @property (nonatomic, strong) AVCaptureDevice *device;

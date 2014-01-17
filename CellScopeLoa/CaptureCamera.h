@@ -1,0 +1,66 @@
+//
+//  CaptureCamera.h
+//  CellScopeLoa2
+//
+//  Created by Matthew Bakalar on 1/11/14.
+//  Copyright (c) 2014 Matthew Bakalar. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
+#import <ImageIO/ImageIO.h>
+#import <Accelerate/Accelerate.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+
+// Forward declaration
+@class CaptureCamera;
+
+@protocol FrameProcessingDelegate
+
+- (void)processFrame:(CaptureCamera*)sender Buffer:(CVBufferRef)buffer;
+- (void)didFinishRecordingFrames:(CaptureCamera*)sender;
+
+@end
+
+@protocol CaptureProgressDelegate
+
+- (void)updateProgress:(NSNumber*)progress;
+
+@end
+
+@interface CaptureCamera : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
+
+// Delegates
+@property (nonatomic, strong) id<AVCaptureFileOutputRecordingDelegate> recordingDelegate;
+@property (nonatomic, strong) id<FrameProcessingDelegate> processingDelegate;
+@property (nonatomic, strong) id<CaptureProgressDelegate> progressDelegate;
+
+// AVFoundation resources
+@property (nonatomic, strong) AVCaptureSession *session;
+@property (nonatomic, strong) AVCaptureDevice *device;
+@property (nonatomic, strong) AVCaptureDeviceInput *input;
+@property (nonatomic, strong) AVCaptureVideoDataOutput *videoPreviewOutput;
+@property (nonatomic, strong) AVCaptureVideoDataOutput *videoHDOutput;
+
+@property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor;
+@property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
+@property (nonatomic, strong) AVAssetWriter *assetWriter;
+
+@property (nonatomic, strong) NSNumber* width;
+@property (nonatomic, strong) NSNumber* height;
+
+// Camera state properties
+@property (nonatomic, strong) NSURL* temporaryOutputPath;
+
+- (id)initWithWidth:(NSInteger)frameWidth Height:(NSInteger)frameHeight;
+
+- (void)lockSettings;
+- (void)unlockSettings;
+- (void)autoFocus;
+
+- (void)setPreviewLayer:(CALayer*)viewLayer;
+- (void)startCamera;
+- (void)captureWithDuration:(Float32)duration;
+
+@end

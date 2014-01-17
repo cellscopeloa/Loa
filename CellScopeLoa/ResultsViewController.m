@@ -10,6 +10,8 @@
 #import "SampleMovie.h"
 #import "CaptureViewController.h"
 
+#define NUMFOV 5.0
+
 @interface ResultsViewController ()
 
 @end
@@ -49,7 +51,7 @@
     [self setupInstructionSet];
     instructIdx = 0;
     instructions.text = [instructionText objectAtIndex:instructIdx];
-    [self showResults];
+    // [self showResults];
 }
 
 -(void) viewDidUnload {
@@ -84,7 +86,7 @@
 - (void)showResults
 {
     sampleIDLabel.text = program.currentSampleSerial;
-    float numberoffov = 3.0;
+    float numberoffov = NUMFOV;
     NSArray* movies = [program currentMovies];
     int wormcount = 0;
     for (SampleMovie* sample in movies) {

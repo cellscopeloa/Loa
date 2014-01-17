@@ -385,119 +385,129 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 
 - (void)movieUploadBlock:(NSEnumerator*)movieEnumerator withMovie:(SampleMovie*)movie Sample:(Sample*)sample movNum:(NSNumber*)movnum completion:(void (^)(void))block;
 {
-    NSLog(@"Upload movie num: %d", movnum.intValue);
-    NSURL* url = [NSURL URLWithString:movie.path];
-    AVAsset *video = [AVURLAsset URLAssetWithURL:url options:nil];
-    NSArray *keys = @[@"tracks", @"duration"];
-    [video loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
-        
-        NSError *error = nil;
-        AVKeyValueStatus tracksStatus = [video statusOfValueForKey:@"duration" error:&error];
-        switch (tracksStatus) {
-            case AVKeyValueStatusLoaded:
-                break;
-            case AVKeyValueStatusFailed:
-                break;
-            case AVKeyValueStatusCancelled:
-                // Do whatever is appropriate for cancelation.
-                break;
-        }
-    
-        NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:video];
-        if ([compatiblePresets containsObject:AVAssetExportPresetHighestQuality]) {
-            AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]
-                                                   initWithAsset:video presetName:AVAssetExportPreset960x540];
-            NSString *tempName = [NSString stringWithFormat:@"%@_%d.mov", sample.serialnumber, movnum.intValue];
-            NSString *tempFileTemplate = [NSTemporaryDirectory()
-                                          stringByAppendingPathComponent:tempName];
+    // If the movie is already synced, nothing to do here
+    if(movie.synced.boolValue == YES) {
+        block();
+        return;
+    }
+    else {
+        NSLog(@"Upload movie num: %d", movnum.intValue);
+        NSURL* url = [NSURL URLWithString:movie.path];
+        AVAsset *video = [AVURLAsset URLAssetWithURL:url options:nil];
+        NSArray *keys = @[@"tracks", @"duration"];
+        [video loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
             
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            if ([fileManager fileExistsAtPath:tempFileTemplate]) {
-                NSError *error;
-                if ([fileManager removeItemAtPath:tempFileTemplate error:&error] == NO) {
-                    NSLog(@"removeItemAtPath %@ error:%@", tempFileTemplate, error);
-                }
+            NSError *error = nil;
+            AVKeyValueStatus tracksStatus = [video statusOfValueForKey:@"duration" error:&error];
+            switch (tracksStatus) {
+                case AVKeyValueStatusLoaded:
+                    break;
+                case AVKeyValueStatusFailed:
+                    break;
+                case AVKeyValueStatusCancelled:
+                    // Do whatever is appropriate for cancelation.
+                    break;
             }
-            
-            exportSession.outputURL = [NSURL fileURLWithPath:tempFileTemplate];
-            exportSession.outputFileType = AVFileTypeQuickTimeMovie;
         
-            [exportSession exportAsynchronouslyWithCompletionHandler:^{
+            NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:video];
+            if ([compatiblePresets containsObject:AVAssetExportPresetHighestQuality]) {
+                AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]
+                                                       initWithAsset:video presetName:AVAssetExportPreset960x540];
+                NSString *tempName = [NSString stringWithFormat:@"%@_%d.mov", sample.serialnumber, movnum.intValue];
+                NSString *tempFileTemplate = [NSTemporaryDirectory()
+                                              stringByAppendingPathComponent:tempName];
                 
-                switch ([exportSession status]) {
-                    case AVAssetExportSessionStatusCompleted:
-                    {
-                        
-                        NSData *data = [NSData dataWithContentsOfFile:tempFileTemplate];
-                        [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-                            GTLDriveFile *file = [GTLDriveFile object];
-                            file.title = tempName;
-                            file.mimeType = @"video/mov";
-                            
-                            GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:data MIMEType:file.mimeType];
-                            GTLQueryDrive *query = [GTLQueryDrive queryForFilesInsertWithObject:file
-                                                                               uploadParameters:uploadParameters];
-                            
-                            UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading video to Google Drive"];
-                            
-                            [self.driveService executeQuery:query
-                                          completionHandler:^(GTLServiceTicket *ticket,
-                                                              GTLDriveFile *insertedFile, NSError *error) {
-                                              [waitIndicator dismissWithClickedButtonIndex:0 animated:YES];
-                                              if (error == nil)
-                                              {
-                                                  NSLog(@"File ID: %@", insertedFile.identifier);
-                                                  // [self showAlert:@"Google Drive" message:@"File saved!"];
-                                              }
-                                              else
-                                              {
-                                                  NSLog(@"An error occurred: %@", error);
-                                                  [self showAlert:@"Google Drive" message:@"Sorry, an error occurred!"];
-                                              }
-                                              
-                                              // Launch the next movie upload
-                                              SampleMovie* newMovie = [movieEnumerator nextObject];
-                                              if (newMovie != nil) {
-                                                  NSNumber* nextnum = [NSNumber numberWithInt:(movnum.intValue+1)];
-                                                  [self movieUploadBlock:movieEnumerator withMovie:newMovie Sample:sample movNum:nextnum completion:block];
-                                              }
-                                              else {
-                                                  // Update item as synced
-                                                  sample.synced = [NSNumber numberWithBool:YES];
-                                                  NSError *error = nil;
-                                                  [self.managedObjectContext save:&error];  //saves the context to disk
-                                                  [self.tableView reloadData];
-                                                  // Run completion block
-                                                  block();
-                                              }
-                                              
-                                          }];
-
-                        }];
-                        break;
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                if ([fileManager fileExistsAtPath:tempFileTemplate]) {
+                    NSError *error;
+                    if ([fileManager removeItemAtPath:tempFileTemplate error:&error] == NO) {
+                        NSLog(@"removeItemAtPath %@ error:%@", tempFileTemplate, error);
                     }
-                    case AVAssetExportSessionStatusWaiting:
-                        NSLog(@"Export Waiting");
-                        break;
-                    case AVAssetExportSessionStatusExporting:
-                        NSLog(@"Export Exporting");
-                        break;
-                    case AVAssetExportSessionStatusFailed:
-                    {
-                        NSError *error = [exportSession error];
-                        NSLog(@"Export failed: %@", [error localizedDescription]);
-                        break;
-                    }
-                    case AVAssetExportSessionStatusCancelled:
-                        NSLog(@"Export canceled");
-                        break;
-                    default:
-                        break;
                 }
                 
-            }];
-        }
-    }];
+                exportSession.outputURL = [NSURL fileURLWithPath:tempFileTemplate];
+                exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+            
+                [exportSession exportAsynchronouslyWithCompletionHandler:^{
+                    
+                    switch ([exportSession status]) {
+                        case AVAssetExportSessionStatusCompleted:
+                        {
+                            
+                            NSData *data = [NSData dataWithContentsOfFile:tempFileTemplate];
+                            [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+                                GTLDriveFile *file = [GTLDriveFile object];
+                                file.title = tempName;
+                                file.mimeType = @"video/mov";
+                                
+                                GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:data MIMEType:file.mimeType];
+                                GTLQueryDrive *query = [GTLQueryDrive queryForFilesInsertWithObject:file
+                                                                                   uploadParameters:uploadParameters];
+                                
+                                UIAlertView *waitIndicator = [self showWaitIndicator:@"Uploading video to Google Drive"];
+                                
+                                [self.driveService executeQuery:query
+                                              completionHandler:^(GTLServiceTicket *ticket,
+                                                                  GTLDriveFile *insertedFile, NSError *error) {
+                                                  [waitIndicator dismissWithClickedButtonIndex:0 animated:YES];
+                                                  if (error == nil)
+                                                  {
+                                                      NSLog(@"File ID: %@", insertedFile.identifier);
+                                                      // [self showAlert:@"Google Drive" message:@"File saved!"];
+                                                  }
+                                                  else
+                                                  {
+                                                      NSLog(@"An error occurred: %@", error);
+                                                      [self showAlert:@"Google Drive" message:@"Sorry, an error occurred!"];
+                                                  }
+                                                  // Save this movie as synced
+                                                  movie.synced = [NSNumber numberWithBool:YES];
+                                                  [self.managedObjectContext save:&error];
+                                                  
+                                                  // Launch the next movie upload
+                                                  SampleMovie* newMovie = [movieEnumerator nextObject];
+                                                  if (newMovie != nil) {
+                                                      NSNumber* nextnum = [NSNumber numberWithInt:(movnum.intValue+1)];
+                                                      [self movieUploadBlock:movieEnumerator withMovie:newMovie Sample:sample movNum:nextnum completion:block];
+                                                  }
+                                                  else {
+                                                      // Update item as synced
+                                                      sample.synced = [NSNumber numberWithBool:YES];
+                                                      NSError *error = nil;
+                                                      [self.managedObjectContext save:&error];  //saves the context to disk
+                                                      [self.tableView reloadData];
+                                                      // Run completion block
+                                                      block();
+                                                  }
+                                                  
+                                              }];
+
+                            }];
+                            break;
+                        }
+                        case AVAssetExportSessionStatusWaiting:
+                            NSLog(@"Export Waiting");
+                            break;
+                        case AVAssetExportSessionStatusExporting:
+                            NSLog(@"Export Exporting");
+                            break;
+                        case AVAssetExportSessionStatusFailed:
+                        {
+                            NSError *error = [exportSession error];
+                            NSLog(@"Export failed: %@", [error localizedDescription]);
+                            break;
+                        }
+                        case AVAssetExportSessionStatusCancelled:
+                            NSLog(@"Export canceled");
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                }];
+            }
+        }];
+    }
 }
 
 // Upload all samples that have not been marked synced
@@ -506,7 +516,17 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     Sample *sample = [sampleEnumerator nextObject];
     if(sample != nil) {
         NSLog(@"Upload next sample");
-        if(sample.synced.boolValue == NO) {
+        
+        // Check to make sure ALL sample movies in sample have uploaded
+        bool allsynced = YES;
+        for (SampleMovie* movie in sample.movies)
+        {
+            if (movie.synced.boolValue == NO) {
+                allsynced = NO;
+            }
+        }
+        
+        if(!allsynced) {
             NSNumber* movnum = [NSNumber numberWithInt:0];
             NSEnumerator *movieEnumerator = [sample.movies objectEnumerator];
             SampleMovie* movie = [movieEnumerator nextObject];

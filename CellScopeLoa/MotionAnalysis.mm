@@ -1,33 +1,29 @@
+
 //
 //  MotionAnalysis.m
 //  CellScopeLoa
-//
-//  Created by Matthew Bakalar on 1/26/13.
-//  Copyright (c) 2013 Matthew Bakalar. All rights reserved.
-//
 
 #import "MotionAnalysis.h"
 #import "UIImage+OpenCV.h"
-#import "LoaProgram.h"
-
+#import "ProcessingResults.h"
+#import "FrameBuffer.h"
 
 @implementation MotionAnalysis {
     NSMutableArray* movieLengths;
-    std::vector<cv::Mat> *frameBuffers;
     NSInteger movieIdx;
     NSInteger frameIdx;
     NSInteger numFramesMax;
     NSInteger numMovies;
     float sensitivity;
     double progress;
+    
+    dispatch_queue_t backgroundQueue;
 }
+double numWorms=0;
 
 @synthesize coordsArray;
-@synthesize tempCoordsArray;
-@synthesize outImage;
-@synthesize urls;
-@synthesize coordinatesPerMovie;
-@synthesize delegate;
+@synthesize resultsList;
+@synthesize frameBufferList;
 
 -(id)initWithWidth:(NSInteger)width Height:(NSInteger)height
             Frames:(NSInteger)frames
@@ -43,185 +39,115 @@
     numFramesMax = frames;
     numMovies = movies;
     sensitivity = sense;
-    //NSLog(@"Using sensitivity: %f", sensitivity);
-    
     coordsArray = [[NSMutableArray alloc] init];
-    tempCoordsArray = [[NSMutableArray alloc] init];
-
     movieLengths = [[NSMutableArray alloc] init];
-    urls = [[NSMutableArray alloc] init];
-    coordinatesPerMovie = [[NSMutableArray alloc] init];
-
-
     
-    frameBuffers = new std::vector<cv::Mat>(frames*movies);
-    
-    for(int i=0; i<frames*movies; i++) {
-        cv::Mat buffer(height,width,CV_8UC1);
-        frameBuffers->at(i) = buffer;
-    }
+    // MHB properties
+    frameBufferList = [[NSMutableArray alloc] init];
+    resultsList = [[NSMutableArray alloc] init];
+    backgroundQueue = dispatch_queue_create("com.cellscopeloa.analysis.bgqueue", NULL);
     
     return self;
 }
 
--(void)writeNextFrame:(CVBufferRef)imageBuffer
-{    
-    // Lock the image buffer
-    CVPixelBufferLockBaseAddress(imageBuffer,0);
-    // Get information about the image
-    uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer);
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-    size_t width = CVPixelBufferGetWidth(imageBuffer);
-    size_t height = CVPixelBufferGetHeight(imageBuffer);
-    
-    // Create a CGImageRef from the CVImageBufferRef
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    
-    // This copies the data, may be eliminated to optimize code later on
-    CGImageRef image = CGBitmapContextCreateImage(newContext);
-    // Cleanup the CG creators
-    CGContextRelease(newContext);
-    CGColorSpaceRelease(colorSpace);
-    
-    // Unlock the  image buffer
-    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
-    
-    colorSpace = CGImageGetColorSpace(image);
-    CGFloat cols = width;
-    CGFloat rows = height;
-    
-    // Create an RGBA frame for converting the CGImage
-    
-    // Grab the current movie from the frame buffer list
-    int bufferIdx = movieIdx*numFramesMax + frameIdx;
-    cv::Mat grayBuffer = frameBuffers->at(bufferIdx);
-    
-    // Create a grayscale opencv image from the RGBA buffer
-    cv::Mat colorimage(rows,cols,CV_8UC4);
-    
-    CGContextRef contextRef = CGBitmapContextCreate(colorimage.data,                 // Pointer to  data
-                                                    cols,                       // Width of bitmap
-                                                    rows,                       // Height of bitmap
-                                                    8,                          // Bits per component
-                                                    colorimage.step[0],              // Bytes per row
-                                                    colorSpace,                 // Colorspace
-                                                    kCGImageAlphaNoneSkipLast |
-                                                    kCGBitmapByteOrderDefault); // Bitmap info flags
-    
-    CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), image);
-    CGContextRelease(contextRef);
-    // CGColorSpaceRelease(colorSpace);
-    // Release the CGImage memory. This is a place for optimization
-    CGImageRelease(image);
-    
-    // Copy the color image into the grayscale buffer
-    cv::cvtColor(colorimage, grayBuffer, CV_BGRA2GRAY);
-    
-    // Advance the frame counter
-    frameIdx++;
+- (void)processFrameBuffer:(FrameBuffer*)frameBuffer withSerial:(NSString *)serial
+{
+    [frameBufferList addObject:frameBuffer];
+    dispatch_async(backgroundQueue, ^(void) {
+        // Pop the latest frame buffer off of the stack
+        FrameBuffer* localFrameBuffer = [frameBufferList objectAtIndex:(frameBufferList.count-1)];
+        [frameBufferList removeLastObject];
+        
+        ProcessingResults* results = [[ProcessingResults alloc] initWithFrameBuffer:localFrameBuffer andSerial:serial];
+        NSMutableArray* coordinates = [self processFramesForMovie:localFrameBuffer];
+        for (int idx=0; idx+3<[coordinates count]; idx=idx+4){
+            
+            NSNumber* pointx= [coordinates objectAtIndex:(NSInteger)idx];
+            NSNumber* pointy= [coordinates objectAtIndex:(NSInteger)idx+1];
+            
+            CGPoint point=CGPointMake([pointx floatValue], [pointy floatValue]);
+            NSNumber* start= [coordinates objectAtIndex:(NSInteger)idx+2];
+            NSNumber* end= [coordinates objectAtIndex:(NSInteger)idx+3];
+            //NSLog(@"pointx pointy start end %@ %@ %@ %@", pointx, pointy, start, end);
+            
+            [results addPoint:point from:[start integerValue] to:[end integerValue]];
+        }
+        // Add results to the list and free the frame buffer
+        [resultsList addObject:results];
+        [localFrameBuffer releaseFrameBuffers];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FrameBufferProcessed" object:nil];
+    });
 }
 
-// Advance the write buffer to the next movie
-- (void)nextMovie:(NSURL*) url {
-    //NSLog(@"%d frames in last movie", frameIdx-1);
-    NSNumber* movlen = [NSNumber numberWithInt:(frameIdx-1)];
-    [movieLengths addObject:movlen];
-    [urls addObject:url];
-    movieIdx++;
-    frameIdx = 0;
-}
-
--(void)processAllMovies {
-    for(int i=0; i<numMovies; i++) {
-        [self processFramesForMovie:i];
-    }
-    // Notify that processing is complete
-    
-    // Release all of the image buffers
-    for(int i=0; i<numMovies*numFramesMax; i++) {
-        frameBuffers->at(i).release();
-    }
-    
-    NSArray* keys = [[NSArray alloc] initWithObjects:@"progress", @"done", @"coords", @"urls", nil];
-    NSArray* objects = [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:1.0],[NSNumber numberWithInt:1],coordinatesPerMovie,urls,nil];
-    NSDictionary* userInfo = [[NSDictionary alloc] initWithObjects:objects forKeys:keys];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"analysisProgress" object:self userInfo:userInfo];
-}
-
-- (void)processFramesForMovie:(NSInteger)movidx {
+- (NSMutableArray *)processFramesForMovie:(FrameBuffer*)frameBuffer {
     // Start at the first frame
     frameIdx = 0;
-    coordsArray = [[NSMutableArray alloc] init];
-    tempCoordsArray = [[NSMutableArray alloc] init];
-
-    movieIdx = movidx;
-    NSNumber *movielength = [movieLengths objectAtIndex:0];
-    NSInteger numFrames = [movielength integerValue];
+    //coordsArray = [[NSMutableArray alloc] init];
+    
+    movieIdx = 0;
+    //NSNumber *movielength = [movieLengths objectAtIndex:0];
+    NSInteger numFrames = frameBuffer.numFrames.integerValue;
     
     // Movie dimensions
-    int totalframes = numFrames;
     int rows = 360;
     int cols = 480;
-    int wormSize=80; //must be even
-    int innerBoxSize=30; //must be even
-    int sz[3] = {rows,cols,3};
+    //int sz[3] = {rows,cols,3};
     
     
     // Algorithm parameters
-    int framesToAvg = 30;
-    int framesToSkip = 2; //WARNING- verify bufferIdx after changing, might not scale right
-    
-    // Image for storing the output...
-    cv::Mat outImage(3, sz, CV_16UC(1), cv::Scalar::all(0));
-    
-    // Kernels for block averages
-    cv::Mat blockAvg3x3 = cv::Mat::ones(5, 5, CV_32F);
-    cv::Mat blockAve7x7(7, 7, CV_32F, cv::Scalar::all(.02));
-
-    cv::Mat blockAvg12x12 = cv::Mat::ones(15, 15, CV_32F);
-    cv::Mat blockAvg50x50 = cv::Mat::ones(67,67,CV_32F);
-    
+    int framesToAvg = 7;
+    int framesToSkip = 1;
     // Matrix for storing normalized frames
-    cv::Mat movieFrameMatNorm(rows, cols, CV_16UC1);
-    // Matrix for storing found blocks of motion
-    cv::Mat foundWorms(rows, cols, CV_8UC1, cv::Scalar::all(0));
+    cv::Mat movieFrameMatNorm=cv::Mat::zeros(rows, cols, CV_16UC1);
+
     // Temporary matrices for image processing
     cv::Mat movieFrameMatOld;
-    //cv::Mat movieFrameMatCum;
     cv::Mat movieFrameMatCum(rows,cols, CV_16UC1, cv::Scalar::all(0));
-
     cv::Mat movieFrameMatFirst;
-    cv::Mat movieFrameMatDiff;
+    cv::Mat movieFrameMatDiff= cv::Mat::zeros(rows, cols, CV_16UC1);
     cv::Mat movieFrameMatDiffTmp;
     cv::Mat movieFrameMat;
     cv::Mat movieFrameMatBW;
     cv::Mat movieFrameMatBWInv;
     cv::Mat movieFrameMatBWCopy;
-
     cv::Mat movieFrameMatDiffOrig;
     cv::Mat movieFrameMatNormOld;
+    cv::Mat movieFrameMatDiff1= cv::Mat::zeros(rows, cols, CV_16UC1);
+    cv::Mat movieFrameMatDiff2= cv::Mat::zeros(rows, cols, CV_16UC1);
+    cv::Mat movieFrameMatDiff3= cv::Mat::zeros(rows, cols, CV_16UC1);
+    cv::Mat movieFrameMatDiff4= cv::Mat::zeros(rows, cols, CV_16UC1);
+    cv::Mat movieFrameMatDiff5= cv::Mat::zeros(rows, cols, CV_16UC1);
+
     
     int i = 0;
     int avgFrames = framesToAvg/framesToSkip;
     frameIdx = 0;
     
     // Compute difference image from current movie
-    while(frameIdx+avgFrames <= (numFrames-20)) {
-        [self setProgressWithMovie:movidx Frame:frameIdx];
-        while(i <= avgFrames) {
+    while(frameIdx < numFrames) {
+        //[self setProgressWithMovie:movidx Frame:frameIdx];
+        while(i < avgFrames) {
             // Update the progress bar
-            [self setProgressWithMovie:movidx Frame:frameIdx];
+            //[self setProgressWithMovie:movidx Frame:frameIdx];
             // Grab the current movie from the frame buffer list
-            int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames+10);
-            //NSLog(@"bufferidxinit: %i", bufferIdx);
-            movieFrameMat = frameBuffers->at(bufferIdx);
+            int bufferIdx = movieIdx*numFramesMax + (frameIdx);
+            movieFrameMat = [frameBuffer getFrameAtIndex:bufferIdx];
+
             if (i==0){
-                double trash= threshold(movieFrameMat, movieFrameMatBW, 50, 255, CV_THRESH_BINARY);
+                threshold(movieFrameMat, movieFrameMatBW, 50, 255, CV_THRESH_BINARY_INV);
+                threshold(movieFrameMat, movieFrameMatBWInv, 50, 1, CV_THRESH_BINARY);
+
+                cv::Mat element = getStructuringElement(CV_SHAPE_ELLIPSE, cv::Size( 10,10 ), cv::Point( 2, 2 ));
+                cv::morphologyEx(movieFrameMatBW,movieFrameMatBW, CV_MOP_DILATE, element );
+                //cv::Mat movieFrameMatBWInv;
+                //cv::subtract(cv::Scalar::all(255),movieFrameMatBW, movieFrameMatBW);
+                movieFrameMatBW.convertTo(movieFrameMatBW, CV_16UC1);
+                movieFrameMatBW=movieFrameMatBW*255;
+
             }
+            //cv::multiply(movieFrameMat, movieFrameMatBW, movieFrameMat);
+
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
-            // 3x3 spatial filter to reduce noise and downsample
-            cv::filter2D(movieFrameMat, movieFrameMat, -1, blockAvg3x3, cv::Point(-1,-1));
             
             if (i == 0){
                 movieFrameMatOld=movieFrameMat;
@@ -229,6 +155,17 @@
                 movieFrameMat=cv::Mat();
             }
             else {
+                
+                /*UIImage * diff3;
+                cv::Mat movieFrameMatDiff38=movieFrameMatCum.clone()/i;
+                movieFrameMatDiff38.convertTo(movieFrameMatDiff38, CV_8UC1);
+                diff3 = [[UIImage alloc] initWithCVMat:movieFrameMatDiff38];
+                
+                /*UIImageWriteToSavedPhotosAlbum(diff3,
+                                               self, // send the message to 'self' when calling the callback
+                                               @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                                               NULL); // you generally won't need a contextInfo here*/
+
                 movieFrameMatCum = movieFrameMatCum + movieFrameMat;
                 movieFrameMatOld.release();
                 movieFrameMatOld=cv::Mat();
@@ -237,35 +174,42 @@
                 movieFrameMat=cv::Mat();
             }
             i=i+1;
+            //NSLog(@"%i", i);
             frameIdx = frameIdx + framesToSkip;
         }
-
-        if (i == avgFrames+1){
-            //NSLog(@"dividing first cum image");
-            cv::divide(movieFrameMatCum, avgFrames, movieFrameMatNorm);
-            //filter2D(movieFrameMatNorm, movieFrameMatNorm, -1 , kernel, cv::Point( -1, -1 ), 0, cv::BORDER_DEFAULT );
-        }
-        if (i > avgFrames+1) {
-            // Grab the current movie from the frame buffer list
-            int bufferIdx = movieIdx*numFramesMax + (frameIdx+avgFrames-framesToSkip+10);
-            movieFrameMat = frameBuffers->at(bufferIdx);
+        
+        if (i == avgFrames){
+            movieFrameMatNorm=movieFrameMatCum.clone()/i;
+            /*UIImage * diff3;
+            cv::Mat movieFrameMatDiff38;
+            movieFrameMatNorm.convertTo(movieFrameMatDiff38, CV_8UC1);
+            diff3 = [[UIImage alloc] initWithCVMat:movieFrameMatDiff38];
             
+            UIImageWriteToSavedPhotosAlbum(diff3,
+                                           self, // send the message to 'self' when calling the callback
+                                           @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                                           NULL); // you generally won't need a contextInfo here */
+        }
+        if (i > avgFrames) {
+            // Grab the current movie from the frame buffer list
+            int bufferIdx = movieIdx*numFramesMax + (frameIdx);
+            movieFrameMat = [frameBuffer getFrameAtIndex:bufferIdx];
+            //cv::multiply(movieFrameMat, movieFrameMatBW, movieFrameMat);
+
             // Convert the frame into 16 bit grayscale. Space for optimization
             movieFrameMat.convertTo(movieFrameMat, CV_16UC1);
             // 3x3 spatial filter to reduce noise and downsample
-            cv::filter2D(movieFrameMat, movieFrameMat, -1, blockAvg3x3, cv::Point(-1,-1));
+            //cv::filter2D(movieFrameMat, movieFrameMat, -1, blockAvg3x3, cv::Point(-1,-1));
             
             // Grab the first frame from the current ave from the frame buffer list
-            bufferIdx = movieIdx*numFramesMax + (frameIdx-avgFrames-framesToSkip-framesToSkip+10);
+            int firstBufferIdx = movieIdx*numFramesMax + (frameIdx-avgFrames+1);
             //NSLog(@"bufferidxfirst: %i", bufferIdx);
-
-            movieFrameMatFirst = frameBuffers->at(bufferIdx);
             
-            // Convert the frame into 16 bit grayscale. Space for optimization
+            movieFrameMatFirst = [frameBuffer getFrameAtIndex:firstBufferIdx];
             movieFrameMatFirst.convertTo(movieFrameMatFirst, CV_16UC1);
             
             // 3x3 spatial filter to reduce noise and downsample
-            cv::filter2D(movieFrameMatFirst, movieFrameMatFirst, -1, blockAvg3x3, cv::Point(-1,-1));
+            //cv::filter2D(movieFrameMatFirst, movieFrameMatFirst, -1, blockAvg3x3, cv::Point(-1,-1));
             
             movieFrameMatCum = movieFrameMatCum - movieFrameMatFirst + movieFrameMat;
             movieFrameMat.release();
@@ -273,16 +217,32 @@
             movieFrameMatFirst.release();
             movieFrameMatFirst=cv::Mat();
             cv::divide(movieFrameMatCum, avgFrames, movieFrameMatNorm);
+            
             cv::absdiff(movieFrameMatNormOld, movieFrameMatNorm, movieFrameMatDiffTmp);
             
             movieFrameMatNormOld.release();
             movieFrameMatNormOld=cv::Mat();
-            if (i == avgFrames+2) {
-                movieFrameMatDiff=movieFrameMatDiffTmp;
-            }
-            else {
-                movieFrameMatDiff = movieFrameMatDiff + movieFrameMatDiffTmp;
+            movieFrameMatDiff=movieFrameMatDiff + movieFrameMatDiffTmp;
+
+            if (i<=36) {
+                movieFrameMatDiff1 = movieFrameMatDiff1 + movieFrameMatDiffTmp;
                 
+            }
+            else if  (i<=64) {
+                movieFrameMatDiff2 = movieFrameMatDiff2 + movieFrameMatDiffTmp;
+
+            }
+            else if (i<=92) {
+                movieFrameMatDiff3 = movieFrameMatDiff3 + movieFrameMatDiffTmp;
+
+            }
+            else if (i<=120) {
+                movieFrameMatDiff4 = movieFrameMatDiff4 + movieFrameMatDiffTmp;
+
+            }
+            else if (i<=148) {
+
+                movieFrameMatDiff5 = movieFrameMatDiff5 + movieFrameMatDiffTmp;
 
             }
             movieFrameMatDiffTmp.release();
@@ -292,336 +252,541 @@
         movieFrameMatNorm.release();
         movieFrameMatNorm=cv::Mat();
         frameIdx = frameIdx + framesToSkip;
+        //NSLog(@"%i", i);
         i = i+1;
     }
-    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
-    movieFrameMatDiff=movieFrameMatDiff/25;
-    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
-    movieFrameMatDiff=movieFrameMatDiff/25;
-    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAvg3x3, cv::Point(-1,-1));
-    movieFrameMatDiff=movieFrameMatDiff/25;
-    movieFrameMatBWInv=movieFrameMatBW.clone();
-    movieFrameMatBWCopy=movieFrameMatBW.clone();
-    cv::Scalar imageAve;
-    cv::Scalar stDev;
-    cv::meanStdDev(movieFrameMatDiff, imageAve,stDev, movieFrameMatBW);
-    NSLog(@"img avg: %f",imageAve.val[0]);
-    NSLog(@"img std: %f",stDev.val[0]);
-    imageAve.val[0]=imageAve.val[0];
-    int sizeTweak=0;
-    double tweak=0;
-    double backTweak=0;
-    
-    if (stDev.val[0]<15) {
-        wormSize=100;
-        sizeTweak=0;
-        backTweak=0;
-        tweak=-.1;
 
-        
-    }
-    else if (stDev.val[0]<50) {
-        sizeTweak=0;
-        backTweak=0;
-    }
-    else if (stDev.val[0]<70) {
-        backTweak=.125;
-        sizeTweak=0.01;
-        tweak=.03;
-        wormSize=70;
+    cv::Mat backConvMat= cv::Mat::ones(20, 20, CV_32FC1);
+    cv::Mat backgroundConvMat= cv::Mat::ones(10, 10, CV_32FC1);
 
-    }
-    else {
-        sizeTweak=0.07;
-        backTweak=.35;
-        tweak=0.06;
-        wormSize=50;
-        innerBoxSize=26;
-        NSLog(@"in max bracket");
-
-    }
-    int filling = cv::floodFill(movieFrameMatBW, cv::Point(0,0), (imageAve.val[0]/(1.25+backTweak)), (cv::Rect*)0, 100, 200);
-    movieFrameMatBW.convertTo(movieFrameMatBW, CV_16UC1);
-    cv::convertScaleAbs(movieFrameMatBWInv, movieFrameMatBWInv, -1, 255 );
-    
-    movieFrameMatBWInv.convertTo(movieFrameMatBWInv, CV_16UC1);
-    movieFrameMatBWInv=movieFrameMatBWInv;
-    movieFrameMatBWCopy.convertTo(movieFrameMatBWCopy, CV_16UC1);
-    movieFrameMatBW=movieFrameMatBW-movieFrameMatBWCopy;
-    movieFrameMatDiff=movieFrameMatDiff-movieFrameMatBWInv;
+    //backConvMat=backConvMat*.005;
+    cv::Scalar sum=cv::sum(movieFrameMatDiff);
+    NSLog(@"sum is %f", sum[0]);
     movieFrameMatDiff=movieFrameMatDiff+movieFrameMatBW;
-    cv::Mat movieFrameMatDiffSort(480,270, CV_16UC1, cv::Scalar::all(0));
-    cv::sort(movieFrameMatDiff, movieFrameMatDiffSort,CV_SORT_EVERY_ROW+CV_SORT_DESCENDING);
-    cv::sort(movieFrameMatDiffSort, movieFrameMatDiffSort,CV_SORT_EVERY_COLUMN+CV_SORT_DESCENDING);
-    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
-    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
-    cv::filter2D(movieFrameMatDiff, movieFrameMatDiff, -1, blockAve7x7, cv::Point(-1,-1));
-    movieFrameMatDiffOrig = movieFrameMatDiff.clone();
-    movieFrameMatBW.convertTo(movieFrameMatBW, CV_8UC1);
-    movieFrameMatDiffSort.convertTo(movieFrameMatDiffSort, CV_8UC1);
-    unsigned char scaledAve=movieFrameMatDiffSort.at<unsigned char>(135,400);
-    imageAve.val[0]=scaledAve;
-    double minVal;
+    cv::filter2D(movieFrameMatDiff,movieFrameMatDiff,-1,backgroundConvMat, cv::Point(-1,-1));
+    double backVal;
     double maxValTrash;
-    cv::minMaxLoc(movieFrameMatDiff, &minVal, &maxValTrash);
-    movieFrameMatDiffOrig = movieFrameMatDiff.clone();
-    bool findinWorms=TRUE;
-    while(findinWorms==TRUE) {
-        cv::Mat findinWormsConv;
-        cv::filter2D(movieFrameMatDiff, findinWormsConv,-1,blockAvg12x12,cv::Point(-1,-1));
-        double maxVal;
-        int maxIdx[2] = {255, 255};
-        minMaxIdx(findinWormsConv, 0, &maxVal, 0, maxIdx);
-        //NSLog(@"img max: %f",maxVal);
-        //NSLog(@"max x: %i",maxIdx[0]);
-        //NSLog(@"max y: %i",maxIdx[1]);
-        
-        // Calculate the sensitivity
-        int low = 1;
-        int high = 640;
-        float sensemul = (sensitivity*-1.0 + 1) / 2.0;
-        int rangemul = round(sensemul * (high-low) + low);
-        //NSLog(@"Sensitivy: %f", sensitivity);
-        //NSLog(@"rangemul: %i", rangemul);
-        
-        //only advance to the next stage of worm id if the patch max is 266 times higher than the image ave
-        if (maxVal > (imageAve.val[0] * rangemul)) {
-            //setup our box sizes around the worm
-            int col=floor(maxIdx[1]);
-            int row=maxIdx[0];
-            int colRangeLow=0;
-            int colRangeHigh=0;
-            int rowRangeLow=0;
-            int rowRangeHigh=0;
-            if (col<(wormSize/2)){
-                colRangeLow=0;
-            }
-            else {
-                colRangeLow=col-(wormSize/2);
-            }
-            if (col>(movieFrameMatDiff.cols-(wormSize/2))){
-                colRangeHigh=movieFrameMatDiff.cols;
-            }
-            else {
-                colRangeHigh=col+(wormSize/2);
-            }
-            
-            if (row<(wormSize/2)){
-                rowRangeLow=0;
-            }
-            else {
-                rowRangeLow=row-(wormSize/2);
-            }
-            if (row>(movieFrameMatDiff.rows-(wormSize/2))){
-                rowRangeHigh=movieFrameMatDiff.rows;
-            }
-            else {
-                rowRangeHigh=row+(wormSize/2);
-            }
-            
-            col=floor(maxIdx[1]);
-            row=maxIdx[0];
-            int colRangeLowS=0;
-            int colRangeHighS=0;
-            int rowRangeLowS=0;
-            int rowRangeHighS=0;
-            if (col<(innerBoxSize/2)){
-                colRangeLowS=0;
-            }
-            else {
-                colRangeLowS=col-(innerBoxSize/2);
-            }
-            if (col>(movieFrameMatDiff.cols-(innerBoxSize/2))){
-                colRangeHighS=movieFrameMatDiff.cols;
-            }
-            else {
-                colRangeHighS=col+(innerBoxSize/2);
-            }
-            
-            if (row<(innerBoxSize/2)){
-                rowRangeLowS=0;
-            }
-            else {
-                rowRangeLowS=row-(innerBoxSize/2);
-            }
-            if (row>(movieFrameMatDiff.rows-(innerBoxSize/2))){
-                rowRangeHighS=movieFrameMatDiff.rows;
-            }
-            else {
-                rowRangeHighS=row+(innerBoxSize/2);
-            }
-            
-            cv::Mat selRegion;
-            selRegion=movieFrameMatDiffOrig(cv::Range(rowRangeLowS,rowRangeHighS),cv::Range(colRangeLowS,colRangeHighS));
-            cv::Mat wholeRegion;
-            cv::Mat noSel = movieFrameMatDiffOrig.clone();
-            //noSel(cv::Range(rowRangeLowS,rowRangeHighS),cv::Range(colRangeLowS,colRangeHighS))=cv::Scalar::all(0);
-            wholeRegion = noSel(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh));
-            
-            cv::Scalar selAve=cv::mean(selRegion);
-            cv::Scalar wholeAve=cv::mean(wholeRegion);
-            
-            movieFrameMatDiff(cv::Range(rowRangeLow+sizeTweak,rowRangeHigh-sizeTweak),cv::Range(colRangeLow+sizeTweak,colRangeHigh-sizeTweak))=cv::Scalar::all(0);            
-            //NSLog(@"center intensity norm: %f",selAve.val[0]/wholeAve.val[0]);
-            
-            if (selAve.val[0]>wholeAve.val[0]*(1.2-tweak) || wholeAve.val[0]>imageAve.val[0]*7){
-                foundWorms(cv::Range(rowRangeLow,rowRangeHigh),cv::Range(colRangeLow,colRangeHigh))=cv::Scalar::all(100);
-                //NSLog(@"%s","found some worms!");
-                
-                NSNumber *x = [NSNumber numberWithInt:maxIdx[1]];
-                [tempCoordsArray addObject:x];
-                NSNumber *y = [NSNumber numberWithInt:maxIdx[0]];
-                [tempCoordsArray addObject:y];
-                }
-            
-        }
-        else if ([tempCoordsArray count]>16 && tweak==-.1){
-            NSLog(@"adjusting params, count is %i, ", [tempCoordsArray count] );
-            [tempCoordsArray removeAllObjects];
-            foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
-            movieFrameMatDiff=movieFrameMatDiffOrig.clone();
-            tweak=0;
-        }
-        else if (tweak==0 && [tempCoordsArray count]>25) {
-            NSLog(@"adjusting params, count is %i, ", [tempCoordsArray count] );
-            [tempCoordsArray removeAllObjects];
-            foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
-            movieFrameMatDiff=movieFrameMatDiffOrig.clone();
-            
-            backTweak=.125;
-            sizeTweak=0.01;
-            tweak=.03;
-            wormSize=70;
-            
-        }
-        else if (tweak==.03 && [tempCoordsArray count]>30) {
-            NSLog(@"adjusting params, count is %i, ", [tempCoordsArray count] );
-            [tempCoordsArray removeAllObjects];
-            foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
-            movieFrameMatDiff=movieFrameMatDiffOrig.clone();
-            
-            sizeTweak=0.07;
-            backTweak=.35;
-            tweak=0.06;
-            wormSize=50;
-            innerBoxSize=26;
-
-            
-        }
-        else if (tweak==.06 && [tempCoordsArray count]>35) {
-            NSLog(@"adjusting params 4, count is %i, ", [tempCoordsArray count] );
-            [tempCoordsArray removeAllObjects];
-            foundWorms(cv::Rect(0,0,foundWorms.cols,foundWorms.rows)) = cv::Scalar::all(0);
-            movieFrameMatDiff=movieFrameMatDiffOrig.clone();
-            
-            sizeTweak=0.07;
-            backTweak=.35;
-            tweak=0.175;
-            wormSize=40;
-            innerBoxSize=20;
-            
-        }
-        //test
-
-        else {
-            coordsArray=tempCoordsArray;
-
-            break;
-            movieFrameMatDiff.release();
-            movieFrameMatDiff=cv::Mat();
-        }
-    }
+    cv::minMaxLoc(movieFrameMatDiff, &backVal, &maxValTrash);
+    double backCorrFactor=sum[0]/1000000;
+    backCorrFactor=3.98/backCorrFactor*1.5; //2 is good for standard alg (non peak finding)
+    if (backCorrFactor>4) backCorrFactor=4;
+    //backVal=round((backVal/100)*300); //good for low
+    //backVal=round((backVal/100)*150); //good for high
     
-    NSLog(@"numcoords, %i", [coordsArray count]);
-    NSLog(@"movie, %@", urls[movidx]);
+    //backVal=round(backVal*3); //good for low
+    //backVal=round(backVal*1.5); //good for high
+    backVal=backVal*backCorrFactor; //good for everything
 
-    [coordsArray addObject:urls[movidx]];
+    movieFrameMatBWInv.convertTo(movieFrameMatBWInv, CV_16UC1);
+    //spatially filter and subtract background
+    cv::filter2D(movieFrameMatDiff1,movieFrameMatDiff1,-1,backConvMat, cv::Point(-1,-1));
+    movieFrameMatDiff1=movieFrameMatDiff1-backVal;
+    multiply(movieFrameMatDiff1, movieFrameMatBWInv, movieFrameMatDiff1);
 
-    [coordinatesPerMovie addObject:coordsArray];
-    // Now we are done finding worms
-    //NSLog(@"done finding worms");
+    cv::filter2D(movieFrameMatDiff2,movieFrameMatDiff2,-1,backConvMat, cv::Point(-1,-1));
+    movieFrameMatDiff2=movieFrameMatDiff2-backVal;
+    multiply(movieFrameMatDiff2, movieFrameMatBWInv, movieFrameMatDiff2);
+
+
+    cv::filter2D(movieFrameMatDiff3,movieFrameMatDiff3,-1,backConvMat, cv::Point(-1,-1));
+    movieFrameMatDiff3=movieFrameMatDiff3-backVal;
+    multiply(movieFrameMatDiff3, movieFrameMatBWInv, movieFrameMatDiff3);
+
+
+    cv::filter2D(movieFrameMatDiff4,movieFrameMatDiff4,-1,backConvMat, cv::Point(-1,-1));
+    movieFrameMatDiff4=movieFrameMatDiff4-backVal;
+    multiply(movieFrameMatDiff4, movieFrameMatBWInv, movieFrameMatDiff4);
+
+
+    cv::filter2D(movieFrameMatDiff5,movieFrameMatDiff5,-1,backConvMat, cv::Point(-1,-1));
+    movieFrameMatDiff5=movieFrameMatDiff5-backVal;
+    multiply(movieFrameMatDiff5, movieFrameMatBWInv, movieFrameMatDiff5);
+
     
     
-    movieFrameMatDiffOrig.convertTo(movieFrameMatDiffOrig,CV_16UC1);
-    cv::Mat movieFrameMatDiffOrig8(rows,cols, CV_16UC1, cv::Scalar::all(0));
-    double maxVal;
-    int maxIdx;
-    minMaxIdx(movieFrameMatDiffOrig, 0, &maxVal, 0, &maxIdx);
-    cv::divide(movieFrameMatDiffOrig, 256*(maxVal/65535), movieFrameMatDiffOrig8);
-    movieFrameMatDiffOrig8.convertTo(movieFrameMatDiffOrig8, CV_8UC1);
-    std::vector<cv::Mat> planes;
-    planes.push_back(movieFrameMatDiffOrig8+foundWorms);
-    planes.push_back(movieFrameMatDiffOrig8);
-    planes.push_back(movieFrameMatDiffOrig8);
-    cv::Mat outImageRGB;
-    cv::merge(planes,outImageRGB);
-    planes.clear();
-    //planes.swap(std::vector<cv::Mat> (planes));
-    std::vector<cv::Mat> (planes).swap(planes);
-    //cv::cvtColor(movieFrameMatDiffOrig8,outImageRGB, CV_GRAY2RGB);
-    foundWorms.release();
-    foundWorms=cv::Mat();
-    movieFrameMatDiffOrig.release();
-    movieFrameMatDiffOrig=cv::Mat();
-    UIImage * outUIImage;
-    outUIImage = [[UIImage alloc] initWithCVMat:outImageRGB];
-    outImageRGB.release();
-    outImageRGB=cv::Mat();
+    [self getLocalMaxima:movieFrameMatDiff1: 17: 1: 5:1:32];
+
+    movieFrameMatDiff1.convertTo(movieFrameMatDiff1, CV_8UC1);
+
+    cv::Mat movieFrameMatForWatGray;
+    threshold(movieFrameMatDiff1, movieFrameMatForWatGray, 1, 255, CV_THRESH_TOZERO);
+    threshold(movieFrameMatDiff1, movieFrameMatDiff1, 1, 255, CV_THRESH_BINARY);
+    cv::Mat movieFrameMatDiff1ForWat=movieFrameMatDiff1.clone();
+    //cv::Mat wat1=[self doWatershed:movieFrameMatDiff1 :movieFrameMatForWatGray];
+    //movieFrameMatDiff1.convertTo(movieFrameMatDiff1, CV_8UC1);
+    //multiply(movieFrameMatDiff1,wat1,movieFrameMatDiff1);
     
-    // #MHB Changed
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    // Request to save the image to camera roll
-    [library writeImageToSavedPhotosAlbum:[outUIImage CGImage] orientation:(ALAssetOrientation)[outUIImage imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error){
-        if (error) {
-            NSLog(@"error saving image to photo album");
-        } else {
-            NSNumber* numberindex = [[NSNumber alloc] initWithInteger:movidx];
-            [delegate processedMovieResult:outUIImage savedURL:assetURL movieIndex:numberindex];
-        }  
-    }];
     
-    // #MHB Commented out
-    /* UIImageWriteToSavedPhotosAlbum(outUIImage,
+    
+    UIImage * diff3;
+    cv::Mat movieFrameMatDiff38;
+    movieFrameMatDiff1.convertTo(movieFrameMatDiff38, CV_8UC1);
+    diff3 = [[UIImage alloc] initWithCVMat:movieFrameMatDiff38*255];
+    UIImageWriteToSavedPhotosAlbum(diff3,
                                    self, // send the message to 'self' when calling the callback
                                    @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                   NULL); // you generally won't need a contextInfo here
-    */
+                                   NULL); // you generally won't need a contextInfo here */
+
+    [self getLocalMaxima:movieFrameMatDiff2: 17: 1: 5:33:60];
+
+    movieFrameMatDiff2.convertTo(movieFrameMatDiff2, CV_8UC1);
+
+    threshold(movieFrameMatDiff2, movieFrameMatForWatGray, 1, 255, CV_THRESH_TOZERO);
+    threshold(movieFrameMatDiff2, movieFrameMatDiff2, 1, 255, CV_THRESH_BINARY);
+    movieFrameMatDiff1ForWat=movieFrameMatDiff2.clone();
+    //wat1=[self doWatershed:movieFrameMatDiff2 :movieFrameMatForWatGray];
+    //movieFrameMatDiff2.convertTo(movieFrameMatDiff2, CV_8UC1);
+    //multiply(movieFrameMatDiff1,wat1,movieFrameMatDiff1);
+    [self getLocalMaxima:movieFrameMatDiff3: 17: 1: 5:61:90];
+
+    movieFrameMatDiff3.convertTo(movieFrameMatDiff3, CV_8UC1);
+
+    threshold(movieFrameMatDiff3, movieFrameMatDiff3, 1, 255, CV_THRESH_BINARY);
+    threshold(movieFrameMatDiff3, movieFrameMatDiff3, 1, 255, CV_THRESH_BINARY);
+    movieFrameMatDiff1ForWat=movieFrameMatDiff3.clone();
+    //wat1=[self doWatershed:movieFrameMatDiff3 :movieFrameMatForWatGray];
+    //movieFrameMatDiff3.convertTo(movieFrameMatDiff3, CV_8UC1);
+    //multiply(movieFrameMatDiff1,wat1,movieFrameMatDiff1);
+
+    [self getLocalMaxima:movieFrameMatDiff4: 17: 1: 5:91:120];
+
+    movieFrameMatDiff4.convertTo(movieFrameMatDiff4, CV_8UC1);
+
+    threshold(movieFrameMatDiff4, movieFrameMatDiff4, 1, 255, CV_THRESH_BINARY);
+    threshold(movieFrameMatDiff4, movieFrameMatDiff4, 1, 255, CV_THRESH_BINARY);
+    movieFrameMatDiff1ForWat=movieFrameMatDiff4.clone();
+    //wat1=[self doWatershed:movieFrameMatDiff4 :movieFrameMatForWatGray];
+    //movieFrameMatDiff4.convertTo(movieFrameMatDiff4, CV_8UC1);
+    //multiply(movieFrameMatDiff1,wat1,movieFrameMatDiff1);
+
+    [self getLocalMaxima:movieFrameMatDiff5: 17: 1: 5:121:150];
+
+    movieFrameMatDiff5.convertTo(movieFrameMatDiff5, CV_8UC1);
+
+    threshold(movieFrameMatDiff5, movieFrameMatDiff5, 1, 255, CV_THRESH_BINARY);
+    threshold(movieFrameMatDiff5, movieFrameMatDiff5, 1, 255, CV_THRESH_BINARY);
+    movieFrameMatDiff1ForWat=movieFrameMatDiff5.clone();
+    //wat1=[self doWatershed:movieFrameMatDiff5 :movieFrameMatForWatGray];
+    //movieFrameMatDiff5.convertTo(movieFrameMatDiff5, CV_8UC1);
+    //multiply(movieFrameMatDiff1,wat1,movieFrameMatDiff1);
+
+    /*
+    std::vector<std::vector<cv::Point> > contours;
+    std::vector<cv::Vec4i> hierarchy;
     
-    movieFrameMatDiffOrig8.release();
-    movieFrameMatDiffOrig8=cv::Mat();
-    //NSLog(@"%s","finished!");
-    self.outImage=outUIImage;
+    
+    findContours( movieFrameMatDiff1, contours, hierarchy,
+                 CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+    [self countContours:contours:hierarchy:1:32];
+
+    findContours( movieFrameMatDiff2, contours, hierarchy,
+                 CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, cv::Point(0,0) );
+
+    [self countContours:contours:hierarchy:33:60];
+
+    
+    findContours( movieFrameMatDiff3, contours, hierarchy,
+                 CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+    [self countContours:contours:hierarchy:61:90];
+
+    
+    findContours( movieFrameMatDiff4, contours, hierarchy,
+                 CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+    [self countContours:contours:hierarchy:91:120];
+
+    
+    findContours( movieFrameMatDiff5, contours, hierarchy,
+                 CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+    [self countContours:contours:hierarchy:121:150];
+    */
+    numWorms=numWorms/5;
+    NSLog(@"numWorms %f", numWorms);
+    
+    movieFrameMatDiff.release();
+    movieFrameMatDiff1.release();
+    movieFrameMatDiff2.release();
+    movieFrameMatDiff3.release();
+    movieFrameMatDiff4.release();
+    movieFrameMatDiff5.release();
+    movieFrameMatBW.release();
+
+    return coordsArray;
+
 }
 
-- (void)setProgressWithMovie:(NSInteger)midx Frame:(NSInteger)fidx
+-(cv::Mat) doWatershed:(cv::Mat) movieFrameMatDiff1ForWat: (cv::Mat) movieFrameMatDiff1ForWatGray {
+    
+    //test watershed
+    cv::Mat kernel= cv::Mat::ones(3, 3, CV_32FC1);
+    
+    //sure_bg = cv2.dilate(movieFrameMatWat,kernel,iterations=3)
+    cv::Mat sureBG;
+    cv::Mat element = getStructuringElement(CV_SHAPE_RECT, cv::Size( 3,3 ));
+    cv::morphologyEx(movieFrameMatDiff1ForWat,sureBG, CV_MOP_DILATE, element );
+    cv::morphologyEx(sureBG,sureBG, CV_MOP_DILATE, element );
+    cv::morphologyEx(sureBG,sureBG, CV_MOP_DILATE, element );
+    //cv::filter2D(movieFrameMatWat,sureBG,-1,kernel, cv::Point(-1,-1));
+    //cv::filter2D(sureBG,sureBG,-1,kernel, cv::Point(-1,-1));
+    //cv::filter2D(sureBG,sureBG,-1,kernel, cv::Point(-1,-1));
+    
+    //dist_transform = cv2.distanceTransform(opening,cv2.DIST_L2,5)
+    cv::Mat distTrans;
+    distanceTransform(movieFrameMatDiff1ForWat, distTrans, CV_DIST_L2, 5);
+    //ret, sure_fg = cv2.threshold(dist_transform,0.7*dist_transform.max(),255,0)
+    cv::Mat sureFG;
+    double maxVal;
+    double minValTrash;
+    cv::minMaxLoc(distTrans, &minValTrash, &maxVal);
+    
+    threshold(distTrans, sureFG,0.5*maxVal, 255, CV_THRESH_BINARY);
+    cv::Mat unknown;
+    sureFG.convertTo(sureFG, CV_8UC1);
+    cv::subtract(sureBG, sureFG, unknown);
+    int compCount = 0;
+    cv::vector<cv::vector<cv::Point> > contours2;
+    cv::vector<cv::Vec4i> hierarchy2;
+    
+    findContours(sureFG, contours2, hierarchy2, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+    cv::Mat markers=cv::Mat::ones(sureFG.size(), CV_32S);
+
+    if( !contours2.empty() ){
+        
+        //cv::Mat markers(sureFG.size(), CV_32S);
+        markers = cv::Scalar::all(0);
+        int idx = 0;
+        for( ; idx >= 0; idx = hierarchy2[idx][0], compCount++ ) {
+            drawContours(markers, contours2, idx, cv::Scalar::all(compCount+1), -1, 8, hierarchy2, INT_MAX);
+        }
+        
+        markers=markers+1;
+        unknown.convertTo(unknown, CV_32S);
+        markers=markers-(unknown/255);
+        cv::Mat movieFrameMatWatRGB;
+        cvtColor(movieFrameMatDiff1ForWatGray, movieFrameMatWatRGB, CV_GRAY2RGB);
+        //movieFrameMatWat.convertTo(movieFrameMatWatRGB, CV_8UC3);
+        watershed( movieFrameMatWatRGB, markers );
+        markers=markers+1;
+        markers.convertTo(markers, CV_8UC1);
+        threshold(markers, markers,1, 1, CV_THRESH_BINARY);
+        
+        //markers.convertTo(markers,CV_8UC1);'
+        /*UIImage * diff3;
+         cv::Mat movieFrameMatDiff38;
+         markers.convertTo(movieFrameMatDiff38, CV_8UC1);
+         diff3 = [[UIImage alloc] initWithCVMat:movieFrameMatDiff38*255];
+         UIImageWriteToSavedPhotosAlbum(diff3,
+         self, // send the message to 'self' when calling the callback
+         @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+         NULL); // you generally won't need a contextInfo here */
+        
+    }
+    markers.convertTo(markers, CV_8UC1);
+    return markers;
+
+    
+}
+
+- (void) countContours:(cv::vector<cv::vector<cv::Point> >) contours :(cv::vector<cv::Vec4i>) hierarchy:(int) starti :(int) endi {
+    cv::RNG rng(12345);
+
+    cv::Mat drawing = cv::Mat::zeros(360,480, CV_8UC3 );
+    
+    for(int idx = 0;idx<contours.size(); idx++)
+        
+    {
+        cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+        drawContours( drawing, contours, idx, color, 2, 8, hierarchy, 0, cv::Point() );
+        
+        //calculate moments
+        cv::Moments mom;
+        mom=cv::moments(contours[idx], true);
+        //get centroids
+        cv::Point2f mc;
+        mc = cv::Point2f( mom.m10/mom.m00 ,mom.m01/mom.m00 );
+
+        
+        double len=contourArea(contours[idx]);
+        NSLog(@"found contour %f", len);
+        
+        if (len>14100) {
+            numWorms=numWorms+8;
+            //NSNumber *x = [NSNumber numberWithInt:contours[idx][0].x];
+            NSNumber *x=[NSNumber numberWithInt:mc.x];
+            //[coordsArray addObject:x];
+            //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+            NSNumber *y=[NSNumber numberWithInt:mc.y];
+            //[coordsArray addObject:y];
+            NSNumber *start = [NSNumber numberWithInt:starti];
+            //[coordsArray addObject:start];
+            NSNumber *end = [NSNumber numberWithInt:endi];
+            //[coordsArray addObject:end];
+            
+            for (int i=0; i<=7; i++){
+                //just write again since we don't have real positions
+                [coordsArray addObject:x];
+                [coordsArray addObject:y];
+                [coordsArray addObject:start];
+                [coordsArray addObject:end];
+                
+            }
+        }
+
+        
+        else if (len>12100) {
+            numWorms=numWorms+7;
+            //NSNumber *x = [NSNumber numberWithInt:contours[idx][0].x];
+            NSNumber *x=[NSNumber numberWithInt:mc.x];
+            //[coordsArray addObject:x];
+            //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+            NSNumber *y=[NSNumber numberWithInt:mc.y];
+            //[coordsArray addObject:y];
+            NSNumber *start = [NSNumber numberWithInt:starti];
+            //[coordsArray addObject:start];
+            NSNumber *end = [NSNumber numberWithInt:endi];
+            //[coordsArray addObject:end];
+            
+            for (int i=0; i<=6; i++){
+                //just write again since we don't have real positions
+                [coordsArray addObject:x];
+                [coordsArray addObject:y];
+                [coordsArray addObject:start];
+                [coordsArray addObject:end];
+                
+            }
+        }
+
+        
+        else if (len>10100) {
+            numWorms=numWorms+6;
+            //NSNumber *x = [NSNumber numberWithInt:contours[idx][0].x];
+            NSNumber *x=[NSNumber numberWithInt:mc.x];
+            //[coordsArray addObject:x];
+            //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+            NSNumber *y=[NSNumber numberWithInt:mc.y];
+            //[coordsArray addObject:y];
+            NSNumber *start = [NSNumber numberWithInt:starti];
+            //[coordsArray addObject:start];
+            NSNumber *end = [NSNumber numberWithInt:endi];
+            //[coordsArray addObject:end];
+            
+            for (int i=0; i<=5; i++){
+                //just write again since we don't have real positions
+                [coordsArray addObject:x];
+                [coordsArray addObject:y];
+                [coordsArray addObject:start];
+                [coordsArray addObject:end];
+
+            }
+        }
+        else if (len>8100) {
+            numWorms=numWorms+5;
+            //NSNumber *x = [NSNumber numberWithInt:contours[idx][0].x];
+            NSNumber *x=[NSNumber numberWithInt:mc.x];
+            //[coordsArray addObject:x];
+            //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+            NSNumber *y=[NSNumber numberWithInt:mc.y];
+            //[coordsArray addObject:y];
+            NSNumber *start = [NSNumber numberWithInt:starti];
+            //[coordsArray addObject:start];
+            NSNumber *end = [NSNumber numberWithInt:endi];
+            //[coordsArray addObject:end];
+            for (int i=0; i<=4; i++){
+                //just write again since we don't have real positions
+                [coordsArray addObject:x];
+                [coordsArray addObject:y];
+                [coordsArray addObject:start];
+                [coordsArray addObject:end];
+                
+            }
+
+        }
+
+        else if (len>6100) {
+            numWorms=numWorms+4;
+            //NSNumber *x = [NSNumber numberWithInt:contours[idx][0].x];
+            NSNumber *x=[NSNumber numberWithInt:mc.x];
+            //[coordsArray addObject:x];
+            //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+            NSNumber *y=[NSNumber numberWithInt:mc.y];
+            //[coordsArray addObject:y];
+            NSNumber *start = [NSNumber numberWithInt:starti];
+            //[coordsArray addObject:start];
+            NSNumber *end = [NSNumber numberWithInt:endi];
+            //[coordsArray addObject:end];
+            for (int i=0; i<=3; i++){
+                //just write again since we don't have real positions
+                [coordsArray addObject:x];
+                [coordsArray addObject:y];
+                [coordsArray addObject:start];
+                [coordsArray addObject:end];
+                
+            }
+
+        }
+
+        else if (len>4100) {
+            numWorms=numWorms+3;
+            //NSNumber *x = [NSNumber numberWithInt:contours[idx][0].x];
+            NSNumber *x=[NSNumber numberWithInt:mc.x];
+            //[coordsArray addObject:x];
+            //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+            NSNumber *y=[NSNumber numberWithInt:mc.y];
+            //[coordsArray addObject:y];
+            NSNumber *start = [NSNumber numberWithInt:starti];
+            //[coordsArray addObject:start];
+            NSNumber *end = [NSNumber numberWithInt:endi];
+            //[coordsArray addObject:end];
+            for (int i=0; i<=2; i++){
+                //just write again since we don't have real positions
+                [coordsArray addObject:x];
+                [coordsArray addObject:y];
+                [coordsArray addObject:start];
+                [coordsArray addObject:end];
+                
+            }
+            
+        }
+        
+        else if (len>2100) {
+            numWorms=numWorms+2;
+            //NSNumber *x = [NSNumber numberWithInt:contours[idx][0].x];
+            NSNumber *x=[NSNumber numberWithInt:mc.x];
+            //[coordsArray addObject:x];
+            //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+            NSNumber *y=[NSNumber numberWithInt:mc.y];
+            //[coordsArray addObject:y];
+            NSNumber *start = [NSNumber numberWithInt:starti];
+            //[coordsArray addObject:start];
+            NSNumber *end = [NSNumber numberWithInt:endi];
+            //[coordsArray addObject:end];
+            
+            for (int i=0; i<=1; i++){
+                //just write again since we don't have real positions
+                [coordsArray addObject:x];
+                [coordsArray addObject:y];
+                [coordsArray addObject:start];
+                [coordsArray addObject:end];
+                
+            }
+            
+        }
+
+        if (len>100) {
+            numWorms=numWorms+1;
+            //NSNumber *x = [NSNumber numberWithInt:contours[idx][0].x];
+            NSNumber *x=[NSNumber numberWithInt:mc.x];
+            [coordsArray addObject:x];
+            //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+            NSNumber *y=[NSNumber numberWithInt:mc.y];
+            [coordsArray addObject:y];
+            NSNumber *start = [NSNumber numberWithInt:starti];
+            [coordsArray addObject:start];
+            NSNumber *end = [NSNumber numberWithInt:endi];
+            [coordsArray addObject:end];
+            
+        }
+        else {
+            //NSLog(@"found small contour %f", len);
+        }
+    }
+    /*UIImage * diff2;
+    cv::Mat movieFrameMatDiff28;
+    drawing.convertTo(movieFrameMatDiff28, CV_8UC1);
+    diff2 = [[UIImage alloc] initWithCVMat:movieFrameMatDiff28];
+    
+    UIImageWriteToSavedPhotosAlbum(diff2,
+                                   self, // send the message to 'self' when calling the callback
+                                   @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                                   NULL); // you generally won't need a contextInfo here*/
+
+}
+
+//cv::vector <cv::Point> GetLocalMaxima(const cv::Mat Src,int MatchingSize, int Threshold, int GaussKernel  )
+//cv::Mat GetLocalMaxima(const cv::Mat Src,int MatchingSize, int Threshold, int GaussKernel  )
+-(cv::vector <cv::Point>) getLocalMaxima:(const cv::Mat) src:(int) matchingSize: (int) threshold: (int) gaussKernel:(int) starti :(int) endi
+
+
 {
-    double movieProgress = midx/(double)numMovies;
-    NSInteger nframes = [[movieLengths objectAtIndex:movieIdx] integerValue];
-    double frameProgress = (fidx/(double)nframes) * (1/(double)numMovies);
-    double totalprogress = movieProgress+frameProgress;
-    NSArray* keys = [[NSArray alloc] initWithObjects:@"progress", @"done", nil];
-    NSArray* objects = [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:totalprogress],
-                                                        [NSNumber numberWithInt:0],
-                                                        nil];
-    NSDictionary* userInfo = [[NSDictionary alloc] initWithObjects:objects forKeys:keys];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"analysisProgress" object:self userInfo:userInfo];
+
+    cv::vector <cv::Point> vMaxLoc(0);
+    
+    //MatchingSize=14;
+    vMaxLoc.reserve(100); // Reserve place for fast access
+    cv::Mat processImg = src.clone();
+    int w = src.cols;
+    int h = src.rows;
+    //cv::Mat out=cv::Mat::zeros(H,W,CV_8UC1);
+
+    int searchWidth  = w - matchingSize;
+    int searchHeight = h - matchingSize;
+    int matchingSquareCenter = matchingSize/2;
+    
+    uchar* pProcess = (uchar *) processImg.data; // The pointer to image Data
+    
+    int shift = matchingSquareCenter * ( w + 1);
+    int k = 0;
+    threshold=0;
+    for(int y=0; y < searchHeight; ++y)
+    {
+        int m = k + shift;
+        for(int x=0;x < searchWidth ; ++x)
+        {
+            if (pProcess[m++] >= threshold)
+            {
+                cv::Point locMax;
+                cv::Mat mROI(processImg, cv::Rect(x,y,matchingSize,matchingSize));
+                minMaxLoc(mROI,NULL,NULL,NULL,&locMax);
+                if (locMax.x == matchingSquareCenter && locMax.y == matchingSquareCenter)
+                {
+                    vMaxLoc.push_back(cv::Point( x+locMax.x,y + locMax.y ));
+                    //NSLog(@"%i %i", x+LocMax.x, y+LocMax.y);
+                    int xi=x+locMax.x;
+                    int yi= y+locMax.y;
+                    //out.at<uchar>( y+LocMax.y,x+LocMax.x) = 255;
+                    NSNumber *x=[NSNumber numberWithInt:xi];
+                    //[coordsArray addObject:x];
+                    //NSNumber *y = [NSNumber numberWithInt:contours[idx][0].y];
+                    NSNumber *y=[NSNumber numberWithInt:yi];
+                    //[coordsArray addObject:y];
+                    NSNumber *start = [NSNumber numberWithInt:starti];
+                    //[coordsArray addObject:start];
+                    NSNumber *end = [NSNumber numberWithInt:endi];
+                    //[coordsArray addObject:end];
+                    [coordsArray addObject:x];
+                    [coordsArray addObject:y];
+                    [coordsArray addObject:start];
+                    [coordsArray addObject:end];
+                    numWorms=numWorms+1;
+
+                    // imshow("W1",mROI);cvWaitKey(0); //For gebug
+                }
+            }
+        }
+        k += w;
+    }
+    /*UIImage * diff2;
+    cv::Mat movieFrameMatDiff28;
+    out.convertTo(movieFrameMatDiff28, CV_8UC1);
+    diff2 = [[UIImage alloc] initWithCVMat:movieFrameMatDiff28];
+    
+    UIImageWriteToSavedPhotosAlbum(diff2,
+                                   self, // send the message to 'self' when calling the callback
+                                   @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
+                                   NULL); // you generally won't need a contextInfo here*/
+
+    return vMaxLoc;
+    //return out;
 }
 
-// #MHB Commented out
-/*
+
 - (void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo {
     if (error) {
         NSLog(@"error saving image");
         
-        // Do anything needed to handle the error or display it to the user
     } else {
         NSLog(@"image saved in photo album");
-        [delegate processedMovieResult:image savedURL:];
-        
-        // .... do anything you want here to handle
-        // .... when the image has been saved in the photo album
     }
 }
- */
+
 
 @end
