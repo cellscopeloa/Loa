@@ -158,8 +158,8 @@
 - (IBAction)onCapture:(id)sender
 {
     NSLog(@"On capture!");
-    // Initialize the frame buffer. 5 seconds of video at 30 frames per second
-    int nframes = (int)(5.0/(1/30.0)) + 1;
+    // Initialize the frame buffer. 5 seconds of video at 30 frames per second.
+    int nframes = (int)(5.0/(1/30.0));
     // Drop reference to this frame buffer before creating a new one
     frameBuffer = nil;
     frameBuffer = [[FrameBuffer alloc] initWithWidth:camera.width.integerValue Height:camera.height.integerValue Frames:nframes];
@@ -214,13 +214,16 @@
                 error:(NSError *)error
 {
     // Store the video in the asset library
-    
+    NSLog(@"Store the video");
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL])
     {
+        NSLog(@"John deer");
+        NSLog(@"%@", outputFileURL);
         [library writeVideoAtPathToSavedPhotosAlbum:outputFileURL
                                     completionBlock:^(NSURL *assetURL, NSError *error)
          {
+             NSLog(@"Jesus saves");
              // Store the video in the program database
              [program movieCapturedWithURL:assetURL];
     
@@ -237,12 +240,21 @@
              
              // Is it time to move on?
              instructIdx++;
-             [self checkStatus];
-             instructions.text = [instructionText objectAtIndex:instructIdx];
-             captureButton.enabled = true;
-             cancelBarButton.enabled = true;
+             
+             // Update the UI
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [self checkStatus];
+                 instructions.text = [instructionText objectAtIndex:instructIdx];
+                 captureButton.enabled = true;
+                 cancelBarButton.enabled = true;
+             });
          }];
 	}
+    else
+    {
+        NSLog(@"Wait! Why not!");
+        NSLog(@"%@", outputFileURL);
+    }
 }
 
 - (void)checkStatus

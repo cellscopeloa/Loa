@@ -147,14 +147,13 @@
     writingFrames = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"Timer signals finsihed");
-        // Signal the delegate that recording is complete
-        [recordingDelegate captureOutput:nil didFinishRecordingToOutputFileAtURL:temporaryOutputPath fromConnections:nil error:nil];
         // Signal to the processing delegate that we are done recording frames
         [processingDelegate didFinishRecordingFrames:self];
     });
     // Let the asset writer finish on his own
     [assetWriter finishWritingWithCompletionHandler:^(){
-        NSLog(@"!! Asset writer finished");
+        // Signal the delegate that recording is complete
+        [recordingDelegate captureOutput:nil didFinishRecordingToOutputFileAtURL:temporaryOutputPath fromConnections:nil error:nil];
     }];
 }
 

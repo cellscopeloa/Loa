@@ -111,6 +111,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:@"Results"]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
         ResultsViewController* viewController = [segue destinationViewController];
         viewController.program = program;
     }
