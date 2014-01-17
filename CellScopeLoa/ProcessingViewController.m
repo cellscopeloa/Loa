@@ -81,7 +81,31 @@
         NSArray *results = [program.managedObjectContext executeFetchRequest:request error:&error];
         Sample* sample = [results objectAtIndex:0];
         SampleMovie* movie = [sample.movies.allObjects objectAtIndex:i];
+        
+        NSMutableArray* featureSet = [[NSMutableArray alloc] init];
+        // Add new features for all of the points in the results structure
+        for (int j = 0; j < result.points.count; j++) {
+            NSValue* point = [result.points objectAtIndex:j];
+            NSNumber* startFrame = [result.startFrames objectAtIndex:j];
+            NSNumber* endFrame = [result.endFrames objectAtIndex:j];
+            // Create a new feature
+            ImageFeature *feature = [NSEntityDescription
+                                     insertNewObjectForEntityForName:@"ImageFeature"
+                                     inManagedObjectContext:program.managedObjectContext];
+            CGPoint p = point.CGPointValue;
+            feature.xcoord = [NSNumber numberWithInt:p.x];
+            feature.ycoord = [NSNumber numberWithInt:p.y];
+            feature.startFrame = startFrame;
+            feature.endFrame = endFrame;
+            
+            [featureSet addObject:feature];
+        }
+        
+        movie.features = [NSSet setWithArray:featureSet];
+        
     }
+    
+    [program.managedObjectContext save:nil];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

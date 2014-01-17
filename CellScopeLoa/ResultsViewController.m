@@ -51,7 +51,7 @@
     [self setupInstructionSet];
     instructIdx = 0;
     instructions.text = [instructionText objectAtIndex:instructIdx];
-    // [self showResults];
+    [self showResults];
 }
 
 -(void) viewDidUnload {

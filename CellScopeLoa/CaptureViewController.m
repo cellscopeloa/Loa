@@ -159,7 +159,7 @@
 {
     NSLog(@"On capture!");
     // Initialize the frame buffer. 5 seconds of video at 30 frames per second
-    int nframes = (int)(5.0/(1/30.0));
+    int nframes = (int)(5.0/(1/30.0)) + 1;
     // Drop reference to this frame buffer before creating a new one
     frameBuffer = nil;
     frameBuffer = [[FrameBuffer alloc] initWithWidth:camera.width.integerValue Height:camera.height.integerValue Frames:nframes];
