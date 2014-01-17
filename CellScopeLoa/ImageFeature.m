@@ -12,11 +12,11 @@
 
 @implementation ImageFeature
 
+@dynamic endFrame;
 @dynamic name;
+@dynamic startFrame;
 @dynamic xcoord;
 @dynamic ycoord;
-@dynamic startFrame;
-@dynamic endFrame;
 @dynamic samplemovie;
 
 @end

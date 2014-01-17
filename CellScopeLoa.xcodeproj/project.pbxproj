@@ -23,6 +23,7 @@
 		9B5C63A317822FC800F83492 /* DataReviewImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C63A217822FC700F83492 /* DataReviewImagesViewController.m */; };
 		9B5E81CC1816C3EA00279077 /* SampleExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5E81CB1816C3EA00279077 /* SampleExporter.m */; };
 		9B5E81CF1816DC5900279077 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5E81CE1816DC5900279077 /* Reachability.m */; };
+		9B6860621888B938004D121A /* ImageFeature.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6860611888B938004D121A /* ImageFeature.m */; };
 		9B6A765C1814554500827611 /* GoogleDriveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A765B1814554500827611 /* GoogleDriveViewController.m */; };
 		9B6A7B411814588000827611 /* GTMGatherInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A76671814587A00827611 /* GTMGatherInputStream.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9B6A7B421814588000827611 /* GTMHTTPFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A76691814587A00827611 /* GTMHTTPFetcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -100,7 +101,6 @@
 		9BC26E0C164F02FB00D7C164 /* UsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E0B164F02FB00D7C164 /* UsersViewController.m */; };
 		9BC26E18164F05AB00D7C164 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BC26E17164F05AB00D7C164 /* User.m */; };
 		9BCA405E18888D210052241C /* ProcessingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCA405D18888D210052241C /* ProcessingViewController.m */; };
-		9BCA40611888B62C0052241C /* ImageFeature.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCA40601888B62C0052241C /* ImageFeature.m */; };
 		9BCAF32D18886EF700CB2E3E /* FrameBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9BCAF32C18886EF700CB2E3E /* FrameBuffer.mm */; };
 		9BCAF33018886F5500CB2E3E /* MotionAnalysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9BCAF32F18886F5500CB2E3E /* MotionAnalysis.mm */; };
 		9BCAF33318886F8400CB2E3E /* CaptureCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BCAF33218886F8400CB2E3E /* CaptureCamera.m */; };
@@ -220,6 +220,8 @@
 		9B5E81CB1816C3EA00279077 /* SampleExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleExporter.m; sourceTree = "<group>"; };
 		9B5E81CD1816DC5900279077 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		9B5E81CE1816DC5900279077 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		9B6860601888B938004D121A /* ImageFeature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFeature.h; sourceTree = "<group>"; };
+		9B6860611888B938004D121A /* ImageFeature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFeature.m; sourceTree = "<group>"; };
 		9B6A765A1814554500827611 /* GoogleDriveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleDriveViewController.h; sourceTree = "<group>"; };
 		9B6A765B1814554500827611 /* GoogleDriveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleDriveViewController.m; sourceTree = "<group>"; };
 		9B6A76631814587A00827611 /* GTLDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLDefines.h; sourceTree = "<group>"; };
@@ -366,8 +368,6 @@
 		9BC26E17164F05AB00D7C164 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		9BCA405C18888D210052241C /* ProcessingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessingViewController.h; sourceTree = "<group>"; };
 		9BCA405D18888D210052241C /* ProcessingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessingViewController.m; sourceTree = "<group>"; };
-		9BCA405F1888B62C0052241C /* ImageFeature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFeature.h; sourceTree = "<group>"; };
-		9BCA40601888B62C0052241C /* ImageFeature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFeature.m; sourceTree = "<group>"; };
 		9BCAF32B18886EF700CB2E3E /* FrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameBuffer.h; sourceTree = "<group>"; };
 		9BCAF32C18886EF700CB2E3E /* FrameBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FrameBuffer.mm; sourceTree = "<group>"; };
 		9BCAF32E18886F5500CB2E3E /* MotionAnalysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionAnalysis.h; sourceTree = "<group>"; };
@@ -745,8 +745,8 @@
 				9B5E81CB1816C3EA00279077 /* SampleExporter.m */,
 				9BDAC7611881F9B500C66C17 /* SampleMovie.h */,
 				9BDAC7621881F9B500C66C17 /* SampleMovie.m */,
-				9BCA405F1888B62C0052241C /* ImageFeature.h */,
-				9BCA40601888B62C0052241C /* ImageFeature.m */,
+				9B6860601888B938004D121A /* ImageFeature.h */,
+				9B6860611888B938004D121A /* ImageFeature.m */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -1207,7 +1207,7 @@
 				9B6A7C4F1814588000827611 /* GTLDriveChannel.m in Sources */,
 				9B6A7C5E1814588000827611 /* GTLDriveProperty.m in Sources */,
 				821348B5165B3ABE0066780E /* UIImage+OpenCV.mm in Sources */,
-				9BCA40611888B62C0052241C /* ImageFeature.m in Sources */,
+				9B6860621888B938004D121A /* ImageFeature.m in Sources */,
 				821348B8165B50990066780E /* ResultsViewController.m in Sources */,
 				9B6A7C591814588000827611 /* GTLDriveParentList.m in Sources */,
 				9B6A7B411814588000827611 /* GTMGatherInputStream.m in Sources */,

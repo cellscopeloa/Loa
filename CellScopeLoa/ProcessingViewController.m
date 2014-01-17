@@ -8,6 +8,10 @@
 
 #import "ProcessingViewController.h"
 #import "ResultsViewController.h"
+#import "ProcessingResults.h"
+#import "Sample.h"
+#import "SampleMovie.h"
+#import "ImageFeature.h"
 
 @interface ProcessingViewController ()
 
@@ -61,9 +65,22 @@
 - (void)storeResults
 {
     NSMutableArray* resultsList = program.analysis.resultsList;
-    for (ProcessingResult* result in resultsList)
-    {
+    for (int i = 0; i < resultsList.count; i++) {
+        ProcessingResults* result = [resultsList objectAtIndex:i];
+
+        NSString* serial = result.sampleSerial;
+        // Pull out the sample with this serial number
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Sample" inManagedObjectContext: program.managedObjectContext];
+        [request setEntity:entity];
         
+        NSPredicate *searchFilter = [NSPredicate predicateWithFormat:@"serialnumber LIKE %@", serial];
+        [request setPredicate:searchFilter];
+        
+        NSError* error;
+        NSArray *results = [program.managedObjectContext executeFetchRequest:request error:&error];
+        Sample* sample = [results objectAtIndex:0];
+        SampleMovie* movie = [sample.movies.allObjects objectAtIndex:i];
     }
 }
 

@@ -13,11 +13,11 @@
 
 @interface ImageFeature : NSManagedObject
 
+@property (nonatomic, retain) NSNumber * endFrame;
 @property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSNumber * startFrame;
 @property (nonatomic, retain) NSNumber * xcoord;
 @property (nonatomic, retain) NSNumber * ycoord;
-@property (nonatomic, retain) UNKNOWN_TYPE startFrame;
-@property (nonatomic, retain) UNKNOWN_TYPE endFrame;
 @property (nonatomic, retain) SampleMovie *samplemovie;
 
 @end
