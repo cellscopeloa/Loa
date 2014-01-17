@@ -210,6 +210,11 @@
     [session startRunning];
 }
 
+- (void)stopCamera
+{
+    [session stopRunning];
+}
+
 #pragma mark - Physical settings
 
 - (void)lockSettings

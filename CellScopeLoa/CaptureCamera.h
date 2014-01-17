@@ -61,6 +61,7 @@
 
 - (void)setPreviewLayer:(CALayer*)viewLayer;
 - (void)startCamera;
+- (void)stopCamera;
 - (void)captureWithDuration:(Float32)duration;
 
 @end

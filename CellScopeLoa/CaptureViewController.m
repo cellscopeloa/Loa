@@ -139,6 +139,9 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    // Stop the camera
+    [camera stopCamera];
+    
     if([segue.identifier isEqualToString:@"Process"]) {
         ProcessingViewController* processingViewController = [segue destinationViewController];
         processingViewController.program = program;
@@ -226,28 +229,30 @@
              NSLog(@"Jesus saves");
              // Store the video in the program database
              [program movieCapturedWithURL:assetURL];
-    
-             fieldcounter.text = [program fovString];
-
-             // Stop the busy animations
-             [busyIndicator stopAnimating];
-             progressBar.alpha = 0.0;
-             [UIView animateWithDuration:0.5 animations:^{
-                 instructions.alpha = 1.0;
-             } completion:^(BOOL finished) {
-                 // pass
-             }];
              
              // Is it time to move on?
              instructIdx++;
              
              // Update the UI
              dispatch_async(dispatch_get_main_queue(), ^{
+                 fieldcounter.text = [program fovString];
+                 
+                 // Stop the busy animations
+                 [busyIndicator stopAnimating];
+                 progressBar.alpha = 0.0;
+                 [UIView animateWithDuration:0.5 animations:^{
+                     instructions.alpha = 1.0;
+                 } completion:^(BOOL finished) {
+                     // pass
+                 }];
+                 
                  [self checkStatus];
                  instructions.text = [instructionText objectAtIndex:instructIdx];
                  captureButton.enabled = true;
                  cancelBarButton.enabled = true;
+                 NSLog(@"Captain america to the rescue");
              });
+             NSLog(@"And jesuits live");
          }];
 	}
     else
@@ -272,6 +277,7 @@
 - (IBAction)cancelPressed:(id)sender {
     [managedObjectContext reset];
     [self performSegueWithIdentifier:@"Cancel" sender:self];
+    [camera stopCamera];
 }
 
 -(NSUInteger)supportedInterfaceOrientations
