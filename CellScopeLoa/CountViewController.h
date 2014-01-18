@@ -14,8 +14,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *wormCountMl;
 @property (weak, nonatomic) IBOutlet UILabel *wormCountAbs;
 @property (weak, nonatomic) IBOutlet UIView *colorBox;
-
+@property (weak, nonatomic) IBOutlet UILabel *serialLabel;
+@property (strong, nonatomic) IBOutlet UIView *background;
 @property (nonatomic, strong) Sample* sample;
+@property (weak, nonatomic) IBOutlet UIView *statusBox;
 
 - (void)setupInstructionSet;
 

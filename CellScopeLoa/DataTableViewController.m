@@ -12,7 +12,6 @@
 #import "Sample.h"
 #import "SampleMovie.h"
 #import "ImageThumbCell.h"
-#import "DataReviewImagesViewController.h"
 #import "CountViewController.h"
 #import "SampleExporter.h"
 #import "Reachability.h"
@@ -143,7 +142,8 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     NSSet* movies = sample.movies;
     NSEnumerator* enumerator = movies.objectEnumerator;
     SampleMovie *firstmovie = (SampleMovie*)[enumerator nextObject];
-        
+    
+    /*
     // Retrieve the thumbnail
     ALAssetsLibraryAssetForURLResultBlock resultblock = ^(ALAsset *myasset)
     {
@@ -164,6 +164,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     [assetslibrary assetForURL:asseturl
                    resultBlock:resultblock
                    failureBlock:failureblock];
+     */
         
     cell.mainLabel.text = sample.serialnumber;
     cell.detailLabel.text = dateString;
@@ -182,11 +183,9 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 {
     if([segue.identifier isEqualToString:@"ViewSample"]) {
         UITabBarController* tc = [segue destinationViewController];
-        DataReviewImagesViewController* ivc = (DataReviewImagesViewController*)[[tc customizableViewControllers] objectAtIndex:0];
-        CountViewController* cvc = (CountViewController*)[[tc customizableViewControllers] objectAtIndex:1];
+        CountViewController* viewController = (CountViewController*)[[tc customizableViewControllers] objectAtIndex:0];
         Sample* currentSample = (Sample*)[self.samples objectAtIndex:lastSelectedIndex.integerValue];
-        ivc.sample = currentSample;
-        cvc.sample = currentSample;
+        viewController.sample = currentSample;
     }
 }
 
@@ -387,7 +386,21 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 {
     // If the movie is already synced, nothing to do here
     if(movie.synced.boolValue == YES) {
-        block();
+        // Launch the next movie upload
+        SampleMovie* newMovie = [movieEnumerator nextObject];
+        if (newMovie != nil) {
+            NSNumber* nextnum = [NSNumber numberWithInt:(movnum.intValue+1)];
+            [self movieUploadBlock:movieEnumerator withMovie:newMovie Sample:sample movNum:nextnum completion:block];
+        }
+        else {
+            // Update item as synced
+            sample.synced = [NSNumber numberWithBool:YES];
+            NSError *error = nil;
+            [self.managedObjectContext save:&error];  //saves the context to disk
+            [self.tableView reloadData];
+            // Run completion block
+            block();
+        }
         return;
     }
     else {

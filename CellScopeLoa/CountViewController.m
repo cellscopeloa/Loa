@@ -25,6 +25,8 @@
 @synthesize wormCountAbs;
 @synthesize wormCountMl;
 @synthesize InstructionTextView;
+@synthesize serialLabel;
+@synthesize statusBox;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -37,40 +39,38 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    [self setupInstructionSet];
-    InstructionTextView.text = [instructionText objectAtIndex:0];
-	// Do any additional setup after loading the view.
-    sampleMovies = [[sample movies] allObjects];
+    serialLabel.text = sample.serialnumber;
     float numberoffov = NUMFOV;
-    int wormcount = 0;
-    for (SampleMovie* sm in sampleMovies) {
-        wormcount += [[sm features] count];
+    NSSet* movies = sample.movies;
+    double featureCount = 0;
+    for (SampleMovie* sampleMovie in movies) {
+        double coordinateWrites = 5.0;
+        double averageFeatures = (double)(sampleMovie.features.count) / coordinateWrites;
+        featureCount += averageFeatures;
     }
+    
+    double averageWorms = featureCount / numberoffov;
+    int estimatedCount = (int)((featureCount / numberoffov) / (.00073));
     
     NSNumberFormatter *formatter = [NSNumberFormatter new];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle]; // this line is important!
     
-    float avg_worms = wormcount/numberoffov;
-    int estimated_count = ((wormcount / numberoffov) / (.00073));
-    NSString* astr = [formatter stringFromNumber:[NSNumber numberWithFloat:avg_worms]];
-    NSString* bstr = [formatter stringFromNumber:[NSNumber numberWithFloat:estimated_count]];
+    NSString* astr = [formatter stringFromNumber:[NSNumber numberWithFloat:averageWorms]];
+    NSString* bstr = [formatter stringFromNumber:[NSNumber numberWithFloat:estimatedCount]];
     
-    NSString* mffov = [[NSString alloc] initWithFormat:@"%@ mf/fov", astr];
-    NSString* mfml = [[NSString alloc] initWithFormat:@"%@ mf/ml", bstr];
-    wormCountAbs.text = mffov;
-    wormCountMl.text = mfml;
-    if(estimated_count > 30000) {
-        colorBox.backgroundColor = [UIColor redColor];
+    if(estimatedCount > 30000) {
+        statusBox.backgroundColor = [UIColor redColor];
     }
     else {
-        colorBox.backgroundColor = [UIColor greenColor];
+        statusBox.backgroundColor = [UIColor greenColor];
     }
+    wormCountMl.text = [NSString stringWithFormat:@"%@ mf/ml", bstr];
+    wormCountAbs.text = [NSString stringWithFormat:@"%@ mf/field", astr];
 }
 
 -(void)setupInstructionSet
 {
-    instructionText = [NSArray arrayWithObjects: @"Test results are displayed below, please consult treatment plan. Press done button to continue.", nil];
+    instructionText = [NSArray arrayWithObjects: @"Test results are displayed below, please consult treatment plan.", nil];
 }
 
 - (void)didReceiveMemoryWarning
