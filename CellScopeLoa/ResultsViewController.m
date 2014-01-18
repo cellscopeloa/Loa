@@ -88,20 +88,23 @@
     sampleIDLabel.text = program.currentSampleSerial;
     float numberoffov = NUMFOV;
     NSArray* movies = [program currentMovies];
-    int wormcount = 0;
+    double featureCount = 0;
     for (SampleMovie* sample in movies) {
-        wormcount += [[sample features] count];
+        double coordinateWrites = 5.0;
+        double averageFeatures = (double)(sample.features.count) / coordinateWrites;
+        featureCount += averageFeatures;
     }
-    double avg_worms = wormcount/numberoffov;
-    int estimated_count = ((wormcount / numberoffov) / (.00073));
+    
+    double averageWorms = featureCount / numberoffov;
+    int estimatedCount = (int)((featureCount / numberoffov) / (.00073));
     
     NSNumberFormatter *formatter = [NSNumberFormatter new];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle]; // this line is important!
 
-    NSString* astr = [formatter stringFromNumber:[NSNumber numberWithFloat:avg_worms]];
-    NSString* bstr = [formatter stringFromNumber:[NSNumber numberWithFloat:estimated_count]];
+    NSString* astr = [formatter stringFromNumber:[NSNumber numberWithFloat:averageWorms]];
+    NSString* bstr = [formatter stringFromNumber:[NSNumber numberWithFloat:estimatedCount]];
     
-    if(estimated_count > 30000) {
+    if(estimatedCount > 30000) {
         statusBox.backgroundColor = [UIColor redColor];
     }
     else {

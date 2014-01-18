@@ -16,10 +16,10 @@
     NSInteger numMovies;
     float sensitivity;
     double progress;
+    double numWorms;
     
     dispatch_queue_t backgroundQueue;
 }
-double numWorms=0;
 
 @synthesize coordsArray;
 @synthesize resultsList;
@@ -72,9 +72,12 @@ double numWorms=0;
             
             [results addPoint:point from:[start integerValue] to:[end integerValue]];
         }
+        NSLog(@"Results!! %d", results.points.count);
         // Add results to the list and free the frame buffer
         [resultsList addObject:results];
         [localFrameBuffer releaseFrameBuffers];
+        // Free analysis resources
+        [coordsArray removeAllObjects];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"FrameBufferProcessed" object:nil];
     });
 }
@@ -82,6 +85,7 @@ double numWorms=0;
 - (NSMutableArray *)processFramesForMovie:(FrameBuffer*)frameBuffer {
     // Start at the first frame
     frameIdx = 0;
+    numWorms = 0;
     //coordsArray = [[NSMutableArray alloc] init];
     
     movieIdx = 0;

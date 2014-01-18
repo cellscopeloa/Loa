@@ -141,6 +141,7 @@
 {
     // Stop the camera
     [camera stopCamera];
+    camera = nil;
     
     if([segue.identifier isEqualToString:@"Process"]) {
         ProcessingViewController* processingViewController = [segue destinationViewController];
@@ -160,7 +161,6 @@
 
 - (IBAction)onCapture:(id)sender
 {
-    NSLog(@"On capture!");
     // Initialize the frame buffer. 5 seconds of video at 30 frames per second.
     int nframes = (int)(5.0/(1/30.0));
     // Drop reference to this frame buffer before creating a new one
@@ -195,7 +195,6 @@
 
 - (void)didFinishRecordingFrames:(CaptureCamera*)sender
 {
-    NSLog(@"Finished recording frames");
     NSString* currentSampleSerial = program.currentSampleSerial;
     [program.analysis processFrameBuffer:frameBuffer withSerial:currentSampleSerial];
 }
@@ -217,16 +216,12 @@
                 error:(NSError *)error
 {
     // Store the video in the asset library
-    NSLog(@"Store the video");
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL])
     {
-        NSLog(@"John deer");
-        NSLog(@"%@", outputFileURL);
         [library writeVideoAtPathToSavedPhotosAlbum:outputFileURL
                                     completionBlock:^(NSURL *assetURL, NSError *error)
          {
-             NSLog(@"Jesus saves");
              // Store the video in the program database
              [program movieCapturedWithURL:assetURL];
              
@@ -250,9 +245,7 @@
                  instructions.text = [instructionText objectAtIndex:instructIdx];
                  captureButton.enabled = true;
                  cancelBarButton.enabled = true;
-                 NSLog(@"Captain america to the rescue");
              });
-             NSLog(@"And jesuits live");
          }];
 	}
     else
@@ -265,7 +258,6 @@
 - (void)checkStatus
 {
     NSString* status = [program currentStatus];
-    NSLog(@"Current status: ");
     if([status isEqualToString:@"Done"]) {
         // Reset the instructions, unlock the camera
         instructIdx = 0;

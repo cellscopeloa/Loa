@@ -102,7 +102,6 @@
         }
         
         movie.features = [NSSet setWithArray:featureSet];
-        
     }
     
     [program.managedObjectContext save:nil];

@@ -25,6 +25,10 @@
 @synthesize assetWriterInput;
 @synthesize pixelBufferAdaptor;
 @synthesize session;
+@synthesize videoPreviewLayer;
+@synthesize videoHDOutput;
+@synthesize videoPreviewOutput;
+@synthesize input;
 
 // Camera state properties
 @synthesize temporaryOutputPath;
@@ -213,6 +217,12 @@
 - (void)stopCamera
 {
     [session stopRunning];
+    [session removeOutput:videoHDOutput];
+    [session removeOutput:videoPreviewOutput];
+    [session removeInput:input];
+    [videoPreviewLayer removeFromSuperlayer];
+    videoPreviewLayer = nil;
+    session = nil;
 }
 
 #pragma mark - Physical settings
@@ -266,11 +276,11 @@
 - (void)setPreviewLayer:(CALayer*)viewLayer
 {
     // Setup image preview layer
-    AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession: self.session];
-    captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    captureVideoPreviewLayer.frame = viewLayer.bounds;
+    videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession: self.session];
+    videoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    videoPreviewLayer.frame = viewLayer.bounds;
     NSMutableArray *layers = [NSMutableArray arrayWithArray:viewLayer.sublayers];
-    [layers insertObject:captureVideoPreviewLayer atIndex:0];
+    [layers insertObject:videoPreviewLayer atIndex:0];
     viewLayer.sublayers = [NSArray arrayWithArray:layers];
 }
 

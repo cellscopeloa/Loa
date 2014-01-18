@@ -46,6 +46,7 @@
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor;
 @property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
 @property (nonatomic, strong) AVAssetWriter *assetWriter;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer* videoPreviewLayer;
 
 @property (nonatomic, strong) NSNumber* width;
 @property (nonatomic, strong) NSNumber* height;
