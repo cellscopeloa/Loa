@@ -12,8 +12,6 @@
 
 @interface SettingsViewController : UITableViewController
 
-@property (weak, nonatomic) IBOutlet UISlider *sensitivitySlide;
-@property (weak, nonatomic) IBOutlet UILabel *sensitivityIndicator;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UISwitch *rotateSwitch;
 

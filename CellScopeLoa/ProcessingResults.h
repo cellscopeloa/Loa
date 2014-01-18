@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSString* sampleSerial;
 
 - (id)initWithFrameBuffer:(FrameBuffer*)buffer andSerial:(NSString*)serial;
+- (id)initWithFrameBuffer:(FrameBuffer *)buffer Serial:(NSString *)serial FeatureSet:(NSSet*)features;
 - (void)addPoint:(CGPoint)point from:(NSInteger)startFrame to:(NSInteger)endFrame;
 
 

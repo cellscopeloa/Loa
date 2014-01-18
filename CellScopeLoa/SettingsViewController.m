@@ -16,9 +16,7 @@
 @implementation SettingsViewController
 
 @synthesize managedObjectContext;
-@synthesize sensitivityIndicator;
 @synthesize delegate;
-@synthesize sensitivitySlide;
 @synthesize rotateSwitch;
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -38,8 +36,6 @@
     NSNumber* sense = [defaults objectForKey:@"sensitivity"];
     NSNumber* tabletMode = [defaults objectForKey:@"tabletMode"];
     [rotateSwitch setOn:tabletMode.boolValue];
-    sensitivitySlide.value = (sense.floatValue + 1.0)/2.0;
-    sensitivityIndicator.text = [NSString stringWithFormat:@"%.2f", sense.floatValue];
     NSLog(@"Loaded sensitivity: %f", sense.floatValue);
 
 
@@ -76,7 +72,7 @@
         NSLog(@"Setting sensitivty in the defaults");
         
         MainMenuViewController* menu = [segue destinationViewController];
-        float sense = sensitivitySlide.value * 2.0 - 1.0;
+        float sense = 0.0;
         [menu updateSensitivity:sense];
         
         // Store sensitivity
@@ -137,11 +133,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.section == 0) {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         float sense = 0.0;
-        sensitivitySlide.value = (sense + 1.0)/2.0;
-        sensitivityIndicator.text = [NSString stringWithFormat:@"%.2f", sense];
-        
         // Store sensitivity
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:[NSNumber numberWithFloat:sense] forKey:@"sensitivity"];
@@ -154,12 +146,4 @@
 - (IBAction)onRotateSwitch:(id)sender {
 }
 
-- (IBAction)sensitivityValueChanged:(id)sender {
-    float sense = sensitivitySlide.value * 2.0 - 1.0;
-    if (fabs(sense) < 0.05) {
-        sense = 0.0;
-        sensitivitySlide.value = 0.5;
-    }
-    sensitivityIndicator.text = [NSString stringWithFormat:@"%.2f", sense];
-}
 @end

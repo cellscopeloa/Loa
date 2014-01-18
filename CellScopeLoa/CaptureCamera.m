@@ -154,6 +154,7 @@
         // Signal to the processing delegate that we are done recording frames
         [processingDelegate didFinishRecordingFrames:self];
     });
+    [assetWriterInput markAsFinished];
     // Let the asset writer finish on his own
     [assetWriter finishWritingWithCompletionHandler:^(){
         // Signal the delegate that recording is complete

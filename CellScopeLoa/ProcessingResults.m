@@ -7,6 +7,7 @@
 //
 
 #import "ProcessingResults.h"
+#import "ImageFeature.h"
 
 @implementation ProcessingResults
 
@@ -23,6 +24,21 @@
     self.endFrames = [[NSMutableArray alloc] init];
     self.sampleSerial = serial;
     
+    return self;
+}
+
+- (id)initWithFrameBuffer:(FrameBuffer *)buffer Serial:(NSString *)serial FeatureSet:(NSSet*)features
+{
+    self = [self initWithFrameBuffer:buffer andSerial:serial];
+    NSArray* allFeatures = [features allObjects];
+    for (int i = 0; i < allFeatures.count; i++) {
+        ImageFeature* feature = [allFeatures objectAtIndex:i];
+        NSNumber* startFrame = feature.startFrame;
+        NSNumber* endFrame = feature.endFrame;
+        CGPoint loc = CGPointMake(feature.xcoord.intValue, feature.ycoord.intValue);
+        [self addPoint:loc from:startFrame.integerValue to:endFrame.integerValue];
+    }
+
     return self;
 }
 

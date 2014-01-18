@@ -20,7 +20,6 @@
 		9B5C63911781F28200F83492 /* icon_clipboard.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9B5C63901781F28200F83492 /* icon_clipboard.jpg */; };
 		9B5C63971781F4BE00F83492 /* DataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C63961781F4BE00F83492 /* DataTableViewController.m */; };
 		9B5C639A178200F100F83492 /* ImageThumbCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C6399178200F000F83492 /* ImageThumbCell.m */; };
-		9B5C63A317822FC800F83492 /* DataReviewImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5C63A217822FC700F83492 /* DataReviewImagesViewController.m */; };
 		9B5E81CC1816C3EA00279077 /* SampleExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5E81CB1816C3EA00279077 /* SampleExporter.m */; };
 		9B5E81CF1816DC5900279077 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B5E81CE1816DC5900279077 /* Reachability.m */; };
 		9B6860621888B938004D121A /* ImageFeature.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6860611888B938004D121A /* ImageFeature.m */; };
@@ -90,6 +89,9 @@
 		9B6A7DA11814588100827611 /* GTLJSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A7B3B1814588000827611 /* GTLJSONParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9B6A7DA21814588100827611 /* GTLUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A7B3E1814588000827611 /* GTLUtilities.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9B6A7DC118145BE800827611 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B6A7DC018145BE800827611 /* Security.framework */; };
+		9B6B6C47188B0999007505D6 /* SampleReviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6B6C46188B0999007505D6 /* SampleReviewViewController.m */; };
+		9B6B6C4A188B0D85007505D6 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6B6C49188B0D85007505D6 /* VideoViewController.m */; };
+		9B6B6C4B188B17D8007505D6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BA721A116B5EA9200DE13D2 /* QuartzCore.framework */; };
 		9B72B50216B1C1C8008237B3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B72B50116B1C1C8008237B3 /* CoreVideo.framework */; };
 		9B88536916C43B4300A65D86 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B88536816C43B4300A65D86 /* SettingsViewController.m */; };
 		9B88536C16C453F500A65D86 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B88536B16C453F500A65D86 /* Settings.m */; };
@@ -214,8 +216,6 @@
 		9B5C63961781F4BE00F83492 /* DataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataTableViewController.m; sourceTree = "<group>"; };
 		9B5C6398178200F000F83492 /* ImageThumbCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageThumbCell.h; sourceTree = "<group>"; };
 		9B5C6399178200F000F83492 /* ImageThumbCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageThumbCell.m; sourceTree = "<group>"; };
-		9B5C63A117822FC700F83492 /* DataReviewImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataReviewImagesViewController.h; sourceTree = "<group>"; };
-		9B5C63A217822FC700F83492 /* DataReviewImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataReviewImagesViewController.m; sourceTree = "<group>"; };
 		9B5E81CA1816C3EA00279077 /* SampleExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleExporter.h; sourceTree = "<group>"; };
 		9B5E81CB1816C3EA00279077 /* SampleExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleExporter.m; sourceTree = "<group>"; };
 		9B5E81CD1816DC5900279077 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -346,6 +346,10 @@
 		9B6A7B3D1814588000827611 /* GTLUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLUtilities.h; sourceTree = "<group>"; };
 		9B6A7B3E1814588000827611 /* GTLUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLUtilities.m; sourceTree = "<group>"; };
 		9B6A7DC018145BE800827611 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		9B6B6C45188B0999007505D6 /* SampleReviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleReviewViewController.h; sourceTree = "<group>"; };
+		9B6B6C46188B0999007505D6 /* SampleReviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleReviewViewController.m; sourceTree = "<group>"; };
+		9B6B6C48188B0D85007505D6 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
+		9B6B6C49188B0D85007505D6 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
 		9B72B50116B1C1C8008237B3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		9B88536616C43AD000A65D86 /* SettingsDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsDelegate.h; sourceTree = "<group>"; };
 		9B88536716C43B4300A65D86 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -476,6 +480,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B6B6C4B188B17D8007505D6 /* QuartzCore.framework in Frameworks */,
 				9BCAF33818887C1F00CB2E3E /* opencv2.framework in Frameworks */,
 				9B1C7EC418145C4D008A80F7 /* SystemConfiguration.framework in Frameworks */,
 				9B6A7DC118145BE800827611 /* Security.framework in Frameworks */,
@@ -854,14 +859,16 @@
 				9B5C63961781F4BE00F83492 /* DataTableViewController.m */,
 				9B5C6398178200F000F83492 /* ImageThumbCell.h */,
 				9B5C6399178200F000F83492 /* ImageThumbCell.m */,
-				9B5C63A117822FC700F83492 /* DataReviewImagesViewController.h */,
-				9B5C63A217822FC700F83492 /* DataReviewImagesViewController.m */,
 				9BE341DA17823269006A9F30 /* CountViewController.h */,
 				9BE341DB17823269006A9F30 /* CountViewController.m */,
 				9B6A765A1814554500827611 /* GoogleDriveViewController.h */,
 				9B6A765B1814554500827611 /* GoogleDriveViewController.m */,
 				9BCA405C18888D210052241C /* ProcessingViewController.h */,
 				9BCA405D18888D210052241C /* ProcessingViewController.m */,
+				9B6B6C45188B0999007505D6 /* SampleReviewViewController.h */,
+				9B6B6C46188B0999007505D6 /* SampleReviewViewController.m */,
+				9B6B6C48188B0D85007505D6 /* VideoViewController.h */,
+				9B6B6C49188B0D85007505D6 /* VideoViewController.m */,
 			);
 			path = CellScopeLoa;
 			sourceTree = "<group>";
@@ -1159,6 +1166,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B6B6C47188B0999007505D6 /* SampleReviewViewController.m in Sources */,
 				9B6A7B571814588000827611 /* GTLClientLoginAuthentication.m in Sources */,
 				9BD8A357163DA7BD009038BB /* main.m in Sources */,
 				9B6A7C501814588000827611 /* GTLDriveChildList.m in Sources */,
@@ -1184,6 +1192,7 @@
 				9B6A7C561814588000827611 /* GTLDriveConstants.m in Sources */,
 				9B6A7C4B1814588000827611 /* GTLDriveApp.m in Sources */,
 				9B6A7B431814588000827611 /* GTMHTTPFetcherLogging.m in Sources */,
+				9B6B6C4A188B0D85007505D6 /* VideoViewController.m in Sources */,
 				9BC26E03164EEEE900D7C164 /* AddUserViewController.m in Sources */,
 				9B6A7B641814588000827611 /* GTLObject.m in Sources */,
 				9BDAC7631881F9B500C66C17 /* SampleMovie.m in Sources */,
@@ -1244,7 +1253,6 @@
 				9B5C639A178200F100F83492 /* ImageThumbCell.m in Sources */,
 				9B6A7B491814588000827611 /* GTMReadMonitorInputStream.m in Sources */,
 				9B6A7B5E1814588000827611 /* GTMOAuth2ViewControllerTouch.m in Sources */,
-				9B5C63A317822FC800F83492 /* DataReviewImagesViewController.m in Sources */,
 				9BE341DC17823269006A9F30 /* CountViewController.m in Sources */,
 				9BCAF3361888789900CB2E3E /* ProcessingResults.m in Sources */,
 			);

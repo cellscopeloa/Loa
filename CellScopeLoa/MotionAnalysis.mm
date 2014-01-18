@@ -138,8 +138,8 @@
             movieFrameMat = [frameBuffer getFrameAtIndex:bufferIdx];
 
             if (i==0){
-                threshold(movieFrameMat, movieFrameMatBW, 50, 255, CV_THRESH_BINARY_INV);
-                threshold(movieFrameMat, movieFrameMatBWInv, 50, 1, CV_THRESH_BINARY);
+                threshold(movieFrameMat, movieFrameMatBW, 30, 255, CV_THRESH_BINARY_INV);
+                threshold(movieFrameMat, movieFrameMatBWInv, 30, 1, CV_THRESH_BINARY);
 
                 cv::Mat element = getStructuringElement(CV_SHAPE_ELLIPSE, cv::Size( 10,10 ), cv::Point( 2, 2 ));
                 cv::morphologyEx(movieFrameMatBW,movieFrameMatBW, CV_MOP_DILATE, element );

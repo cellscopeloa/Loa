@@ -31,7 +31,7 @@
 
 -(void)setupInstructionSet
 {
-    instructionText = [NSArray arrayWithObjects: @"Test results are displayed below, please consult treatment plan. Press done button to continue.", nil];
+    instructionText = [NSArray arrayWithObjects: @"Test results are displayed below. Press done button to continue.", nil];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

@@ -14,6 +14,7 @@
 #import "ImageThumbCell.h"
 #import "CountViewController.h"
 #import "SampleExporter.h"
+#import "SampleReviewViewController.h"
 #import "Reachability.h"
 
 static NSString *const kKeychainItemName = @"Google Drive Quickstart";
@@ -184,8 +185,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:@"ViewSample"]) {
-        UITabBarController* tc = [segue destinationViewController];
-        CountViewController* viewController = (CountViewController*)[[tc customizableViewControllers] objectAtIndex:0];
+        SampleReviewViewController* viewController = segue.destinationViewController;
         Sample* currentSample = (Sample*)[self.samples objectAtIndex:lastSelectedIndex.integerValue];
         viewController.sample = currentSample;
     }
@@ -493,6 +493,8 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                                                   {
                                                       NSLog(@"An error occurred: %@", error);
                                                       [self showAlert:@"Google Drive" message:@"Upload error. Please try again later."];
+                                                      // Reload the videos
+                                                      [self loadSamples];
                                                   }
                                                   
                                               }];
