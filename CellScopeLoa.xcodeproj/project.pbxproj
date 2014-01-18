@@ -92,6 +92,7 @@
 		9B6B6C47188B0999007505D6 /* SampleReviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6B6C46188B0999007505D6 /* SampleReviewViewController.m */; };
 		9B6B6C4A188B0D85007505D6 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6B6C49188B0D85007505D6 /* VideoViewController.m */; };
 		9B6B6C4B188B17D8007505D6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BA721A116B5EA9200DE13D2 /* QuartzCore.framework */; };
+		9B6B6C4E188B2B89007505D6 /* AdminViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6B6C4D188B2B89007505D6 /* AdminViewController.m */; };
 		9B72B50216B1C1C8008237B3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B72B50116B1C1C8008237B3 /* CoreVideo.framework */; };
 		9B88536916C43B4300A65D86 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B88536816C43B4300A65D86 /* SettingsViewController.m */; };
 		9B88536C16C453F500A65D86 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B88536B16C453F500A65D86 /* Settings.m */; };
@@ -350,6 +351,8 @@
 		9B6B6C46188B0999007505D6 /* SampleReviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleReviewViewController.m; sourceTree = "<group>"; };
 		9B6B6C48188B0D85007505D6 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
 		9B6B6C49188B0D85007505D6 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
+		9B6B6C4C188B2B89007505D6 /* AdminViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdminViewController.h; sourceTree = "<group>"; };
+		9B6B6C4D188B2B89007505D6 /* AdminViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdminViewController.m; sourceTree = "<group>"; };
 		9B72B50116B1C1C8008237B3 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		9B88536616C43AD000A65D86 /* SettingsDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsDelegate.h; sourceTree = "<group>"; };
 		9B88536716C43B4300A65D86 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -869,6 +872,8 @@
 				9B6B6C46188B0999007505D6 /* SampleReviewViewController.m */,
 				9B6B6C48188B0D85007505D6 /* VideoViewController.h */,
 				9B6B6C49188B0D85007505D6 /* VideoViewController.m */,
+				9B6B6C4C188B2B89007505D6 /* AdminViewController.h */,
+				9B6B6C4D188B2B89007505D6 /* AdminViewController.m */,
 			);
 			path = CellScopeLoa;
 			sourceTree = "<group>";
@@ -1238,6 +1243,7 @@
 				9B6A7B611814588000827611 /* GTLBatchResult.m in Sources */,
 				9B6A7C581814588000827611 /* GTLDriveFileList.m in Sources */,
 				9B6A7C621814588000827611 /* GTLDriveUser.m in Sources */,
+				9B6B6C4E188B2B89007505D6 /* AdminViewController.m in Sources */,
 				9B6A7B441814588000827611 /* GTMHTTPFetcherLogViewController.m in Sources */,
 				9B6A7B671814588000827611 /* GTLService.m in Sources */,
 				9B6A7C5A1814588000827611 /* GTLDriveParentReference.m in Sources */,

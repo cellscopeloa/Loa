@@ -13,6 +13,7 @@
 #import "InstructionViewController.h"
 #import "DataTableViewController.h"
 #import "SettingsViewController.h"
+#import "AdminViewController.h"
 
 @interface MainMenuViewController ()
 
@@ -118,6 +119,10 @@
     else if([segue.identifier isEqualToString:@"Data"]) {
         DataTableViewController* datatable = [[[segue destinationViewController] viewControllers] objectAtIndex:0];
         datatable.managedObjectContext = managedObjectContext;
+    }
+    else if([segue.identifier isEqualToString:@"Admin"]) {
+        AdminViewController* viewController = [segue destinationViewController];
+        viewController.managedObjectContext = managedObjectContext;
     }
 }
 

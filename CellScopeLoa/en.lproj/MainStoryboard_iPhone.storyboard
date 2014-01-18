@@ -599,6 +599,20 @@
             </objects>
             <point key="canvasLocation" x="3164" y="-801"/>
         </scene>
+        <!--Admin View Controller-->
+        <scene sceneID="Pad-og-HCq">
+            <objects>
+                <viewController id="XTt-Yt-XgH" customClass="AdminViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="VkK-Vd-FzE">
+                        <rect key="frame" x="0.0" y="20" width="320" height="460"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0dl-AO-wpf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="73" y="622"/>
+        </scene>
         <!--Main Menu View Controller - CellScope-->
         <scene sceneID="nw3-gC-iPO">
             <objects>
@@ -749,6 +763,33 @@
                                             <constraint firstAttribute="trailing" secondItem="BQC-5l-hl3" secondAttribute="trailing" constant="20" type="default" id="Ww7-bf-3tj"/>
                                             <constraint firstItem="SBv-Ta-Fro" firstAttribute="centerY" secondItem="NKA-Vv-LrK" secondAttribute="centerY" type="default" id="cB5-h4-YyG"/>
                                         </constraints>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="100" id="ORc-8q-VAB">
+                                        <rect key="frame" x="0.0" y="444" width="320" height="100"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="300" height="99"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="ADMIN!!!" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="9lO-6S-OES">
+                                                    <rect key="frame" x="121" y="39" width="179" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="179" id="caP-Yt-Lub"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="9lO-6S-OES" secondAttribute="trailing" constant="20" type="default" id="EAh-RO-vDU"/>
+                                            <constraint firstItem="9lO-6S-OES" firstAttribute="top" secondItem="ORc-8q-VAB" secondAttribute="top" constant="39" id="vNA-N6-gQj"/>
+                                        </constraints>
+                                        <connections>
+                                            <segue destination="XTt-Yt-XgH" kind="modal" identifier="Admin" id="eai-yT-9r9"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -1053,7 +1094,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yWr-vM-FJX">
-                                <rect key="frame" x="-20" y="-56" width="360" height="480"/>
+                                <rect key="frame" x="-20" y="0.0" width="360" height="480"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="480" id="N8g-3H-wOe"/>
@@ -1109,17 +1150,17 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="yWr-vM-FJX" firstAttribute="centerX" secondItem="Z2A-uD-S8T" secondAttribute="centerX" type="default" id="F9J-Zf-a0E"/>
                             <constraint firstAttribute="trailing" secondItem="Z2A-uD-S8T" secondAttribute="trailing" type="default" id="Fn7-dk-Vwa"/>
                             <constraint firstAttribute="bottom" secondItem="Z2A-uD-S8T" secondAttribute="bottom" type="default" id="GYf-QE-Eir"/>
-                            <constraint firstItem="eNc-Gn-Yqa" firstAttribute="centerY" secondItem="yWr-vM-FJX" secondAttribute="centerY" type="default" id="HXZ-lq-xJJ"/>
                             <constraint firstAttribute="trailing" secondItem="8Bb-JG-II2" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="Rbn-CN-SZN"/>
                             <constraint firstItem="scV-BF-5n8" firstAttribute="centerX" secondItem="eNc-Gn-Yqa" secondAttribute="centerX" type="default" id="U6l-KT-K0g"/>
                             <constraint firstItem="Z2A-uD-S8T" firstAttribute="leading" secondItem="XfX-qQ-vHM" secondAttribute="leading" type="default" id="Ybk-Dd-SAi"/>
                             <constraint firstItem="8Bb-JG-II2" firstAttribute="bottom" secondItem="Z2A-uD-S8T" secondAttribute="top" type="default" id="b1q-al-yZQ"/>
                             <constraint firstItem="eNc-Gn-Yqa" firstAttribute="centerX" secondItem="Z2A-uD-S8T" secondAttribute="centerX" type="default" id="iJa-IB-VTF"/>
                             <constraint firstItem="eNc-Gn-Yqa" firstAttribute="top" secondItem="scV-BF-5n8" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="jgl-hU-7Vh"/>
-                            <constraint firstItem="yWr-vM-FJX" firstAttribute="top" secondItem="XfX-qQ-vHM" secondAttribute="top" constant="-56" id="rqL-09-5xt"/>
+                            <constraint firstItem="scV-BF-5n8" firstAttribute="top" secondItem="XfX-qQ-vHM" secondAttribute="top" constant="145" id="nz8-Vc-sdg"/>
+                            <constraint firstItem="yWr-vM-FJX" firstAttribute="top" secondItem="XfX-qQ-vHM" secondAttribute="top" type="default" id="p6T-BZ-bYp"/>
+                            <constraint firstItem="yWr-vM-FJX" firstAttribute="centerX" secondItem="eNc-Gn-Yqa" secondAttribute="centerX" type="default" id="yH0-Wy-4av"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" systemItem="favorites" id="f4N-9I-k4i"/>
