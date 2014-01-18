@@ -84,6 +84,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 
 - (void)loadSamples
 {
+    NSLog(@"Load samples!");
     NSError *error;
     NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc]
                                         initWithKey:@"capturetime" ascending:NO];
@@ -95,6 +96,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
     NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     self.samples = fetchedObjects;
     sampleEnumerator = [self.samples objectEnumerator];
+    NSLog(@"Samples: %d", self.samples.count);
     //[self.tableView reloadData];
 }
 
@@ -386,6 +388,7 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 {
     // If the movie is already synced, nothing to do here
     if(movie.synced.boolValue == YES) {
+        NSLog(@"%@ %d is synced", sample.serialnumber, movnum.intValue);
         // Launch the next movie upload
         SampleMovie* newMovie = [movieEnumerator nextObject];
         if (newMovie != nil) {
@@ -401,7 +404,6 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
             // Run completion block
             block();
         }
-        return;
     }
     else {
         NSLog(@"Upload movie num: %d", movnum.intValue);
@@ -466,31 +468,31 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
                                                   if (error == nil)
                                                   {
                                                       NSLog(@"File ID: %@", insertedFile.identifier);
-                                                      // [self showAlert:@"Google Drive" message:@"File saved!"];
+                                                      // Save this movie as synced
+                                                      movie.synced = [NSNumber numberWithBool:YES];
+                                                      [self.managedObjectContext save:&error];
+                                                      
+                                                      // Launch the next movie upload
+                                                      SampleMovie* newMovie = [movieEnumerator nextObject];
+                                                      if (newMovie != nil) {
+                                                          NSNumber* nextnum = [NSNumber numberWithInt:(movnum.intValue+1)];
+                                                          [self movieUploadBlock:movieEnumerator withMovie:newMovie Sample:sample movNum:nextnum completion:block];
+                                                      }
+                                                      else {
+                                                          // Update item as synced
+                                                          sample.synced = [NSNumber numberWithBool:YES];
+                                                          NSError *error = nil;
+                                                          [self.managedObjectContext save:&error];  //saves the context to disk
+                                                          [self.tableView reloadData];
+                                                          // Run completion block
+                                                          block();
+                                                      }
+
                                                   }
                                                   else
                                                   {
                                                       NSLog(@"An error occurred: %@", error);
-                                                      [self showAlert:@"Google Drive" message:@"Sorry, an error occurred!"];
-                                                  }
-                                                  // Save this movie as synced
-                                                  movie.synced = [NSNumber numberWithBool:YES];
-                                                  [self.managedObjectContext save:&error];
-                                                  
-                                                  // Launch the next movie upload
-                                                  SampleMovie* newMovie = [movieEnumerator nextObject];
-                                                  if (newMovie != nil) {
-                                                      NSNumber* nextnum = [NSNumber numberWithInt:(movnum.intValue+1)];
-                                                      [self movieUploadBlock:movieEnumerator withMovie:newMovie Sample:sample movNum:nextnum completion:block];
-                                                  }
-                                                  else {
-                                                      // Update item as synced
-                                                      sample.synced = [NSNumber numberWithBool:YES];
-                                                      NSError *error = nil;
-                                                      [self.managedObjectContext save:&error];  //saves the context to disk
-                                                      [self.tableView reloadData];
-                                                      // Run completion block
-                                                      block();
+                                                      [self showAlert:@"Google Drive" message:@"Upload error. Please try again later."];
                                                   }
                                                   
                                               }];
@@ -527,26 +529,15 @@ static NSString *const kClientSecret = @"mbDjzu2hKDW23QpNJXe_0Ukd";
 - (void)uploadSamples
 {
     Sample *sample = [sampleEnumerator nextObject];
+    NSLog(@"Sample: %@", sample.serialnumber);
     if(sample != nil) {
         NSLog(@"Upload next sample");
-        
-        // Check to make sure ALL sample movies in sample have uploaded
-        bool allsynced = YES;
-        for (SampleMovie* movie in sample.movies)
-        {
-            if (movie.synced.boolValue == NO) {
-                allsynced = NO;
-            }
-        }
-        
-        if(!allsynced) {
-            NSNumber* movnum = [NSNumber numberWithInt:0];
-            NSEnumerator *movieEnumerator = [sample.movies objectEnumerator];
-            SampleMovie* movie = [movieEnumerator nextObject];
-            [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:movnum completion:^{
-                [self uploadSamples];
-            }];
-        }
+        NSNumber* movnum = [NSNumber numberWithInt:0];
+        NSEnumerator *movieEnumerator = [sample.movies objectEnumerator];
+        SampleMovie* movie = [movieEnumerator nextObject];
+        [self movieUploadBlock:movieEnumerator withMovie:movie Sample:sample movNum:movnum completion:^{
+            [self uploadSamples];
+        }];
     }
 }
 
