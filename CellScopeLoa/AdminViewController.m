@@ -14,7 +14,9 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface AdminViewController ()
+@interface AdminViewController () {
+    bool firstrun;
+}
 
 @end
 
@@ -40,6 +42,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    firstrun = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -54,8 +57,11 @@
     imagePicker.mediaTypes = @[(NSString *)kUTTypeMovie];
     
     imagePicker.allowsEditing = YES;
-    [self presentViewController:imagePicker
-                       animated:YES completion:Nil];
+    if (firstrun) {
+        firstrun = NO;
+        [self presentViewController:imagePicker
+                           animated:YES completion:Nil];
+    }
 }
 
 - (void)createNewSampleWithMovieAtURL:(NSURL*) sampleURL
