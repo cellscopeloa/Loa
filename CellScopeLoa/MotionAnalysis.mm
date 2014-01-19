@@ -326,10 +326,12 @@
     cv::Mat movieFrameMatDiff38;
     movieFrameMatDiff1.convertTo(movieFrameMatDiff38, CV_8UC1);
     diff3 = [[UIImage alloc] initWithCVMat:movieFrameMatDiff38*255];
+    /*
     UIImageWriteToSavedPhotosAlbum(diff3,
                                    self, // send the message to 'self' when calling the callback
                                    @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                   NULL); // you generally won't need a contextInfo here */
+                                   NULL); // you generally won't need a contextInfo here 
+     */
 
     [self getLocalMaxima:movieFrameMatDiff2: 17: 1: 5:33:60];
 

@@ -164,12 +164,12 @@
     [reader addOutput:readerOutput];
     [reader startReading];
     
-    CMSampleBufferRef buffer;
+    CMSampleBufferRef buffer = nil;
     
     int i = 0;
     while ([reader status] == AVAssetReaderStatusReading )
     {
-        if (buffer != NULL)
+        if (buffer != nil)
         {
             
             CMSampleBufferInvalidate(buffer);
