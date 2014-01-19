@@ -275,6 +275,9 @@
     if (movieNumber == 5) {
         movieNumber = 0;
     }
+    NSArray* movies = [sample.movies allObjects];
+    currentSampleMovie = [movies objectAtIndex:movieNumber];
+    [self clearCircles];
     [self loadCurrentMovie];
 }
 
@@ -290,6 +293,9 @@
     if (movieNumber == -1) {
         movieNumber = 4;
     }
+    NSArray* movies = [sample.movies allObjects];
+    currentSampleMovie = [movies objectAtIndex:movieNumber];
+    [self clearCircles];
     [self loadCurrentMovie];
 }
 
