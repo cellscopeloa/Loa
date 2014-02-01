@@ -36,29 +36,36 @@
     int count = 0;
     double nummovies = 0;
     bool allsynced = YES;
+    
+    NSMutableArray* numberOfWorms = [[NSMutableArray alloc] init];
     for (SampleMovie* movie in sample.movies)
     {
-        count += movie.numworms.intValue;
+        double coordinateWrites = 5.0;
+        double averageFeatures = (double)(movie.features.count) / coordinateWrites;
+        count += averageFeatures;
+        [numberOfWorms addObject:[NSNumber numberWithDouble:averageFeatures]];
         nummovies += 1;
         if (!(movie.synced)) {
             allsynced = NO;
         }
     }
     
+    double fovCount = 5.0;
+    double averageWorms = count / fovCount;
+    int estimatedCount = (int)(averageWorms / (.00073));
+    
     NSString* synced = [NSString stringWithFormat:@"%@", allsynced ? @"YES" : @"NO"];
     [rep appendString:synced];
     [rep appendString:@"\t"];
     
-    double avgcount = count/nummovies;
-    int estimate = (avgcount / (.00073));
-    NSString* mfml = [NSString stringWithFormat:@"%d", estimate];
+    NSString* mfml = [NSString stringWithFormat:@"%d", estimatedCount];
     
     [rep appendString:mfml];
     [rep appendString:@"\t"];
     
-    for (SampleMovie* movie in sample.movies)
+    for (NSNumber* number in numberOfWorms)
     {
-        NSString* mf = [NSString stringWithFormat:@"%@", movie.numworms];
+        NSString* mf = [NSString stringWithFormat:@"%@", number];
         [rep appendString:mf];
         [rep appendString:@"\t"];
     }

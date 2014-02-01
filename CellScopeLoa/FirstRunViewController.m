@@ -30,6 +30,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    [tabletModeButton setOn:YES];
 }
 
 - (void)didReceiveMemoryWarning

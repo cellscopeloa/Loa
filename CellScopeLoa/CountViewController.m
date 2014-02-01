@@ -43,11 +43,23 @@
     float numberoffov = NUMFOV;
     NSSet* movies = sample.movies;
     double featureCount = 0;
+    NSMutableArray* fovCounts = [[NSMutableArray alloc] init];
     for (SampleMovie* sampleMovie in movies) {
         double coordinateWrites = 5.0;
         double averageFeatures = (double)(sampleMovie.features.count) / coordinateWrites;
+        [fovCounts addObject:[NSNumber numberWithDouble:averageFeatures]];
         featureCount += averageFeatures;
     }
+    
+    NSMutableString* fovCountsString = [[NSMutableString alloc] init];
+         
+    for (NSNumber* number in fovCounts) {
+        NSString* ser = [NSString stringWithFormat:@"%.2f", number.doubleValue];
+        [fovCountsString appendString:ser];
+        [fovCountsString appendString:@", "];
+    }
+    NSString* formattedCountsString = [fovCountsString substringToIndex:fovCountsString.length-2];
+    NSLog(@"%@", formattedCountsString);
     
     double averageWorms = featureCount / numberoffov;
     int estimatedCount = (int)((featureCount / numberoffov) / (.00073));

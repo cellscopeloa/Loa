@@ -132,14 +132,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath.section == 0) {
-        float sense = 0.0;
-        // Store sensitivity
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:[NSNumber numberWithFloat:sense] forKey:@"sensitivity"];
-        [defaults synchronize];
-
-    }
     // Navigation logic may go here. Create and push another view controller.
 }
 

@@ -28,6 +28,7 @@
 @synthesize countLabel;
 @synthesize wormsField;
 @synthesize sampleIDLabel;
+@synthesize fieldCountsLabel;
 
 -(void)setupInstructionSet
 {
@@ -89,11 +90,25 @@
     float numberoffov = NUMFOV;
     NSArray* movies = [program currentMovies];
     double featureCount = 0;
+    NSMutableArray* fovCounts = [[NSMutableArray alloc] init];
     for (SampleMovie* sample in movies) {
         double coordinateWrites = 5.0;
         double averageFeatures = (double)(sample.features.count) / coordinateWrites;
+        [fovCounts addObject:[NSNumber numberWithDouble:averageFeatures]];
         featureCount += averageFeatures;
     }
+    
+    NSMutableString* fovCountsString = [[NSMutableString alloc] init];
+    
+    for (NSNumber* number in fovCounts) {
+        NSString* ser = [NSString stringWithFormat:@"%.1f", number.doubleValue];
+        [fovCountsString appendString:ser];
+        [fovCountsString appendString:@", "];
+    }
+    NSString* formattedCountsString = [fovCountsString substringToIndex:fovCountsString.length-2];
+    NSLog(@"%@", formattedCountsString);
+    
+    fieldCountsLabel.text = [NSString stringWithFormat:@"%@", formattedCountsString];
     
     double averageWorms = featureCount / numberoffov;
     int estimatedCount = (int)((featureCount / numberoffov) / (.00073));
@@ -112,6 +127,8 @@
     }
     countLabel.text = [NSString stringWithFormat:@"%@ mf/ml", bstr];
     wormsField.text = [NSString stringWithFormat:@"%@ mf/field", astr];
+    
+    // Save the number of worms into the database
 }
 
 - (IBAction)discardPressed:(id)sender {

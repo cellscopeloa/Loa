@@ -15,6 +15,7 @@
 @property UIImage* backImage;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) LoaProgram* program;
+@property (weak, nonatomic) IBOutlet UILabel *fieldCountsLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *wormsField;
 @property (strong, nonatomic) NSArray *instructionText;
