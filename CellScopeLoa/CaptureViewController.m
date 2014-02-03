@@ -173,7 +173,7 @@
         [camera lockSettings];
     }
     
-    [camera captureWithDuration:5.0];
+    [camera captureWithDuration:6.0];
     
     [UIView animateWithDuration:1.0 animations:^{
         instructions.alpha = 0.0;
@@ -190,6 +190,9 @@
 - (void)processFrame:(CaptureCamera*)sender Buffer:(CVBufferRef)buffer
 {
     [frameBuffer writeFrame:buffer atIndex:[NSNumber numberWithInteger:frameIndex]];
+    if (frameIndex == 150) {
+        NSLog(@"Completed capture");
+    }
     frameIndex += 1;
 }
 

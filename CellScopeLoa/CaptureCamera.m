@@ -113,14 +113,20 @@
 {
     // Are we recording frames right now?
     if(writingFrames && assetWriterInput.readyForMoreMediaData) {
-        CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-        
-        // Send the frame to the processing object
-        [processingDelegate processFrame:self Buffer:imageBuffer];
-        
-        // Pass the frame to the asset writer
-        [pixelBufferAdaptor appendPixelBuffer:imageBuffer withPresentationTime:videoTime];
-        videoTime.value += 1;
+        // Has the correct number of frames been captured?
+        if ((videoTime.value/30.0) >= 5.0 ) {
+            NSLog(@"Over 5 seconds");
+        }
+        else {
+            CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+            
+            // Send the frame to the processing object
+            [processingDelegate processFrame:self Buffer:imageBuffer];
+            
+            // Pass the frame to the asset writer
+            [pixelBufferAdaptor appendPixelBuffer:imageBuffer withPresentationTime:videoTime];
+            videoTime.value += 1;
+        }
     }
 }
 
@@ -148,6 +154,7 @@
 
 - (void)recordingComplete:(NSTimer *) theTimer
 {
+    NSLog(@"Video Time: %lld", videoTime.value);
     writingFrames = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"Timer signals finsihed");
