@@ -30,6 +30,6 @@
 - (void)start;
 - (IBAction)captureWithDuration:(Float32)duration recordingDelegate:(id<AVCaptureFileOutputRecordingDelegate>)delegate progressDelegate:(id<MovieProgressDelegate>)progressDelegate;
 -(void)progressUpdate:(NSTimer*)timer;
--(void)recordingComplete:(NSTimer *)timer;
+-(void)recordingComplete;
 
 @end

@@ -173,7 +173,7 @@
         [camera lockSettings];
     }
     
-    [camera captureWithDuration:6.0];
+    [camera captureWithDuration:5.0];
     
     [UIView animateWithDuration:1.0 animations:^{
         instructions.alpha = 0.0;
