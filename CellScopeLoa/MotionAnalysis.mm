@@ -68,7 +68,7 @@
             CGPoint point=CGPointMake([pointx floatValue], [pointy floatValue]);
             NSNumber* start= [coordinates objectAtIndex:(NSInteger)idx+2];
             NSNumber* end= [coordinates objectAtIndex:(NSInteger)idx+3];
-            //NSLog(@"pointx pointy start end %@ %@ %@ %@", pointx, pointy, start, end);
+            NSLog(@"pointx pointy start end %@ %@ %@ %@", pointx, pointy, start, end);
             
             [results addPoint:point from:[start integerValue] to:[end integerValue]];
         }
@@ -91,6 +91,7 @@
     movieIdx = 0;
     //NSNumber *movielength = [movieLengths objectAtIndex:0];
     NSInteger numFrames = frameBuffer.numFrames.integerValue;
+    NSLog(@"numframes %i", numFrames);
     
     // Movie dimensions
     int rows = 360;

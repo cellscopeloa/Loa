@@ -234,7 +234,7 @@
         CGPoint point=CGPointMake([pointx floatValue], [pointy floatValue]);
         NSNumber* start= [coordsArray objectAtIndex:(NSInteger)idx+2];
         NSNumber* end= [coordsArray objectAtIndex:(NSInteger)idx+3];
-        //NSLog(@"pointx pointy start end %@ %@ %@ %@", pointx, pointy, start, end);
+        NSLog(@"pointx pointy start end %@ %@ %@ %@", pointx, pointy, start, end);
         
         [processingResults addPoint:point from:[start integerValue] to:[end integerValue]];
         

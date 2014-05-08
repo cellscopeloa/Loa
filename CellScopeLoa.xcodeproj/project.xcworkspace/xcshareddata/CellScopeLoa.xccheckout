@@ -12,6 +12,8 @@
 	<dict>
 		<key>A96A4718-ED99-44F4-B949-F7E95F562D94</key>
 		<string>https://github.com/bakalarmh/cell-scope-loa.git</string>
+		<key>DE2EA2C8-C212-42AE-BED7-75E928EBB00E</key>
+		<string>http://google-api-objectivec-client.googlecode.com/svn/trunk</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>CellScopeLoa.xcodeproj/project.xcworkspace</string>
@@ -19,6 +21,13 @@
 	<dict>
 		<key>A96A4718-ED99-44F4-B949-F7E95F562D94</key>
 		<string>../..</string>
+		<key>DE2EA2C8-C212-42AE-BED7-75E928EBB00E</key>
+		<string>../../../../../Downloads/gdriveapi/google-api-objectivec-client-read-only</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>DE2EA2C8-C212-42AE-BED7-75E928EBB00E</key>
+		<string>http://google-api-objectivec-client.googlecode.com/svn</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/bakalarmh/cell-scope-loa.git</string>
@@ -35,6 +44,20 @@
 			<string>A96A4718-ED99-44F4-B949-F7E95F562D94</string>
 			<key>IDESourceControlWCCName</key>
 			<string>CellScopeLoa</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryBranchesRelativeLocationKey</key>
+			<string>branches</string>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlRepositoryTagsRelativeLocationKey</key>
+			<string>tags</string>
+			<key>IDESourceControlRepositoryTrunkRelativeLocationKey</key>
+			<string>trunk</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>DE2EA2C8-C212-42AE-BED7-75E928EBB00E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>google-api-objectivec-client-read-only</string>
 		</dict>
 	</array>
 </dict>
