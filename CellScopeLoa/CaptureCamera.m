@@ -115,7 +115,7 @@
     if(writingFrames && assetWriterInput.readyForMoreMediaData) {
         // Has the correct number of frames been captured?
         if ((videoTime.value/30.0) >= 5.0 ) {
-            NSLog(@"Over 5 seconds");
+            // Pass
         }
         else {
             CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
@@ -137,11 +137,14 @@
         
         captureProgress = 0.0;
         
-        [NSTimer scheduledTimerWithTimeInterval:duration
+        // Hard code - wait for 6 seconds!
+        /*
+        [NSTimer scheduledTimerWithTimeInterval:7.0
                                          target:self
                                        selector:@selector(recordingComplete:)
                                        userInfo:nil
                                         repeats:NO];
+         */
         
         [NSTimer scheduledTimerWithTimeInterval:duration/100.0
                                          target:self
@@ -152,7 +155,7 @@
     }];
 }
 
-- (void)recordingComplete:(NSTimer *) theTimer
+- (void)recordingComplete
 {
     NSLog(@"Video Time: %lld", videoTime.value);
     writingFrames = NO;
@@ -171,11 +174,15 @@
 
 - (void)progressClockAction:(NSTimer *) theTimer
 {
+    if ((videoTime.value/30.0) >= 5.0 ) {
+        [self recordingComplete];
+        [theTimer invalidate];
+        NSLog(@"%lld", videoTime.value);
+    }
     captureProgress += 0.01;
     [progressDelegate updateProgress:[NSNumber numberWithFloat:captureProgress]];
     if(captureProgress >= 1.0) {
-        [theTimer invalidate];
-        captureProgress = 0.0;
+        // Pass
     }
 }
 
